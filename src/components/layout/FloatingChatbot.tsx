@@ -119,12 +119,15 @@ const FloatingChatbot = () => {
 
     const userText = input.trim();
     const newMessage: Message = { id: Date.now(), text: userText, sender: "user" };
+    // Pass the entire conversation history to the API for context memory
+    const currentHistory = [...messages, newMessage];
+    
     setMessages((prev) => [...prev, newMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
-      const reply = await askChatbot(userText);
+      const reply = await askChatbot(currentHistory);
       const replyMessage: Message = { id: Date.now() + 1, text: reply, sender: "bot" };
       setMessages((prev) => [...prev, replyMessage]);
     } catch (error) {
