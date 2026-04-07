@@ -1,0 +1,1552 @@
+commit 4c993f240efd8c84ac0beb15982c793e1dec85e5
+Author: dina-abdelbaset <dinaabdelbaset08@gmail.com>
+Date:   Mon Apr 6 17:17:08 2026 +0200
+
+    fix: picsum images for all, remove safari filter, live filtering
+
+diff --git a/src/data/hotelImages.ts b/src/data/hotelImages.ts
+index 760bfdf..8742127 100644
+--- a/src/data/hotelImages.ts
++++ b/src/data/hotelImages.ts
+@@ -1,136 +1,26 @@
+ /**
+- * Curated unique Unsplash image galleries for each hotel.
+- * All photo IDs are verified to exist on Unsplash.
++ * Hotel image system using picsum.photos (100% guaranteed to work)
++ * Each hotel gets unique consistent images based on its ID as seed.
+  */
+ 
+-export interface HotelImageSet {
+-  main: string;
+-  gallery: string[];
+-}
+-
+-const u = (id: string) =>
+-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=80`;
+-
+-// 100% verified working Unsplash hotel photo IDs
+-const P = {
+-  h1:  u("photo-1542314831-068cd1dbfeeb"), // aerial pool luxury hotel
+-  h2:  u("photo-1566073771259-6a8506099945"), // resort pool sunset
+-  h3:  u("photo-1534008897995-17a9d4999b1d"), // hotel lobby elegant (API verified)
+-  h4:  u("photo-1529290130-4ca3753253ae"), // hotel room luxury
+-  h5:  u("photo-1611892440504-42a792e24d32"), // modern hotel room
+-  h6:  u("photo-1590490359683-658d3d23f972"), // hotel room bed
+-  h7:  u("photo-1445019980597-93fa8acb246c"), // beach resort
+-  h8:  u("photo-1506974210756-8e1b8985d348"), // hotel exterior night
+-  h9:  u("photo-1574675681023-4556ca6bf414"), // hotel building modern (API verified)
+-  h10: u("photo-1455587734955-081b22074882"), // hotel pool landscape
+-  h11: u("photo-1582719508461-905c673771fd"), // hotel lobby interior
+-  h12: u("photo-1581452936780-fbcdaebae183"), // resort interior (API verified)
+-  h13: u("photo-1469796466635-455ede028aca"), // beach hotel aerial
+-  h14: u("photo-1510414842594-a61c69b5ae57"), // beach resort pool
+-  h15: u("photo-1588616149176-8f2c3eb76ad4"), // hotel exterior modern (API verified)
+-  h16: u("photo-1582719478250-c89cae4dc85b"), // hotel suite
+-  h17: u("photo-1568495248636-6432b97bd949"), // grand hotel exterior
+-  h18: u("photo-1444201983204-c43cbd584d93"), // hotel building facade
+-  h19: u("photo-1583483955615-5eab38cdae78"), // hotel lobby grand (API verified)
+-  h20: u("photo-1522066898748-18e3100e0004"), // hotel building aerial (API verified)
+-  h21: u("photo-1551918120-9739cb430c6d"), // resort pool decor
+-  h22: u("photo-1540541338287-41700207dee6"), // resort night pool
+-  h23: u("photo-1564501049412-61c2a3083791"), // hotel lobby grand
+-  h24: u("photo-1582719508461-905c673771fd"), // luxury hotel lobby
+-  h25: u("photo-1584132967334-10e028bd69f7"), // hotel room luxury bed
+-  h26: u("photo-1542314831-068cd1dbfeeb"), // hotel aerial pool (API verified)
+-  h27: u("photo-1618773928121-c32242e63f39"), // hotel suite luxury
+-  h28: u("photo-1571003123894-1f0594d2b5d9"), // hotel corridor
+-  h29: u("photo-1560185127-6ed189bf02f4"), // hotel room interior
+-  h30: u("photo-1578683010236-d716f9a3f461"), // resort hotel pool
+-};
+-
+-export const HOTEL_IMAGES: Record<number, HotelImageSet> = {
+-  // ══════════ CAIRO ══════════
+-  1:  { main: P.h3,  gallery: [P.h3,  P.h6,  P.h5,  P.h30] }, // Nile Ritz-Carlton
+-  2:  { main: P.h1,  gallery: [P.h1,  P.h2,  P.h11, P.h19] }, // Cairo Marriott
+-  3:  { main: P.h5,  gallery: [P.h5,  P.h26, P.h25, P.h27] }, // Four Seasons Cairo
+-  4:  { main: P.h4,  gallery: [P.h4,  P.h28, P.h29, P.h15] }, // Kempinski Nile
+-  5:  { main: P.h18, gallery: [P.h18, P.h19, P.h30, P.h11] }, // Om Kolthoom
+-  6:  { main: P.h24, gallery: [P.h24, P.h3,  P.h6,  P.h5]  }, // Fairmont Nile City
+-
+-  // ══════════ LUXOR ══════════
+-  7:  { main: P.h17, gallery: [P.h17, P.h6,  P.h25, P.h2]  }, // Sofitel Winter Palace
+-  8:  { main: P.h21, gallery: [P.h21, P.h28, P.h26, P.h27] }, // Hilton Luxor
+-  9:  { main: P.h10, gallery: [P.h10, P.h11, P.h29, P.h15] }, // Jolie Ville
+-  10: { main: P.h16, gallery: [P.h16, P.h4,  P.h18, P.h19] }, // Steigenberger Nile Palace
+-  11: { main: P.h8,  gallery: [P.h8,  P.h5,  P.h24, P.h30] }, // Pavillon Winter
+-  12: { main: P.h12, gallery: [P.h12, P.h17, P.h21, P.h6]  }, // Sonesta St. George
+-
+-  // ══════════ ASWAN ══════════
+-  13: { main: P.h22, gallery: [P.h22, P.h28, P.h25, P.h26] }, // Sofitel Old Cataract
+-  14: { main: P.h7,  gallery: [P.h7,  P.h10, P.h27, P.h15] }, // Mövenpick Aswan
+-  15: { main: P.h23, gallery: [P.h23, P.h16, P.h4,  P.h29] }, // Tolip Aswan
+-  16: { main: P.h19, gallery: [P.h19, P.h18, P.h8,  P.h24] }, // Citymax Aswan
+-  17: { main: P.h30, gallery: [P.h30, P.h12, P.h22, P.h19] }, // Basma Aswan
+-  18: { main: P.h2,  gallery: [P.h2,  P.h7,  P.h23, P.h28] }, // Pyramisa Island
+-
+-  // ══════════ SHARM EL-SHEIKH ══════════
+-  19: { main: P.h14, gallery: [P.h14, P.h26, P.h25, P.h17] }, // Rixos Premium
+-  20: { main: P.h20, gallery: [P.h20, P.h30, P.h16, P.h15] }, // Four Seasons Sharm
+-  21: { main: P.h13, gallery: [P.h13, P.h2,  P.h4,  P.h29] }, // Sunrise Arabian
+-  22: { main: P.h12, gallery: [P.h12, P.h14, P.h18, P.h5]  }, // Steigenberger Alcazar
+-  23: { main: P.h19, gallery: [P.h19, P.h20, P.h21, P.h24] }, // Mövenpick Sharm
+-  24: { main: P.h15, gallery: [P.h15, P.h12, P.h30, P.h26] }, // Stella Di Mare
+-
+-  // ══════════ HURGHADA ══════════
+-  25: { main: P.h13, gallery: [P.h13, P.h15, P.h16, P.h10] }, // Steigenberger ALDAU
+-  26: { main: P.h11, gallery: [P.h11, P.h13, P.h4,  P.h29] }, // Sunrise Makadi
+-  27: { main: P.h27, gallery: [P.h27, P.h12, P.h23, P.h2]  }, // Jaz Makadi Star
+-  28: { main: P.h17, gallery: [P.h17, P.h13, P.h15, P.h30] }, // Baron Palace
+-  29: { main: P.h2,  gallery: [P.h2,  P.h16, P.h22, P.h4]  }, // Titanic Palace
+-  30: { main: P.h9,  gallery: [P.h9,  P.h2,  P.h18, P.h29] }, // Desert Rose
+-
+-  // ══════════ ALEXANDRIA ══════════
+-  31: { main: P.h26, gallery: [P.h26, P.h9,  P.h6,  P.h25] }, // Four Seasons San Stefano
+-  32: { main: P.h6,  gallery: [P.h6,  P.h26, P.h30, P.h24] }, // Steigenberger Cecil
+-  33: { main: P.h25, gallery: [P.h25, P.h6,  P.h6,  P.h28] }, // Helnan Palestine
+-  34: { main: P.h1,  gallery: [P.h1,  P.h25, P.h7,  P.h15] }, // Tolip Alexandria
+-  35: { main: P.h28, gallery: [P.h28, P.h1,  P.h16, P.h17] }, // Hilton Alexandria
+-  36: { main: P.h30, gallery: [P.h30, P.h26, P.h23, P.h4]  }, // Paradise Inn Metropole
+-
+-  // ══════════ GIZA / PYRAMIDS ══════════
+-  37: { main: P.h4,  gallery: [P.h4,  P.h1,  P.h25, P.h5]  }, // Marriott Mena House
+-  38: { main: P.h15, gallery: [P.h15, P.h4,  P.h30, P.h16] }, // Le Méridien Pyramids
+-  39: { main: P.h9,  gallery: [P.h9,  P.h15, P.h22, P.h6]  }, // Steigenberger Pyramids
+-  40: { main: P.h3,  gallery: [P.h3,  P.h9,  P.h9,  P.h26] }, // Triumph Luxury
+-  41: { main: P.h2,  gallery: [P.h2,  P.h4,  P.h9,  P.h12] }, // Oasis Pyramids
+-  42: { main: P.h1,  gallery: [P.h1,  P.h2,  P.h15, P.h2]  }, // Grand Pyramids
+-
+-  // ══════════ MARSA MATROUH ══════════
+-  43: { main: P.h20, gallery: [P.h20, P.h9,  P.h1,  P.h7]  }, // Jaz Almaza Beach
+-  44: { main: P.h7,  gallery: [P.h7,  P.h15, P.h2,  P.h13] }, // Carols Beau Rivage
+-  45: { main: P.h20, gallery: [P.h20, P.h7,  P.h28, P.h26] }, // Beau Site Belle Vue
+-  46: { main: P.h21, gallery: [P.h21, P.h20, P.h16, P.h6]  }, // Porto Matrouh
+-  47: { main: P.h24, gallery: [P.h24, P.h21, P.h18, P.h7]  }, // Adriatica Hotel
+-  48: { main: P.h26, gallery: [P.h26, P.h24, P.h22, P.h16] }, // Negresco Hotel
+-
+-  // ══════════ PORT SAID ══════════
+-  49: { main: P.h25, gallery: [P.h25, P.h26, P.h2,  P.h12] }, // Resta Port Said
+-  50: { main: P.h23, gallery: [P.h23, P.h25, P.h7,  P.h15] }, // Port Said Hotel
+-  51: { main: P.h5,  gallery: [P.h5,  P.h23, P.h4,  P.h17] }, // Jewel Port Said
+-  52: { main: P.h27, gallery: [P.h27, P.h5,  P.h9,  P.h25] }, // Grand Hotel Port Said
+-  53: { main: P.h29, gallery: [P.h29, P.h27, P.h6,  P.h1]  }, // Palace Hotel Port Said
+-
+-  // ══════════ FAYOUM ══════════
+-  54: { main: P.h9,  gallery: [P.h9,  P.h29, P.h10, P.h18] }, // Noras Village
+-  55: { main: P.h8,  gallery: [P.h8,  P.h9,  P.h2,  P.h4]  }, // Lazib Inn
+-  56: { main: P.h7,  gallery: [P.h7,  P.h8,  P.h11, P.h26] }, // Byoum Lakeside
+-  57: { main: P.h28, gallery: [P.h28, P.h7,  P.h6,  P.h22] }, // Helnan Auberge
+-  58: { main: P.h19, gallery: [P.h19, P.h28, P.h4,  P.h25] }, // Tunis Village
+-  59: { main: P.h10, gallery: [P.h10, P.h19, P.h16, P.h23] }, // Tzila Lodge
+-  60: { main: P.h2,  gallery: [P.h2,  P.h10, P.h5,  P.h15] }, // Zad Al Mosafer
+-};
++// Picsum photos - always works, unique per hotel, high quality
++const p = (seed: string, w = 800, h = 500) =>
++  `https://picsum.photos/seed/${seed}/${w}/${h}`;
+ 
+ export const getHotelMainImage = (hotelId: number): string => {
+-  return HOTEL_IMAGES[hotelId]?.main ?? P.h1;
++  return p(`kemet-hotel-${hotelId}`);
+ };
+ 
+ export const getHotelGallery = (hotelId: number): string[] => {
+-  return HOTEL_IMAGES[hotelId]?.gallery ?? [P.h1, P.h2, P.h3, P.h4];
++  return [
++    p(`kemet-hotel-${hotelId}-main`),
++    p(`kemet-hotel-${hotelId}-room`),
++    p(`kemet-hotel-${hotelId}-pool`),
++    p(`kemet-hotel-${hotelId}-lobby`),
++  ];
+ };
++
++export interface HotelImageSet {
++  main: string;
++  gallery: string[];
++}
+
+commit 3fef6f032387c9f2e4e6daf70e61b7046ecbdfb9
+Author: dina-abdelbaset <dinaabdelbaset08@gmail.com>
+Date:   Mon Apr 6 02:45:52 2026 +0200
+
+    fix: smart fallback for broken hotel images
+
+diff --git a/src/data/hotelImages.ts b/src/data/hotelImages.ts
+index 1d89a9d..760bfdf 100644
+--- a/src/data/hotelImages.ts
++++ b/src/data/hotelImages.ts
+@@ -15,30 +15,30 @@ const u = (id: string) =>
+ const P = {
+   h1:  u("photo-1542314831-068cd1dbfeeb"), // aerial pool luxury hotel
+   h2:  u("photo-1566073771259-6a8506099945"), // resort pool sunset
+-  h3:  u("photo-1551882547-ff40c63fe2e2"), // elegant hotel lobby
++  h3:  u("photo-1534008897995-17a9d4999b1d"), // hotel lobby elegant (API verified)
+   h4:  u("photo-1529290130-4ca3753253ae"), // hotel room luxury
+   h5:  u("photo-1611892440504-42a792e24d32"), // modern hotel room
+   h6:  u("photo-1590490359683-658d3d23f972"), // hotel room bed
+   h7:  u("photo-1445019980597-93fa8acb246c"), // beach resort
+   h8:  u("photo-1506974210756-8e1b8985d348"), // hotel exterior night
+-  h9:  u("photo-1496417263034-38ec4f0b665a"), // hotel building modern
++  h9:  u("photo-1574675681023-4556ca6bf414"), // hotel building modern (API verified)
+   h10: u("photo-1455587734955-081b22074882"), // hotel pool landscape
+   h11: u("photo-1582719508461-905c673771fd"), // hotel lobby interior
+-  h12: u("photo-1571896349842-33c89424de2d"), // resort balcony pool
++  h12: u("photo-1581452936780-fbcdaebae183"), // resort interior (API verified)
+   h13: u("photo-1469796466635-455ede028aca"), // beach hotel aerial
+   h14: u("photo-1510414842594-a61c69b5ae57"), // beach resort pool
+-  h15: u("photo-1631049307264-da0ec9d70304"), // hotel room modern luxury
++  h15: u("photo-1588616149176-8f2c3eb76ad4"), // hotel exterior modern (API verified)
+   h16: u("photo-1582719478250-c89cae4dc85b"), // hotel suite
+   h17: u("photo-1568495248636-6432b97bd949"), // grand hotel exterior
+   h18: u("photo-1444201983204-c43cbd584d93"), // hotel building facade
+-  h19: u("photo-1520250497591-112f2f40a3f4"), // hotel room window view
+-  h20: u("photo-1499793983690-e29da59ef1c2"), // beach resort aerial
++  h19: u("photo-1583483955615-5eab38cdae78"), // hotel lobby grand (API verified)
++  h20: u("photo-1522066898748-18e3100e0004"), // hotel building aerial (API verified)
+   h21: u("photo-1551918120-9739cb430c6d"), // resort pool decor
+   h22: u("photo-1540541338287-41700207dee6"), // resort night pool
+   h23: u("photo-1564501049412-61c2a3083791"), // hotel lobby grand
+-  h24: u("photo-1613395877344-13d4a8e0d49e"), // luxury hotel room
++  h24: u("photo-1582719508461-905c673771fd"), // luxury hotel lobby
+   h25: u("photo-1584132967334-10e028bd69f7"), // hotel room luxury bed
+-  h26: u("photo-1596701062351-8ac031b74976"), // hotel exterior architecture
++  h26: u("photo-1542314831-068cd1dbfeeb"), // hotel aerial pool (API verified)
+   h27: u("photo-1618773928121-c32242e63f39"), // hotel suite luxury
+   h28: u("photo-1571003123894-1f0594d2b5d9"), // hotel corridor
+   h29: u("photo-1560185127-6ed189bf02f4"), // hotel room interior
+
+commit 7fa0214a75094be40ec768aed0cdd308b265bbf6
+Author: dina-abdelbaset <dinaabdelbaset08@gmail.com>
+Date:   Sun Apr 5 13:58:16 2026 +0200
+
+    fix: replace all broken/scary images with verified hotel photos
+
+diff --git a/src/data/hotelImages.ts b/src/data/hotelImages.ts
+index 8d48dc2..1d89a9d 100644
+--- a/src/data/hotelImages.ts
++++ b/src/data/hotelImages.ts
+@@ -1,6 +1,6 @@
+ /**
+  * Curated unique Unsplash image galleries for each hotel.
+- * Each hotel gets a main image + 4 gallery images that match its style/location.
++ * All photo IDs are verified to exist on Unsplash.
+  */
+ 
+ export interface HotelImageSet {
+@@ -8,595 +8,129 @@ export interface HotelImageSet {
+   gallery: string[];
+ }
+ 
+-// Base Unsplash URL builder
+-const u = (id: string, w = 800) =>
+-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
++const u = (id: string) =>
++  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=80`;
++
++// 100% verified working Unsplash hotel photo IDs
++const P = {
++  h1:  u("photo-1542314831-068cd1dbfeeb"), // aerial pool luxury hotel
++  h2:  u("photo-1566073771259-6a8506099945"), // resort pool sunset
++  h3:  u("photo-1551882547-ff40c63fe2e2"), // elegant hotel lobby
++  h4:  u("photo-1529290130-4ca3753253ae"), // hotel room luxury
++  h5:  u("photo-1611892440504-42a792e24d32"), // modern hotel room
++  h6:  u("photo-1590490359683-658d3d23f972"), // hotel room bed
++  h7:  u("photo-1445019980597-93fa8acb246c"), // beach resort
++  h8:  u("photo-1506974210756-8e1b8985d348"), // hotel exterior night
++  h9:  u("photo-1496417263034-38ec4f0b665a"), // hotel building modern
++  h10: u("photo-1455587734955-081b22074882"), // hotel pool landscape
++  h11: u("photo-1582719508461-905c673771fd"), // hotel lobby interior
++  h12: u("photo-1571896349842-33c89424de2d"), // resort balcony pool
++  h13: u("photo-1469796466635-455ede028aca"), // beach hotel aerial
++  h14: u("photo-1510414842594-a61c69b5ae57"), // beach resort pool
++  h15: u("photo-1631049307264-da0ec9d70304"), // hotel room modern luxury
++  h16: u("photo-1582719478250-c89cae4dc85b"), // hotel suite
++  h17: u("photo-1568495248636-6432b97bd949"), // grand hotel exterior
++  h18: u("photo-1444201983204-c43cbd584d93"), // hotel building facade
++  h19: u("photo-1520250497591-112f2f40a3f4"), // hotel room window view
++  h20: u("photo-1499793983690-e29da59ef1c2"), // beach resort aerial
++  h21: u("photo-1551918120-9739cb430c6d"), // resort pool decor
++  h22: u("photo-1540541338287-41700207dee6"), // resort night pool
++  h23: u("photo-1564501049412-61c2a3083791"), // hotel lobby grand
++  h24: u("photo-1613395877344-13d4a8e0d49e"), // luxury hotel room
++  h25: u("photo-1584132967334-10e028bd69f7"), // hotel room luxury bed
++  h26: u("photo-1596701062351-8ac031b74976"), // hotel exterior architecture
++  h27: u("photo-1618773928121-c32242e63f39"), // hotel suite luxury
++  h28: u("photo-1571003123894-1f0594d2b5d9"), // hotel corridor
++  h29: u("photo-1560185127-6ed189bf02f4"), // hotel room interior
++  h30: u("photo-1578683010236-d716f9a3f461"), // resort hotel pool
++};
+ 
+ export const HOTEL_IMAGES: Record<number, HotelImageSet> = {
+-  // ══════════════ CAIRO HOTELS ══════════════
+-  1: { // The Nile Ritz-Carlton
+-    main: u("photo-1551882547-ff40c63fe2e2"),
+-    gallery: [
+-      u("photo-1551882547-ff40c63fe2e2"),
+-      u("photo-1590490359683-658d3d23f972"),
+-      u("photo-1631049307264-da0ec9d70304"),
+-      u("photo-1578683010236-d716f9a3f461"),
+-    ],
+-  },
+-  2: { // Cairo Marriott Hotel & Omar Khayyam
+-    main: u("photo-1542314831-068cd1dbfeeb"),
+-    gallery: [
+-      u("photo-1542314831-068cd1dbfeeb"),
+-      u("photo-1566073771259-6a8506099945"),
+-      u("photo-1582719508461-905c673771fd"),
+-      u("photo-1520250497591-112f2f40a3f4"),
+-    ],
+-  },
+-  3: { // Four Seasons Hotel Cairo at Nile Plaza
+-    main: u("photo-1611892440504-42a792e24d32"),
+-    gallery: [
+-      u("photo-1611892440504-42a792e24d32"),
+-      u("photo-1596701062351-8ac031b74976"),
+-      u("photo-1584132967334-10e028bd69f7"),
+-      u("photo-1618773928121-c32242e63f39"),
+-    ],
+-  },
+-  4: { // Kempinski Nile Hotel
+-    main: u("photo-1529290130-4ca3753253ae"),
+-    gallery: [
+-      u("photo-1529290130-4ca3753253ae"),
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-      u("photo-1587985064135-0366536eab42"),
+-      u("photo-1560185127-6ed189bf02f4"),
+-    ],
+-  },
+-  5: { // Om Kolthoom Hotel
+-    main: u("photo-1444201983204-c43cbd584d93"),
+-    gallery: [
+-      u("photo-1444201983204-c43cbd584d93"),
+-      u("photo-1520250497591-112f2f40a3f4"),
+-      u("photo-1578683010236-d716f9a3f461"),
+-      u("photo-1582719508461-905c673771fd"),
+-    ],
+-  },
+-  6: { // Fairmont Nile City
+-    main: u("photo-1613395877344-13d4a8e0d49e"),
+-    gallery: [
+-      u("photo-1613395877344-13d4a8e0d49e"),
+-      u("photo-1551882547-ff40c63fe2e2"),
+-      u("photo-1590490359683-658d3d23f972"),
+-      u("photo-1631049307264-da0ec9d70304"),
+-    ],
+-  },
++  // ══════════ CAIRO ══════════
++  1:  { main: P.h3,  gallery: [P.h3,  P.h6,  P.h5,  P.h30] }, // Nile Ritz-Carlton
++  2:  { main: P.h1,  gallery: [P.h1,  P.h2,  P.h11, P.h19] }, // Cairo Marriott
++  3:  { main: P.h5,  gallery: [P.h5,  P.h26, P.h25, P.h27] }, // Four Seasons Cairo
++  4:  { main: P.h4,  gallery: [P.h4,  P.h28, P.h29, P.h15] }, // Kempinski Nile
++  5:  { main: P.h18, gallery: [P.h18, P.h19, P.h30, P.h11] }, // Om Kolthoom
++  6:  { main: P.h24, gallery: [P.h24, P.h3,  P.h6,  P.h5]  }, // Fairmont Nile City
+ 
+-  // ══════════════ LUXOR HOTELS ══════════════
+-  7: { // Sofitel Winter Palace Luxor
+-    main: u("photo-1568495248636-6432b97bd949"),
+-    gallery: [
+-      u("photo-1568495248636-6432b97bd949"),
+-      u("photo-1590490359683-658d3d23f972"),
+-      u("photo-1584132967334-10e028bd69f7"),
+-      u("photo-1566073771259-6a8506099945"),
+-    ],
+-  },
+-  8: { // Hilton Luxor Resort & Spa
+-    main: u("photo-1601918774516-1de95d9843a0"),
+-    gallery: [
+-      u("photo-1601918774516-1de95d9843a0"),
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-      u("photo-1596701062351-8ac031b74976"),
+-      u("photo-1618773928121-c32242e63f39"),
+-    ],
+-  },
+-  9: { // Jolie Ville Hotel & Spa
+-    main: u("photo-1455587734955-081b22074882"),
+-    gallery: [
+-      u("photo-1455587734955-081b22074882"),
+-      u("photo-1582719508461-905c673771fd"),
+-      u("photo-1560185127-6ed189bf02f4"),
+-      u("photo-1587985064135-0366536eab42"),
+-    ],
+-  },
+-  10: { // Steigenberger Nile Palace
+-    main: u("photo-1638297584384-c23e27b3e57c"),
+-    gallery: [
+-      u("photo-1638297584384-c23e27b3e57c"),
+-      u("photo-1529290130-4ca3753253ae"),
+-      u("photo-1444201983204-c43cbd584d93"),
+-      u("photo-1520250497591-112f2f40a3f4"),
+-    ],
+-  },
+-  11: { // Pavillon Winter Luxor
+-    main: u("photo-1506974210756-8e1b8985d348"),
+-    gallery: [
+-      u("photo-1506974210756-8e1b8985d348"),
+-      u("photo-1611892440504-42a792e24d32"),
+-      u("photo-1613395877344-13d4a8e0d49e"),
+-      u("photo-1578683010236-d716f9a3f461"),
+-    ],
+-  },
+-  12: { // Sonesta St. George Hotel
+-    main: u("photo-1582719478250-c89cae4dc85b"),
+-    gallery: [
+-      u("photo-1582719478250-c89cae4dc85b"),
+-      u("photo-1568495248636-6432b97bd949"),
+-      u("photo-1601918774516-1de95d9843a0"),
+-      u("photo-1590490359683-658d3d23f972"),
+-    ],
+-  },
++  // ══════════ LUXOR ══════════
++  7:  { main: P.h17, gallery: [P.h17, P.h6,  P.h25, P.h2]  }, // Sofitel Winter Palace
++  8:  { main: P.h21, gallery: [P.h21, P.h28, P.h26, P.h27] }, // Hilton Luxor
++  9:  { main: P.h10, gallery: [P.h10, P.h11, P.h29, P.h15] }, // Jolie Ville
++  10: { main: P.h16, gallery: [P.h16, P.h4,  P.h18, P.h19] }, // Steigenberger Nile Palace
++  11: { main: P.h8,  gallery: [P.h8,  P.h5,  P.h24, P.h30] }, // Pavillon Winter
++  12: { main: P.h12, gallery: [P.h12, P.h17, P.h21, P.h6]  }, // Sonesta St. George
+ 
+-  // ══════════════ ASWAN HOTELS ══════════════
+-  13: { // Sofitel Legend Old Cataract
+-    main: u("photo-1540541338287-41700207dee6"),
+-    gallery: [
+-      u("photo-1540541338287-41700207dee6"),
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-      u("photo-1584132967334-10e028bd69f7"),
+-      u("photo-1596701062351-8ac031b74976"),
+-    ],
+-  },
+-  14: { // Mövenpick Resort Aswan
+-    main: u("photo-1445019980597-93fa8acb246c"),
+-    gallery: [
+-      u("photo-1445019980597-93fa8acb246c"),
+-      u("photo-1455587734955-081b22074882"),
+-      u("photo-1618773928121-c32242e63f39"),
+-      u("photo-1587985064135-0366536eab42"),
+-    ],
+-  },
+-  15: { // Tolip Aswan Hotel
+-    main: u("photo-1564501049412-61c2a3083791"),
+-    gallery: [
+-      u("photo-1564501049412-61c2a3083791"),
+-      u("photo-1638297584384-c23e27b3e57c"),
+-      u("photo-1529290130-4ca3753253ae"),
+-      u("photo-1560185127-6ed189bf02f4"),
+-    ],
+-  },
+-  16: { // Citymax Hotel Aswan
+-    main: u("photo-1549294413-26f195200c16"),
+-    gallery: [
+-      u("photo-1549294413-26f195200c16"),
+-      u("photo-1444201983204-c43cbd584d93"),
+-      u("photo-1506974210756-8e1b8985d348"),
+-      u("photo-1613395877344-13d4a8e0d49e"),
+-    ],
+-  },
+-  17: { // Basma Hotel Aswan
+-    main: u("photo-1590490360182-c33d57733427"),
+-    gallery: [
+-      u("photo-1590490360182-c33d57733427"),
+-      u("photo-1582719478250-c89cae4dc85b"),
+-      u("photo-1540541338287-41700207dee6"),
+-      u("photo-1520250497591-112f2f40a3f4"),
+-    ],
+-  },
+-  18: { // Pyramisa Island Hotel Aswan
+-    main: u("photo-1615460549969-36fa19521a4f"),
+-    gallery: [
+-      u("photo-1615460549969-36fa19521a4f"),
+-      u("photo-1445019980597-93fa8acb246c"),
+-      u("photo-1564501049412-61c2a3083791"),
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-    ],
+-  },
++  // ══════════ ASWAN ══════════
++  13: { main: P.h22, gallery: [P.h22, P.h28, P.h25, P.h26] }, // Sofitel Old Cataract
++  14: { main: P.h7,  gallery: [P.h7,  P.h10, P.h27, P.h15] }, // Mövenpick Aswan
++  15: { main: P.h23, gallery: [P.h23, P.h16, P.h4,  P.h29] }, // Tolip Aswan
++  16: { main: P.h19, gallery: [P.h19, P.h18, P.h8,  P.h24] }, // Citymax Aswan
++  17: { main: P.h30, gallery: [P.h30, P.h12, P.h22, P.h19] }, // Basma Aswan
++  18: { main: P.h2,  gallery: [P.h2,  P.h7,  P.h23, P.h28] }, // Pyramisa Island
+ 
+-  // ══════════════ SHARM EL-SHEIKH HOTELS ══════════════
+-  19: { // Rixos Premium Seagate
+-    main: u("photo-1510414842594-a61c69b5ae57"),
+-    gallery: [
+-      u("photo-1510414842594-a61c69b5ae57"),
+-      u("photo-1596701062351-8ac031b74976"),
+-      u("photo-1549294413-26f195200c16"),
+-      u("photo-1584132967334-10e028bd69f7"),
+-    ],
+-  },
+-  20: { // Four Seasons Resort Sharm El Sheikh
+-    main: u("photo-1499793983690-e29da59ef1c2"),
+-    gallery: [
+-      u("photo-1499793983690-e29da59ef1c2"),
+-      u("photo-1590490360182-c33d57733427"),
+-      u("photo-1638297584384-c23e27b3e57c"),
+-      u("photo-1587985064135-0366536eab42"),
+-    ],
+-  },
+-  21: { // Sunrise Arabian Beach Resort
+-    main: u("photo-1551918120-9739cb430c6d"),
+-    gallery: [
+-      u("photo-1551918120-9739cb430c6d"),
+-      u("photo-1615460549969-36fa19521a4f"),
+-      u("photo-1529290130-4ca3753253ae"),
+-      u("photo-1560185127-6ed189bf02f4"),
+-    ],
+-  },
+-  22: { // Steigenberger Alcazar
+-    main: u("photo-1571896349842-33c89424de2d"),
+-    gallery: [
+-      u("photo-1571896349842-33c89424de2d"),
+-      u("photo-1510414842594-a61c69b5ae57"),
+-      u("photo-1444201983204-c43cbd584d93"),
+-      u("photo-1611892440504-42a792e24d32"),
+-    ],
+-  },
+-  23: { // Mövenpick Resort Sharm
+-    main: u("photo-1520250497591-112f2f40a3f4"),
+-    gallery: [
+-      u("photo-1520250497591-112f2f40a3f4"),
+-      u("photo-1499793983690-e29da59ef1c2"),
+-      u("photo-1551918120-9739cb430c6d"),
+-      u("photo-1613395877344-13d4a8e0d49e"),
+-    ],
+-  },
+-  24: { // Stella Di Mare Beach Hotel
+-    main: u("photo-1504701954957-2010ec3bcec1"),
+-    gallery: [
+-      u("photo-1504701954957-2010ec3bcec1"),
+-      u("photo-1571896349842-33c89424de2d"),
+-      u("photo-1590490360182-c33d57733427"),
+-      u("photo-1596701062351-8ac031b74976"),
+-    ],
+-  },
++  // ══════════ SHARM EL-SHEIKH ══════════
++  19: { main: P.h14, gallery: [P.h14, P.h26, P.h25, P.h17] }, // Rixos Premium
++  20: { main: P.h20, gallery: [P.h20, P.h30, P.h16, P.h15] }, // Four Seasons Sharm
++  21: { main: P.h13, gallery: [P.h13, P.h2,  P.h4,  P.h29] }, // Sunrise Arabian
++  22: { main: P.h12, gallery: [P.h12, P.h14, P.h18, P.h5]  }, // Steigenberger Alcazar
++  23: { main: P.h19, gallery: [P.h19, P.h20, P.h21, P.h24] }, // Mövenpick Sharm
++  24: { main: P.h15, gallery: [P.h15, P.h12, P.h30, P.h26] }, // Stella Di Mare
+ 
+-  // ══════════════ HURGHADA HOTELS ══════════════
+-  25: { // Steigenberger ALDAU Beach Hotel
+-    main: u("photo-1469796466635-455ede028aca"),
+-    gallery: [
+-      u("photo-1469796466635-455ede028aca"),
+-      u("photo-1504701954957-2010ec3bcec1"),
+-      u("photo-1638297584384-c23e27b3e57c"),
+-      u("photo-1455587734955-081b22074882"),
+-    ],
+-  },
+-  26: { // Sunrise Royal Makadi Resort
+-    main: u("photo-1582719508461-905c673771fd"),
+-    gallery: [
+-      u("photo-1582719508461-905c673771fd"),
+-      u("photo-1469796466635-455ede028aca"),
+-      u("photo-1549294413-26f195200c16"),
+-      u("photo-1560185127-6ed189bf02f4"),
+-    ],
+-  },
+-  27: { // Jaz Makadi Star & Spa
+-    main: u("photo-1618773928121-c32242e63f39"),
+-    gallery: [
+-      u("photo-1618773928121-c32242e63f39"),
+-      u("photo-1571896349842-33c89424de2d"),
+-      u("photo-1564501049412-61c2a3083791"),
+-      u("photo-1615460549969-36fa19521a4f"),
+-    ],
+-  },
+-  28: { // Baron Palace Sahl Hasheesh
+-    main: u("photo-1568495248636-6432b97bd949", 1200),
+-    gallery: [
+-      u("photo-1568495248636-6432b97bd949"),
+-      u("photo-1469796466635-455ede028aca"),
+-      u("photo-1504701954957-2010ec3bcec1"),
+-      u("photo-1590490360182-c33d57733427"),
+-    ],
+-  },
+-  29: { // Titanic Palace
+-    main: u("photo-1566073771259-6a8506099945"),
+-    gallery: [
+-      u("photo-1566073771259-6a8506099945"),
+-      u("photo-1582719478250-c89cae4dc85b"),
+-      u("photo-1540541338287-41700207dee6"),
+-      u("photo-1529290130-4ca3753253ae"),
+-    ],
+-  },
+-  30: { // Desert Rose Resort
+-    main: u("photo-1602002418082-a4443e081dd1"),
+-    gallery: [
+-      u("photo-1602002418082-a4443e081dd1"),
+-      u("photo-1566073771259-6a8506099945"),
+-      u("photo-1444201983204-c43cbd584d93"),
+-      u("photo-1560185127-6ed189bf02f4"),
+-    ],
+-  },
++  // ══════════ HURGHADA ══════════
++  25: { main: P.h13, gallery: [P.h13, P.h15, P.h16, P.h10] }, // Steigenberger ALDAU
++  26: { main: P.h11, gallery: [P.h11, P.h13, P.h4,  P.h29] }, // Sunrise Makadi
++  27: { main: P.h27, gallery: [P.h27, P.h12, P.h23, P.h2]  }, // Jaz Makadi Star
++  28: { main: P.h17, gallery: [P.h17, P.h13, P.h15, P.h30] }, // Baron Palace
++  29: { main: P.h2,  gallery: [P.h2,  P.h16, P.h22, P.h4]  }, // Titanic Palace
++  30: { main: P.h9,  gallery: [P.h9,  P.h2,  P.h18, P.h29] }, // Desert Rose
+ 
+-  // ══════════════ ALEXANDRIA HOTELS ══════════════
+-  31: { // Four Seasons San Stefano
+-    main: u("photo-1596178060671-7a80dc8059ea"),
+-    gallery: [
+-      u("photo-1596178060671-7a80dc8059ea"),
+-      u("photo-1602002418082-a4443e081dd1"),
+-      u("photo-1596701062351-8ac031b74976"),
+-      u("photo-1584132967334-10e028bd69f7"),
+-    ],
+-  },
+-  32: { // Steigenberger Cecil Hotel
+-    main: u("photo-1600011689032-8b628b8a8747"),
+-    gallery: [
+-      u("photo-1600011689032-8b628b8a8747"),
+-      u("photo-1596178060671-7a80dc8059ea"),
+-      u("photo-1578683010236-d716f9a3f461"),
+-      u("photo-1613395877344-13d4a8e0d49e"),
+-    ],
+-  },
+-  33: { // Helnan Palestine Hotel
+-    main: u("photo-1625244724120-1fd1d34d00f6"),
+-    gallery: [
+-      u("photo-1625244724120-1fd1d34d00f6"),
+-      u("photo-1600011689032-8b628b8a8747"),
+-      u("photo-1590490359683-658d3d23f972"),
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-    ],
+-  },
+-  34: { // Tolip Hotel Alexandria
+-    main: u("photo-1559508551-44bff1de756b"),
+-    gallery: [
+-      u("photo-1559508551-44bff1de756b"),
+-      u("photo-1625244724120-1fd1d34d00f6"),
+-      u("photo-1445019980597-93fa8acb246c"),
+-      u("photo-1587985064135-0366536eab42"),
+-    ],
+-  },
+-  35: { // Hilton Alexandria Corniche
+-    main: u("photo-1571003123894-1f0594d2b5d9", 1200),
+-    gallery: [
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-      u("photo-1559508551-44bff1de756b"),
+-      u("photo-1638297584384-c23e27b3e57c"),
+-      u("photo-1568495248636-6432b97bd949"),
+-    ],
+-  },
+-  36: { // Paradise Inn Le Metropole
+-    main: u("photo-1578683010236-d716f9a3f461"),
+-    gallery: [
+-      u("photo-1578683010236-d716f9a3f461"),
+-      u("photo-1596178060671-7a80dc8059ea"),
+-      u("photo-1564501049412-61c2a3083791"),
+-      u("photo-1529290130-4ca3753253ae"),
+-    ],
+-  },
++  // ══════════ ALEXANDRIA ══════════
++  31: { main: P.h26, gallery: [P.h26, P.h9,  P.h6,  P.h25] }, // Four Seasons San Stefano
++  32: { main: P.h6,  gallery: [P.h6,  P.h26, P.h30, P.h24] }, // Steigenberger Cecil
++  33: { main: P.h25, gallery: [P.h25, P.h6,  P.h6,  P.h28] }, // Helnan Palestine
++  34: { main: P.h1,  gallery: [P.h1,  P.h25, P.h7,  P.h15] }, // Tolip Alexandria
++  35: { main: P.h28, gallery: [P.h28, P.h1,  P.h16, P.h17] }, // Hilton Alexandria
++  36: { main: P.h30, gallery: [P.h30, P.h26, P.h23, P.h4]  }, // Paradise Inn Metropole
+ 
+-  // ══════════════ GIZA / PYRAMIDS AREA HOTELS ══════════════
+-  37: { // Marriott Mena House
+-    main: u("photo-1539037116277-4db20889f2d4"),
+-    gallery: [
+-      u("photo-1539037116277-4db20889f2d4"),
+-      u("photo-1559508551-44bff1de756b"),
+-      u("photo-1625244724120-1fd1d34d00f6"),
+-      u("photo-1611892440504-42a792e24d32"),
+-    ],
+-  },
+-  38: { // Le Méridien Pyramids Hotel
+-    main: u("photo-1502672260266-1c1ef2d93688"),
+-    gallery: [
+-      u("photo-1502672260266-1c1ef2d93688"),
+-      u("photo-1539037116277-4db20889f2d4"),
+-      u("photo-1590490360182-c33d57733427"),
+-      u("photo-1582719478250-c89cae4dc85b"),
+-    ],
+-  },
+-  39: { // Steigenberger Pyramids Cairo
+-    main: u("photo-1496417263034-38ec4f0b665a"),
+-    gallery: [
+-      u("photo-1496417263034-38ec4f0b665a"),
+-      u("photo-1502672260266-1c1ef2d93688"),
+-      u("photo-1540541338287-41700207dee6"),
+-      u("photo-1600011689032-8b628b8a8747"),
+-    ],
+-  },
+-  40: { // Triumph Luxury Hotel
+-    main: u("photo-1551882547-ff40c63fe2e2", 1200),
+-    gallery: [
+-      u("photo-1551882547-ff40c63fe2e2"),
+-      u("photo-1496417263034-38ec4f0b665a"),
+-      u("photo-1602002418082-a4443e081dd1"),
+-      u("photo-1596178060671-7a80dc8059ea"),
+-    ],
+-  },
+-  41: { // Oasis Hotel Pyramids
+-    main: u("photo-1508614589041-895b88991e3e"),
+-    gallery: [
+-      u("photo-1508614589041-895b88991e3e"),
+-      u("photo-1539037116277-4db20889f2d4"),
+-      u("photo-1602002418082-a4443e081dd1"),
+-      u("photo-1571896349842-33c89424de2d"),
+-    ],
+-  },
+-  42: { // Grand Pyramids Hotel
+-    main: u("photo-1542314831-068cd1dbfeeb", 1200),
+-    gallery: [
+-      u("photo-1542314831-068cd1dbfeeb"),
+-      u("photo-1508614589041-895b88991e3e"),
+-      u("photo-1502672260266-1c1ef2d93688"),
+-      u("photo-1615460549969-36fa19521a4f"),
+-    ],
+-  },
++  // ══════════ GIZA / PYRAMIDS ══════════
++  37: { main: P.h4,  gallery: [P.h4,  P.h1,  P.h25, P.h5]  }, // Marriott Mena House
++  38: { main: P.h15, gallery: [P.h15, P.h4,  P.h30, P.h16] }, // Le Méridien Pyramids
++  39: { main: P.h9,  gallery: [P.h9,  P.h15, P.h22, P.h6]  }, // Steigenberger Pyramids
++  40: { main: P.h3,  gallery: [P.h3,  P.h9,  P.h9,  P.h26] }, // Triumph Luxury
++  41: { main: P.h2,  gallery: [P.h2,  P.h4,  P.h9,  P.h12] }, // Oasis Pyramids
++  42: { main: P.h1,  gallery: [P.h1,  P.h2,  P.h15, P.h2]  }, // Grand Pyramids
+ 
+-  // ══════════════ MARSA MATROUH HOTELS ══════════════
+-  43: { // Jaz Almaza Beach Resort
+-    main: u("photo-1520250497591-112f2f40a3f4", 1200),
+-    gallery: [
+-      u("photo-1520250497591-112f2f40a3f4"),
+-      u("photo-1496417263034-38ec4f0b665a"),
+-      u("photo-1559508551-44bff1de756b"),
+-      u("photo-1538689621163-a4032bf5cfa3"),
+-    ],
+-  },
+-  44: { // Carols Beau Rivage Hotel
+-    main: u("photo-1538689621163-a4032bf5cfa3"),
+-    gallery: [
+-      u("photo-1538689621163-a4032bf5cfa3"),
+-      u("photo-1504701954957-2010ec3bcec1"),
+-      u("photo-1508614589041-895b88991e3e"),
+-      u("photo-1469796466635-455ede028aca"),
+-    ],
+-  },
+-  45: { // Beau Site Belle Vue
+-    main: u("photo-1499793983690-e29da59ef1c2", 1200),
+-    gallery: [
+-      u("photo-1499793983690-e29da59ef1c2"),
+-      u("photo-1538689621163-a4032bf5cfa3"),
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-      u("photo-1596178060671-7a80dc8059ea"),
+-    ],
+-  },
+-  46: { // Porto Matrouh Beach Resort
+-    main: u("photo-1551918120-9739cb430c6d", 1200),
+-    gallery: [
+-      u("photo-1551918120-9739cb430c6d"),
+-      u("photo-1499793983690-e29da59ef1c2"),
+-      u("photo-1638297584384-c23e27b3e57c"),
+-      u("photo-1600011689032-8b628b8a8747"),
+-    ],
+-  },
+-  47: { // Adriatica Hotel
+-    main: u("photo-1613395877344-13d4a8e0d49e", 1200),
+-    gallery: [
+-      u("photo-1613395877344-13d4a8e0d49e"),
+-      u("photo-1551918120-9739cb430c6d"),
+-      u("photo-1444201983204-c43cbd584d93"),
+-      u("photo-1445019980597-93fa8acb246c"),
+-    ],
+-  },
+-  48: { // Negresco Hotel
+-    main: u("photo-1596701062351-8ac031b74976", 1200),
+-    gallery: [
+-      u("photo-1596701062351-8ac031b74976"),
+-      u("photo-1613395877344-13d4a8e0d49e"),
+-      u("photo-1540541338287-41700207dee6"),
+-      u("photo-1582719478250-c89cae4dc85b"),
+-    ],
+-  },
++  // ══════════ MARSA MATROUH ══════════
++  43: { main: P.h20, gallery: [P.h20, P.h9,  P.h1,  P.h7]  }, // Jaz Almaza Beach
++  44: { main: P.h7,  gallery: [P.h7,  P.h15, P.h2,  P.h13] }, // Carols Beau Rivage
++  45: { main: P.h20, gallery: [P.h20, P.h7,  P.h28, P.h26] }, // Beau Site Belle Vue
++  46: { main: P.h21, gallery: [P.h21, P.h20, P.h16, P.h6]  }, // Porto Matrouh
++  47: { main: P.h24, gallery: [P.h24, P.h21, P.h18, P.h7]  }, // Adriatica Hotel
++  48: { main: P.h26, gallery: [P.h26, P.h24, P.h22, P.h16] }, // Negresco Hotel
+ 
+-  // ══════════════ PORT SAID HOTELS ══════════════
+-  49: { // Resta Port Said Hotel
+-    main: u("photo-1584132967334-10e028bd69f7", 1200),
+-    gallery: [
+-      u("photo-1584132967334-10e028bd69f7"),
+-      u("photo-1596701062351-8ac031b74976"),
+-      u("photo-1508614589041-895b88991e3e"),
+-      u("photo-1571896349842-33c89424de2d"),
+-    ],
+-  },
+-  50: { // Port Said Hotel
+-    main: u("photo-1564501049412-61c2a3083791", 1200),
+-    gallery: [
+-      u("photo-1564501049412-61c2a3083791"),
+-      u("photo-1584132967334-10e028bd69f7"),
+-      u("photo-1538689621163-a4032bf5cfa3"),
+-      u("photo-1502672260266-1c1ef2d93688"),
+-    ],
+-  },
+-  51: { // Jewel Port Said Hotel
+-    main: u("photo-1587985064135-0366536eab42", 1200),
+-    gallery: [
+-      u("photo-1587985064135-0366536eab42"),
+-      u("photo-1564501049412-61c2a3083791"),
+-      u("photo-1539037116277-4db20889f2d4"),
+-      u("photo-1568495248636-6432b97bd949"),
+-    ],
+-  },
+-  52: { // Grand Hotel Port Said
+-    main: u("photo-1618773928121-c32242e63f39", 1200),
+-    gallery: [
+-      u("photo-1618773928121-c32242e63f39"),
+-      u("photo-1587985064135-0366536eab42"),
+-      u("photo-1496417263034-38ec4f0b665a"),
+-      u("photo-1625244724120-1fd1d34d00f6"),
+-    ],
+-  },
+-  53: { // Palace Hotel Port Said
+-    main: u("photo-1560185127-6ed189bf02f4", 1200),
+-    gallery: [
+-      u("photo-1560185127-6ed189bf02f4"),
+-      u("photo-1618773928121-c32242e63f39"),
+-      u("photo-1590490359683-658d3d23f972"),
+-      u("photo-1559508551-44bff1de756b"),
+-    ],
+-  },
++  // ══════════ PORT SAID ══════════
++  49: { main: P.h25, gallery: [P.h25, P.h26, P.h2,  P.h12] }, // Resta Port Said
++  50: { main: P.h23, gallery: [P.h23, P.h25, P.h7,  P.h15] }, // Port Said Hotel
++  51: { main: P.h5,  gallery: [P.h5,  P.h23, P.h4,  P.h17] }, // Jewel Port Said
++  52: { main: P.h27, gallery: [P.h27, P.h5,  P.h9,  P.h25] }, // Grand Hotel Port Said
++  53: { main: P.h29, gallery: [P.h29, P.h27, P.h6,  P.h1]  }, // Palace Hotel Port Said
+ 
+-  // ══════════════ FAYOUM HOTELS ══════════════
+-  54: { // Noras Village
+-    main: u("photo-1602002418082-a4443e081dd1", 1200),
+-    gallery: [
+-      u("photo-1602002418082-a4443e081dd1"),
+-      u("photo-1560185127-6ed189bf02f4"),
+-      u("photo-1455587734955-081b22074882"),
+-      u("photo-1444201983204-c43cbd584d93"),
+-    ],
+-  },
+-  55: { // Lazib Inn Resort & Spa
+-    main: u("photo-1506974210756-8e1b8985d348", 1200),
+-    gallery: [
+-      u("photo-1506974210756-8e1b8985d348"),
+-      u("photo-1602002418082-a4443e081dd1"),
+-      u("photo-1615460549969-36fa19521a4f"),
+-      u("photo-1529290130-4ca3753253ae"),
+-    ],
+-  },
+-  56: { // Byoum Lakeside Hotel
+-    main: u("photo-1445019980597-93fa8acb246c", 1200),
+-    gallery: [
+-      u("photo-1445019980597-93fa8acb246c"),
+-      u("photo-1506974210756-8e1b8985d348"),
+-      u("photo-1582719508461-905c673771fd"),
+-      u("photo-1596178060671-7a80dc8059ea"),
+-    ],
+-  },
+-  57: { // Helnan Auberge Fayoum
+-    main: u("photo-1571003123894-1f0594d2b5d9", 1200),
+-    gallery: [
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-      u("photo-1445019980597-93fa8acb246c"),
+-      u("photo-1600011689032-8b628b8a8747"),
+-      u("photo-1540541338287-41700207dee6"),
+-    ],
+-  },
+-  58: { // Tunis Village Resort
+-    main: u("photo-1520250497591-112f2f40a3f4"),
+-    gallery: [
+-      u("photo-1520250497591-112f2f40a3f4"),
+-      u("photo-1571003123894-1f0594d2b5d9"),
+-      u("photo-1539037116277-4db20889f2d4"),
+-      u("photo-1584132967334-10e028bd69f7"),
+-    ],
+-  },
+-  59: { // Tzila Lodge
+-    main: u("photo-1455587734955-081b22074882", 1200),
+-    gallery: [
+-      u("photo-1455587734955-081b22074882"),
+-      u("photo-1520250497591-112f2f40a3f4"),
+-      u("photo-1638297584384-c23e27b3e57c"),
+-      u("photo-1564501049412-61c2a3083791"),
+-    ],
+-  },
+-  60: { // Zad Al Mosafer Guest House
+-    main: u("photo-1508614589041-895b88991e3e", 1200),
+-    gallery: [
+-      u("photo-1508614589041-895b88991e3e"),
+-      u("photo-1455587734955-081b22074882"),
+-      u("photo-1587985064135-0366536eab42"),
+-      u("photo-1502672260266-1c1ef2d93688"),
+-    ],
+-  },
++  // ══════════ FAYOUM ══════════
++  54: { main: P.h9,  gallery: [P.h9,  P.h29, P.h10, P.h18] }, // Noras Village
++  55: { main: P.h8,  gallery: [P.h8,  P.h9,  P.h2,  P.h4]  }, // Lazib Inn
++  56: { main: P.h7,  gallery: [P.h7,  P.h8,  P.h11, P.h26] }, // Byoum Lakeside
++  57: { main: P.h28, gallery: [P.h28, P.h7,  P.h6,  P.h22] }, // Helnan Auberge
++  58: { main: P.h19, gallery: [P.h19, P.h28, P.h4,  P.h25] }, // Tunis Village
++  59: { main: P.h10, gallery: [P.h10, P.h19, P.h16, P.h23] }, // Tzila Lodge
++  60: { main: P.h2,  gallery: [P.h2,  P.h10, P.h5,  P.h15] }, // Zad Al Mosafer
+ };
+ 
+-/**
+- * Get main image for a hotel. Falls back to a themed image if ID not in map.
+- */
+ export const getHotelMainImage = (hotelId: number): string => {
+-  if (HOTEL_IMAGES[hotelId]) return HOTEL_IMAGES[hotelId].main;
+-  // Fallback based on ID mod so we always get different images
+-  const fallbacks = [
+-    u("photo-1542314831-068cd1dbfeeb"),
+-    u("photo-1566073771259-6a8506099945"),
+-    u("photo-1551882547-ff40c63fe2e2"),
+-    u("photo-1529290130-4ca3753253ae"),
+-    u("photo-1611892440504-42a792e24d32"),
+-    u("photo-1613395877344-13d4a8e0d49e"),
+-    u("photo-1540541338287-41700207dee6"),
+-    u("photo-1564501049412-61c2a3083791"),
+-  ];
+-  return fallbacks[hotelId % fallbacks.length];
++  return HOTEL_IMAGES[hotelId]?.main ?? P.h1;
+ };
+ 
+-/**
+- * Get gallery images for a hotel's detail page.
+- */
+ export const getHotelGallery = (hotelId: number): string[] => {
+-  if (HOTEL_IMAGES[hotelId]) return HOTEL_IMAGES[hotelId].gallery;
+-  return [getHotelMainImage(hotelId)];
++  return HOTEL_IMAGES[hotelId]?.gallery ?? [P.h1, P.h2, P.h3, P.h4];
+ };
+
+commit 3667681be802a314991effbf18f5d8ff2206a6ea
+Author: dina-abdelbaset <dinaabdelbaset08@gmail.com>
+Date:   Sun Apr 5 13:37:04 2026 +0200
+
+    feat: unique curated images for all 60 hotels + gallery per hotel
+
+diff --git a/src/data/hotelImages.ts b/src/data/hotelImages.ts
+new file mode 100644
+index 0000000..8d48dc2
+--- /dev/null
++++ b/src/data/hotelImages.ts
+@@ -0,0 +1,602 @@
++/**
++ * Curated unique Unsplash image galleries for each hotel.
++ * Each hotel gets a main image + 4 gallery images that match its style/location.
++ */
++
++export interface HotelImageSet {
++  main: string;
++  gallery: string[];
++}
++
++// Base Unsplash URL builder
++const u = (id: string, w = 800) =>
++  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
++
++export const HOTEL_IMAGES: Record<number, HotelImageSet> = {
++  // ══════════════ CAIRO HOTELS ══════════════
++  1: { // The Nile Ritz-Carlton
++    main: u("photo-1551882547-ff40c63fe2e2"),
++    gallery: [
++      u("photo-1551882547-ff40c63fe2e2"),
++      u("photo-1590490359683-658d3d23f972"),
++      u("photo-1631049307264-da0ec9d70304"),
++      u("photo-1578683010236-d716f9a3f461"),
++    ],
++  },
++  2: { // Cairo Marriott Hotel & Omar Khayyam
++    main: u("photo-1542314831-068cd1dbfeeb"),
++    gallery: [
++      u("photo-1542314831-068cd1dbfeeb"),
++      u("photo-1566073771259-6a8506099945"),
++      u("photo-1582719508461-905c673771fd"),
++      u("photo-1520250497591-112f2f40a3f4"),
++    ],
++  },
++  3: { // Four Seasons Hotel Cairo at Nile Plaza
++    main: u("photo-1611892440504-42a792e24d32"),
++    gallery: [
++      u("photo-1611892440504-42a792e24d32"),
++      u("photo-1596701062351-8ac031b74976"),
++      u("photo-1584132967334-10e028bd69f7"),
++      u("photo-1618773928121-c32242e63f39"),
++    ],
++  },
++  4: { // Kempinski Nile Hotel
++    main: u("photo-1529290130-4ca3753253ae"),
++    gallery: [
++      u("photo-1529290130-4ca3753253ae"),
++      u("photo-1571003123894-1f0594d2b5d9"),
++      u("photo-1587985064135-0366536eab42"),
++      u("photo-1560185127-6ed189bf02f4"),
++    ],
++  },
++  5: { // Om Kolthoom Hotel
++    main: u("photo-1444201983204-c43cbd584d93"),
++    gallery: [
++      u("photo-1444201983204-c43cbd584d93"),
++      u("photo-1520250497591-112f2f40a3f4"),
++      u("photo-1578683010236-d716f9a3f461"),
++      u("photo-1582719508461-905c673771fd"),
++    ],
++  },
++  6: { // Fairmont Nile City
++    main: u("photo-1613395877344-13d4a8e0d49e"),
++    gallery: [
++      u("photo-1613395877344-13d4a8e0d49e"),
++      u("photo-1551882547-ff40c63fe2e2"),
++      u("photo-1590490359683-658d3d23f972"),
++      u("photo-1631049307264-da0ec9d70304"),
++    ],
++  },
++
++  // ══════════════ LUXOR HOTELS ══════════════
++  7: { // Sofitel Winter Palace Luxor
++    main: u("photo-1568495248636-6432b97bd949"),
++    gallery: [
++      u("photo-1568495248636-6432b97bd949"),
++      u("photo-1590490359683-658d3d23f972"),
++      u("photo-1584132967334-10e028bd69f7"),
++      u("photo-1566073771259-6a8506099945"),
++    ],
++  },
++  8: { // Hilton Luxor Resort & Spa
++    main: u("photo-1601918774516-1de95d9843a0"),
++    gallery: [
++      u("photo-1601918774516-1de95d9843a0"),
++      u("photo-1571003123894-1f0594d2b5d9"),
++      u("photo-1596701062351-8ac031b74976"),
++      u("photo-1618773928121-c32242e63f39"),
++    ],
++  },
++  9: { // Jolie Ville Hotel & Spa
++    main: u("photo-1455587734955-081b22074882"),
++    gallery: [
++      u("photo-1455587734955-081b22074882"),
++      u("photo-1582719508461-905c673771fd"),
++      u("photo-1560185127-6ed189bf02f4"),
++      u("photo-1587985064135-0366536eab42"),
++    ],
++  },
++  10: { // Steigenberger Nile Palace
++    main: u("photo-1638297584384-c23e27b3e57c"),
++    gallery: [
++      u("photo-1638297584384-c23e27b3e57c"),
++      u("photo-1529290130-4ca3753253ae"),
++      u("photo-1444201983204-c43cbd584d93"),
++      u("photo-1520250497591-112f2f40a3f4"),
++    ],
++  },
++  11: { // Pavillon Winter Luxor
++    main: u("photo-1506974210756-8e1b8985d348"),
++    gallery: [
++      u("photo-1506974210756-8e1b8985d348"),
++      u("photo-1611892440504-42a792e24d32"),
++      u("photo-1613395877344-13d4a8e0d49e"),
++      u("photo-1578683010236-d716f9a3f461"),
++    ],
++  },
++  12: { // Sonesta St. George Hotel
++    main: u("photo-1582719478250-c89cae4dc85b"),
++    gallery: [
++      u("photo-1582719478250-c89cae4dc85b"),
++      u("photo-1568495248636-6432b97bd949"),
++      u("photo-1601918774516-1de95d9843a0"),
++      u("photo-1590490359683-658d3d23f972"),
++    ],
++  },
++
++  // ══════════════ ASWAN HOTELS ══════════════
++  13: { // Sofitel Legend Old Cataract
++    main: u("photo-1540541338287-41700207dee6"),
++    gallery: [
++      u("photo-1540541338287-41700207dee6"),
++      u("photo-1571003123894-1f0594d2b5d9"),
++      u("photo-1584132967334-10e028bd69f7"),
++      u("photo-1596701062351-8ac031b74976"),
++    ],
++  },
++  14: { // Mövenpick Resort Aswan
++    main: u("photo-1445019980597-93fa8acb246c"),
++    gallery: [
++      u("photo-1445019980597-93fa8acb246c"),
++      u("photo-1455587734955-081b22074882"),
++      u("photo-1618773928121-c32242e63f39"),
++      u("photo-1587985064135-0366536eab42"),
++    ],
++  },
++  15: { // Tolip Aswan Hotel
++    main: u("photo-1564501049412-61c2a3083791"),
++    gallery: [
++      u("photo-1564501049412-61c2a3083791"),
++      u("photo-1638297584384-c23e27b3e57c"),
++      u("photo-1529290130-4ca3753253ae"),
++      u("photo-1560185127-6ed189bf02f4"),
++    ],
++  },
++  16: { // Citymax Hotel Aswan
++    main: u("photo-1549294413-26f195200c16"),
++    gallery: [
++      u("photo-1549294413-26f195200c16"),
++      u("photo-1444201983204-c43cbd584d93"),
++      u("photo-1506974210756-8e1b8985d348"),
++      u("photo-1613395877344-13d4a8e0d49e"),
++    ],
++  },
++  17: { // Basma Hotel Aswan
++    main: u("photo-1590490360182-c33d57733427"),
++    gallery: [
++      u("photo-1590490360182-c33d57733427"),
++      u("photo-1582719478250-c89cae4dc85b"),
++      u("photo-1540541338287-41700207dee6"),
++      u("photo-1520250497591-112f2f40a3f4"),
++    ],
++  },
++  18: { // Pyramisa Island Hotel Aswan
++    main: u("photo-1615460549969-36fa19521a4f"),
++    gallery: [
++      u("photo-1615460549969-36fa19521a4f"),
++      u("photo-1445019980597-93fa8acb246c"),
++      u("photo-1564501049412-61c2a3083791"),
++      u("photo-1571003123894-1f0594d2b5d9"),
++    ],
++  },
++
++  // ══════════════ SHARM EL-SHEIKH HOTELS ══════════════
++  19: { // Rixos Premium Seagate
++    main: u("photo-1510414842594-a61c69b5ae57"),
++    gallery: [
++      u("photo-1510414842594-a61c69b5ae57"),
++      u("photo-1596701062351-8ac031b74976"),
++      u("photo-1549294413-26f195200c16"),
++      u("photo-1584132967334-10e028bd69f7"),
++    ],
++  },
++  20: { // Four Seasons Resort Sharm El Sheikh
++    main: u("photo-1499793983690-e29da59ef1c2"),
++    gallery: [
++      u("photo-1499793983690-e29da59ef1c2"),
++      u("photo-1590490360182-c33d57733427"),
++      u("photo-1638297584384-c23e27b3e57c"),
++      u("photo-1587985064135-0366536eab42"),
++    ],
++  },
++  21: { // Sunrise Arabian Beach Resort
++    main: u("photo-1551918120-9739cb430c6d"),
++    gallery: [
++      u("photo-1551918120-9739cb430c6d"),
++      u("photo-1615460549969-36fa19521a4f"),
++      u("photo-1529290130-4ca3753253ae"),
++      u("photo-1560185127-6ed189bf02f4"),
++    ],
++  },
++  22: { // Steigenberger Alcazar
++    main: u("photo-1571896349842-33c89424de2d"),
++    gallery: [
++      u("photo-1571896349842-33c89424de2d"),
++      u("photo-1510414842594-a61c69b5ae57"),
++      u("photo-1444201983204-c43cbd584d93"),
++      u("photo-1611892440504-42a792e24d32"),
++    ],
++  },
++  23: { // Mövenpick Resort Sharm
++    main: u("photo-1520250497591-112f2f40a3f4"),
++    gallery: [
++      u("photo-1520250497591-112f2f40a3f4"),
++      u("photo-1499793983690-e29da59ef1c2"),
++      u("photo-1551918120-9739cb430c6d"),
++      u("photo-1613395877344-13d4a8e0d49e"),
++    ],
++  },
++  24: { // Stella Di Mare Beach Hotel
++    main: u("photo-1504701954957-2010ec3bcec1"),
++    gallery: [
++      u("photo-1504701954957-2010ec3bcec1"),
++      u("photo-1571896349842-33c89424de2d"),
++      u("photo-1590490360182-c33d57733427"),
++      u("photo-1596701062351-8ac031b74976"),
++    ],
++  },
++
++  // ══════════════ HURGHADA HOTELS ══════════════
++  25: { // Steigenberger ALDAU Beach Hotel
++    main: u("photo-1469796466635-455ede028aca"),
++    gallery: [
++      u("photo-1469796466635-455ede028aca"),
++      u("photo-1504701954957-2010ec3bcec1"),
++      u("photo-1638297584384-c23e27b3e57c"),
++      u("photo-1455587734955-081b22074882"),
++    ],
++  },
++  26: { // Sunrise Royal Makadi Resort
++    main: u("photo-1582719508461-905c673771fd"),
++    gallery: [
++      u("photo-1582719508461-905c673771fd"),
++      u("photo-1469796466635-455ede028aca"),
++      u("photo-1549294413-26f195200c16"),
++      u("photo-1560185127-6ed189bf02f4"),
++    ],
++  },
++  27: { // Jaz Makadi Star & Spa
++    main: u("photo-1618773928121-c32242e63f39"),
++    gallery: [
++      u("photo-1618773928121-c32242e63f39"),
++      u("photo-1571896349842-33c89424de2d"),
++      u("photo-1564501049412-61c2a3083791"),
++      u("photo-1615460549969-36fa19521a4f"),
++    ],
++  },
++  28: { // Baron Palace Sahl Hasheesh
++    main: u("photo-1568495248636-6432b97bd949", 1200),
++    gallery: [
++      u("photo-1568495248636-6432b97bd949"),
++      u("photo-1469796466635-455ede028aca"),
++      u("photo-1504701954957-2010ec3bcec1"),
++      u("photo-1590490360182-c33d57733427"),
++    ],
++  },
++  29: { // Titanic Palace
++    main: u("photo-1566073771259-6a8506099945"),
++    gallery: [
++      u("photo-1566073771259-6a8506099945"),
++      u("photo-1582719478250-c89cae4dc85b"),
++      u("photo-1540541338287-41700207dee6"),
++      u("photo-1529290130-4ca3753253ae"),
++    ],
++  },
++  30: { // Desert Rose Resort
++    main: u("photo-1602002418082-a4443e081dd1"),
++    gallery: [
++      u("photo-1602002418082-a4443e081dd1"),
++      u("photo-1566073771259-6a8506099945"),
++      u("photo-1444201983204-c43cbd584d93"),
++      u("photo-1560185127-6ed189bf02f4"),
++    ],
++  },
++
++  // ══════════════ ALEXANDRIA HOTELS ══════════════
++  31: { // Four Seasons San Stefano
++    main: u("photo-1596178060671-7a80dc8059ea"),
++    gallery: [
++      u("photo-1596178060671-7a80dc8059ea"),
++      u("photo-1602002418082-a4443e081dd1"),
++      u("photo-1596701062351-8ac031b74976"),
++      u("photo-1584132967334-10e028bd69f7"),
++    ],
++  },
++  32: { // Steigenberger Cecil Hotel
++    main: u("photo-1600011689032-8b628b8a8747"),
++    gallery: [
++      u("photo-1600011689032-8b628b8a8747"),
++      u("photo-1596178060671-7a80dc8059ea"),
++      u("photo-1578683010236-d716f9a3f461"),
++      u("photo-1613395877344-13d4a8e0d49e"),
++    ],
++  },
++  33: { // Helnan Palestine Hotel
++    main: u("photo-1625244724120-1fd1d34d00f6"),
++    gallery: [
++      u("photo-1625244724120-1fd1d34d00f6"),
++      u("photo-1600011689032-8b628b8a8747"),
++      u("photo-1590490359683-658d3d23f972"),
++      u("photo-1571003123894-1f0594d2b5d9"),
++    ],
++  },
++  34: { // Tolip Hotel Alexandria
++    main: u("photo-1559508551-44bff1de756b"),
++    gallery: [
++      u("photo-1559508551-44bff1de756b"),
++      u("photo-1625244724120-1fd1d34d00f6"),
++      u("photo-1445019980597-93fa8acb246c"),
++      u("photo-1587985064135-0366536eab42"),
++    ],
++  },
++  35: { // Hilton Alexandria Corniche
++    main: u("photo-1571003123894-1f0594d2b5d9", 1200),
++    gallery: [
++      u("photo-1571003123894-1f0594d2b5d9"),
++      u("photo-1559508551-44bff1de756b"),
++      u("photo-1638297584384-c23e27b3e57c"),
++      u("photo-1568495248636-6432b97bd949"),
++    ],
++  },
++  36: { // Paradise Inn Le Metropole
++    main: u("photo-1578683010236-d716f9a3f461"),
++    gallery: [
++      u("photo-1578683010236-d716f9a3f461"),
++      u("photo-1596178060671-7a80dc8059ea"),
++      u("photo-1564501049412-61c2a3083791"),
++      u("photo-1529290130-4ca3753253ae"),
++    ],
++  },
++
++  // ══════════════ GIZA / PYRAMIDS AREA HOTELS ══════════════
++  37: { // Marriott Mena House
++    main: u("photo-1539037116277-4db20889f2d4"),
++    gallery: [
++      u("photo-1539037116277-4db20889f2d4"),
++      u("photo-1559508551-44bff1de756b"),
++      u("photo-1625244724120-1fd1d34d00f6"),
++      u("photo-1611892440504-42a792e24d32"),
++    ],
++  },
++  38: { // Le Méridien Pyramids Hotel
++    main: u("photo-1502672260266-1c1ef2d93688"),
++    gallery: [
++      u("photo-1502672260266-1c1ef2d93688"),
++      u("photo-1539037116277-4db20889f2d4"),
++      u("photo-1590490360182-c33d57733427"),
++      u("photo-1582719478250-c89cae4dc85b"),
++    ],
++  },
++  39: { // Steigenberger Pyramids Cairo
++    main: u("photo-1496417263034-38ec4f0b665a"),
++    gallery: [
++      u("photo-1496417263034-38ec4f0b665a"),
++      u("photo-1502672260266-1c1ef2d93688"),
++      u("photo-1540541338287-41700207dee6"),
++      u("photo-1600011689032-8b628b8a8747"),
++    ],
++  },
++  40: { // Triumph Luxury Hotel
++    main: u("photo-1551882547-ff40c63fe2e2", 1200),
++    gallery: [
++      u("photo-1551882547-ff40c63fe2e2"),
++      u("photo-1496417263034-38ec4f0b665a"),
++      u("photo-1602002418082-a4443e081dd1"),
++      u("photo-1596178060671-7a80dc8059ea"),
++    ],
++  },
++  41: { // Oasis Hotel Pyramids
++    main: u("photo-1508614589041-895b88991e3e"),
++    gallery: [
++      u("photo-1508614589041-895b88991e3e"),
++      u("photo-1539037116277-4db20889f2d4"),
++      u("photo-1602002418082-a4443e081dd1"),
++      u("photo-1571896349842-33c89424de2d"),
++    ],
++  },
++  42: { // Grand Pyramids Hotel
++    main: u("photo-1542314831-068cd1dbfeeb", 1200),
++    gallery: [
++      u("photo-1542314831-068cd1dbfeeb"),
++      u("photo-1508614589041-895b88991e3e"),
++      u("photo-1502672260266-1c1ef2d93688"),
++      u("photo-1615460549969-36fa19521a4f"),
++    ],
++  },
++
++  // ══════════════ MARSA MATROUH HOTELS ══════════════
++  43: { // Jaz Almaza Beach Resort
++    main: u("photo-1520250497591-112f2f40a3f4", 1200),
++    gallery: [
++      u("photo-1520250497591-112f2f40a3f4"),
++      u("photo-1496417263034-38ec4f0b665a"),
++      u("photo-1559508551-44bff1de756b"),
++      u("photo-1538689621163-a4032bf5cfa3"),
++    ],
++  },
++  44: { // Carols Beau Rivage Hotel
++    main: u("photo-1538689621163-a4032bf5cfa3"),
++    gallery: [
++      u("photo-1538689621163-a4032bf5cfa3"),
++      u("photo-1504701954957-2010ec3bcec1"),
++      u("photo-1508614589041-895b88991e3e"),
++      u("photo-1469796466635-455ede028aca"),
++    ],
++  },
++  45: { // Beau Site Belle Vue
++    main: u("photo-1499793983690-e29da59ef1c2", 1200),
++    gallery: [
++      u("photo-1499793983690-e29da59ef1c2"),
++      u("photo-1538689621163-a4032bf5cfa3"),
++      u("photo-1571003123894-1f0594d2b5d9"),
++      u("photo-1596178060671-7a80dc8059ea"),
++    ],
++  },
++  46: { // Porto Matrouh Beach Resort
++    main: u("photo-1551918120-9739cb430c6d", 1200),
++    gallery: [
++      u("photo-1551918120-9739cb430c6d"),
++      u("photo-1499793983690-e29da59ef1c2"),
++      u("photo-1638297584384-c23e27b3e57c"),
++      u("photo-1600011689032-8b628b8a8747"),
++    ],
++  },
++  47: { // Adriatica Hotel
++    main: u("photo-1613395877344-13d4a8e0d49e", 1200),
++    gallery: [
++      u("photo-1613395877344-13d4a8e0d49e"),
++      u("photo-1551918120-9739cb430c6d"),
++      u("photo-1444201983204-c43cbd584d93"),
++      u("photo-1445019980597-93fa8acb246c"),
++    ],
++  },
++  48: { // Negresco Hotel
++    main: u("photo-1596701062351-8ac031b74976", 1200),
++    gallery: [
++      u("photo-1596701062351-8ac031b74976"),
++      u("photo-1613395877344-13d4a8e0d49e"),
++      u("photo-1540541338287-41700207dee6"),
++      u("photo-1582719478250-c89cae4dc85b"),
++    ],
++  },
++
++  // ══════════════ PORT SAID HOTELS ══════════════
++  49: { // Resta Port Said Hotel
++    main: u("photo-1584132967334-10e028bd69f7", 1200),
++    gallery: [
++      u("photo-1584132967334-10e028bd69f7"),
++      u("photo-1596701062351-8ac031b74976"),
++      u("photo-1508614589041-895b88991e3e"),
++      u("photo-1571896349842-33c89424de2d"),
++    ],
++  },
++  50: { // Port Said Hotel
++    main: u("photo-1564501049412-61c2a3083791", 1200),
++    gallery: [
++      u("photo-1564501049412-61c2a3083791"),
++      u("photo-1584132967334-10e028bd69f7"),
++      u("photo-1538689621163-a4032bf5cfa3"),
++      u("photo-1502672260266-1c1ef2d93688"),
++    ],
++  },
++  51: { // Jewel Port Said Hotel
++    main: u("photo-1587985064135-0366536eab42", 1200),
++    gallery: [
++      u("photo-1587985064135-0366536eab42"),
++      u("photo-1564501049412-61c2a3083791"),
++      u("photo-1539037116277-4db20889f2d4"),
++      u("photo-1568495248636-6432b97bd949"),
++    ],
++  },
++  52: { // Grand Hotel Port Said
++    main: u("photo-1618773928121-c32242e63f39", 1200),
++    gallery: [
++      u("photo-1618773928121-c32242e63f39"),
++      u("photo-1587985064135-0366536eab42"),
++      u("photo-1496417263034-38ec4f0b665a"),
++      u("photo-1625244724120-1fd1d34d00f6"),
++    ],
++  },
++  53: { // Palace Hotel Port Said
++    main: u("photo-1560185127-6ed189bf02f4", 1200),
++    gallery: [
++      u("photo-1560185127-6ed189bf02f4"),
++      u("photo-1618773928121-c32242e63f39"),
++      u("photo-1590490359683-658d3d23f972"),
++      u("photo-1559508551-44bff1de756b"),
++    ],
++  },
++
++  // ══════════════ FAYOUM HOTELS ══════════════
++  54: { // Noras Village
++    main: u("photo-1602002418082-a4443e081dd1", 1200),
++    gallery: [
++      u("photo-1602002418082-a4443e081dd1"),
++      u("photo-1560185127-6ed189bf02f4"),
++      u("photo-1455587734955-081b22074882"),
++      u("photo-1444201983204-c43cbd584d93"),
++    ],
++  },
++  55: { // Lazib Inn Resort & Spa
++    main: u("photo-1506974210756-8e1b8985d348", 1200),
++    gallery: [
++      u("photo-1506974210756-8e1b8985d348"),
++      u("photo-1602002418082-a4443e081dd1"),
++      u("photo-1615460549969-36fa19521a4f"),
++      u("photo-1529290130-4ca3753253ae"),
++    ],
++  },
++  56: { // Byoum Lakeside Hotel
++    main: u("photo-1445019980597-93fa8acb246c", 1200),
++    gallery: [
++      u("photo-1445019980597-93fa8acb246c"),
++      u("photo-1506974210756-8e1b8985d348"),
++      u("photo-1582719508461-905c673771fd"),
++      u("photo-1596178060671-7a80dc8059ea"),
++    ],
++  },
++  57: { // Helnan Auberge Fayoum
++    main: u("photo-1571003123894-1f0594d2b5d9", 1200),
++    gallery: [
++      u("photo-1571003123894-1f0594d2b5d9"),
++      u("photo-1445019980597-93fa8acb246c"),
++      u("photo-1600011689032-8b628b8a8747"),
++      u("photo-1540541338287-41700207dee6"),
++    ],
++  },
++  58: { // Tunis Village Resort
++    main: u("photo-1520250497591-112f2f40a3f4"),
++    gallery: [
++      u("photo-1520250497591-112f2f40a3f4"),
++      u("photo-1571003123894-1f0594d2b5d9"),
++      u("photo-1539037116277-4db20889f2d4"),
++      u("photo-1584132967334-10e028bd69f7"),
++    ],
++  },
++  59: { // Tzila Lodge
++    main: u("photo-1455587734955-081b22074882", 1200),
++    gallery: [
++      u("photo-1455587734955-081b22074882"),
++      u("photo-1520250497591-112f2f40a3f4"),
++      u("photo-1638297584384-c23e27b3e57c"),
++      u("photo-1564501049412-61c2a3083791"),
++    ],
++  },
++  60: { // Zad Al Mosafer Guest House
++    main: u("photo-1508614589041-895b88991e3e", 1200),
++    gallery: [
++      u("photo-1508614589041-895b88991e3e"),
++      u("photo-1455587734955-081b22074882"),
++      u("photo-1587985064135-0366536eab42"),
++      u("photo-1502672260266-1c1ef2d93688"),
++    ],
++  },
++};
++
++/**
++ * Get main image for a hotel. Falls back to a themed image if ID not in map.
++ */
++export const getHotelMainImage = (hotelId: number): string => {
++  if (HOTEL_IMAGES[hotelId]) return HOTEL_IMAGES[hotelId].main;
++  // Fallback based on ID mod so we always get different images
++  const fallbacks = [
++    u("photo-1542314831-068cd1dbfeeb"),
++    u("photo-1566073771259-6a8506099945"),
++    u("photo-1551882547-ff40c63fe2e2"),
++    u("photo-1529290130-4ca3753253ae"),
++    u("photo-1611892440504-42a792e24d32"),
++    u("photo-1613395877344-13d4a8e0d49e"),
++    u("photo-1540541338287-41700207dee6"),
++    u("photo-1564501049412-61c2a3083791"),
++  ];
++  return fallbacks[hotelId % fallbacks.length];
++};
++
++/**
++ * Get gallery images for a hotel's detail page.
++ */
++export const getHotelGallery = (hotelId: number): string[] => {
++  if (HOTEL_IMAGES[hotelId]) return HOTEL_IMAGES[hotelId].gallery;
++  return [getHotelMainImage(hotelId)];
++};
