@@ -11,6 +11,7 @@ import CheckoutSuccess from "../components/checkout/CheckoutSuccess";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useApp } from "../context/AppContext";
 import { createBooking } from "../api/bookingService";
+import axiosClient from "../api/axiosClient";
 
 const STEPS = [
   { id: 1, label: "Booking Details" },
@@ -103,11 +104,13 @@ const CheckoutPage = () => {
 
   const [currentStep, setCurrentStep] = useState(() => ((location.state?.type === "flight" || location.state?.type === "museum" || location.state?.type === "bazaar") ? 2 : 1));
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   
   // OTP Feature Hooks
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpValues, setOtpValues] = useState(['', '', '', '']);
+  const [otpError, setOtpError] = useState("");
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Read cashback % earned from destination selections (set by ParallaxCTA)
@@ -145,6 +148,7 @@ const CheckoutPage = () => {
   }, [checkoutData.booking.tickets, checkoutData.item.price, checkoutData.item.type, checkoutData.booking.serviceType]);
 
   const handleNextStep = async () => {
+    if (isSubmitting) return;
     let newErrors: string[] = [];
 
     // Step 1 Validation
@@ -202,17 +206,34 @@ const CheckoutPage = () => {
     setErrors([]); // Clear errors before proceeding
 
     if (currentStep < 3) {
-       if (currentStep === 2) {
-         setShowOtpModal(true);
-         return;
-       }
+         if (currentStep === 2) {
+           try {
+               setIsSubmitting(true);
+               await axiosClient.post("/checkout/send-otp", { email: checkoutData.details.email });
+               setShowOtpModal(true);
+           } catch(error: any) {
+               console.error("Failed to send OTP", error);
+               if (error.response?.status === 401 || error.response?.data?.message === 'Unauthenticated.') {
+                  showToast("يجب عليك تسجيل الدخول أولاً لإتمام الحجز.", true);
+                  setTimeout(() => navigate('/login', { state: { returnTo: location.pathname, ...location.state } }), 1500);
+               } else {
+                  showToast("حدث خطأ في الإرسال. تأكد من إيميلك وحاول مرة أخرى.", true);
+               }
+           } finally {
+               setIsSubmitting(false);
+           }
+           return;
+         }
        setCurrentStep((prev) => prev + 1);
        window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
        try {
+           setIsSubmitting(true);
            const isFood = checkoutData.item.type === 'food_cart';
            const payload = {
                item_type: isFood ? `food_${checkoutData.booking.serviceType}` : checkoutData.item.type,
+               item_title: checkoutData.item.title,
+               item_image: checkoutData.item.image,
                item_id: checkoutData.item.id,
                date_info: isFood && checkoutData.booking.serviceType === 'delivery' 
                  ? `Delivery to: ${checkoutData.booking.deliveryAddress}`
@@ -240,6 +261,8 @@ const CheckoutPage = () => {
            } else {
                setErrors([errMsg || "Failed to complete booking. Please try again."]);
            }
+       } finally {
+           setIsSubmitting(false);
        }
     }
   };
@@ -274,11 +297,20 @@ const CheckoutPage = () => {
     }
   };
 
-  const submitOtpAndProceed = () => {
+  const submitOtpAndProceed = async () => {
     if (otpValues.join('').length === 4) {
-      setShowOtpModal(false);
-      setCurrentStep(3);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setOtpError("");
+      try {
+        await axiosClient.post("/checkout/verify-otp", {
+           email: checkoutData.details.email,
+           otp: otpValues.join('')
+        });
+        setShowOtpModal(false);
+        setCurrentStep(3);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (e: any) {
+         setOtpError(e.response?.data?.message || "رمز غير صحيح.");
+      }
     } else {
       showToast("Please enter the complete 4-digit code first.", true);
     }
@@ -508,9 +540,10 @@ const CheckoutPage = () => {
             {/* Next Step / Complete Button */}
             <button 
               onClick={handleNextStep}
-              className="w-full bg-[#EB662B] hover:bg-[#d55822] text-white font-bold py-3.5 px-4 rounded-xl transition shadow-md shadow-orange-500/20"
+              disabled={isSubmitting}
+              className={`w-full font-bold py-3.5 px-4 rounded-xl transition shadow-md flex justify-center items-center gap-2 ${isSubmitting ? 'bg-gray-400 cursor-not-allowed shadow-none' : 'bg-[#EB662B] hover:bg-[#d55822] text-white shadow-orange-500/20'}`}
             >
-              {currentStep === 3 ? "Complete Booking" : "Go to the Next Step"}
+              {isSubmitting ? <span className="animate-pulse">Processing...</span> : currentStep === 3 ? "Complete Booking" : "Go to the Next Step"}
             </button>
             {(currentStep > 1 || (currentStep === 2 && checkoutData.item.type === 'flight')) && (
                <button 
@@ -564,11 +597,13 @@ const CheckoutPage = () => {
             </div>
 
             <div className="bg-white p-6 rounded-b-lg text-center border-t border-gray-100">
+              {otpError && <p className="text-red-500 font-semibold mb-2">{otpError}</p>}
               <p className="text-sm text-[#222] font-semibold mb-6 flex justify-center items-center gap-1">
                 لم تتلق كلمة المرور لمرة واحدة؟ 
                 <button 
                   type="button"
                   className="text-[#e67e22] hover:text-[#d6721b] underline"
+                  onClick={() => axiosClient.post("/checkout/send-otp", { email: checkoutData.details.email })}
                 >
                   إعادة إرسال
                 </button>

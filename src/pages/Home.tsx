@@ -10,7 +10,7 @@ const PopularToursSection = lazy(() => import("../components/sections/PopularTou
 const PromoBanner = lazy(() => import("../components/sections/PromoBanner"));
 const TrendingDestinationSection = lazy(() => import("../components/sections/TrendingDestinationSection"));
 const WhyChooseUsSection = lazy(() => import("../components/sections/WhyChooseUsSection"));
-const BazaarsSection = lazy(() => import("../components/sections/BazaarsSection"));
+
 const ParallaxCTA = lazy(() => import("../components/sections/ParallaxCTA"));
 const GlobeSection = lazy(() => import("../components/sections/GlobeSection"));
 const TextRevealSection = lazy(() => import("../components/sections/TextRevealSection"));
@@ -29,7 +29,7 @@ const HomePage = () => {
   const toursRef = useScrollReveal({ y: 60, stagger: 0.12 });
   const promoRef = useScrollReveal({ y: 100, scale: 0.95, duration: 1 });
   const dealsRef = useScrollReveal({ y: 60, stagger: 0.15 });
-  const bazaarsRef = useScrollReveal({ y: 80, stagger: 0.15 });
+
   const reviewRef = useScrollReveal({ y: 40, duration: 1.2 });
 
   const [marqueeData, setMarqueeData] = useState({ cities1: [], cities2: [] });
@@ -153,9 +153,6 @@ const HomePage = () => {
         {/* 🏔️ PARALLAX CTA */}
         <ParallaxCTA />
 
-        <div ref={bazaarsRef}>
-          <BazaarsSection />
-        </div>
 
         {/* ═══ TICKER STRIP 4 - Before Reviews (Light) ═══ */}
         <TickerStrip

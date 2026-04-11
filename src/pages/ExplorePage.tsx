@@ -60,57 +60,130 @@ const ExplorePage = () => {
         fetchData();
     }, []);
 
-    // Filter hotels by destination, sort by price
-    const destHotels = apiHotels.filter(h => h.location.toLowerCase() === destination.toLowerCase() || destination.toLowerCase() === "egypt");
-    const validHotels = destHotels.length > 0 ? destHotels : apiHotels;
-    const sortedHotels = [...validHotels].sort((a, b) => a.price_starts_from - b.price_starts_from);
-    
-    let localHotels: any[] = [];
-    if (sortedHotels.length >= 2) {
-        const cheap = sortedHotels[0];
-        const exp = sortedHotels[sortedHotels.length - 1];
-        localHotels = [
-            { id: cheap.id, title: cheap.title, image: cheap.image, category: "Budget Hotel", rating: cheap.rating, reviews: cheap.reviews_count, location: destinationName, price: `$${cheap.price_starts_from}` },
-            { id: exp.id, title: exp.title, image: exp.image, category: "Luxury Hotel", rating: exp.rating, reviews: exp.reviews_count, location: destinationName, price: `$${exp.price_starts_from}` }
-        ];
-    } else if (sortedHotels.length === 1) {
-        const single = sortedHotels[0];
-        localHotels = [
-            { id: single.id, title: single.title, image: single.image, category: "Luxury Hotel", rating: single.rating, reviews: single.reviews_count, location: destinationName, price: `$${single.price_starts_from}` },
-            { id: 999, title: `Boutique Hotel ${destinationName}`, image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/hotel_fallback", category: "Budget Hotel", rating: 4.5, reviews: 45, location: destinationName, price: "$40" }
-        ];
-    } else {
-        localHotels = [];
-    }
+    // Smart dynamic image mapping based on City + Category
+    const getCitySpecificImage = (city: string, category: string, index: number) => {
+        const c = city.toLowerCase();
+        const isAlex = c.includes('alex');
+        const isLuxor = c.includes('luxor');
+        const isAswan = c.includes('aswan');
+        const isRedSea = c.includes('hurgh') || c.includes('sharm') || c.includes('dahab') || c.includes('marsa');
+        const isSinai = c.includes('sinai') || c.includes('cather');
+        
+        if (category === "Hotels") {
+           if (isRedSea) return index === 0 ? '/images/tour-red-sea.png' : '/images/home/why-quality.jpg';
+           if (isAlex) return index === 0 ? '/images/era-greco-roman.png' : '/images/home/why-flex.jpg';
+           if (isLuxor || isAswan) return index === 0 ? '/images/nile-cruise.png' : '/images/nile-luxor-aswan.png';
+           return index === 0 ? '/images/home/why-quality.jpg' : '/images/home/why-flex.jpg';
+        }
+        if (category === "Museums") {
+           if (isAlex) return index === 0 ? '/images/era-greco-roman.png' : '/images/tour-museum.png';
+           if (isLuxor) return index === 0 ? '/images/era-pharaonic.png' : '/images/tour-museum.png';
+           if (isSinai) return index === 0 ? '/images/saint-catherine.png' : '/images/era-coptic.png';
+           return index === 0 ? '/images/tour-museum.png' : '/images/era-coptic.png';
+        }
+        if (category === "Restaurants") {
+           if (isAlex || isRedSea) return index === 0 ? '/images/tour-red-sea.png' : '/images/tour-cairo-food.png';
+           if (isLuxor || isAswan) return index === 0 ? '/images/tour-nile-cruise.png' : '/images/tour-cairo-food.png';
+           return index === 0 ? '/images/tour-cairo-food.png' : '/images/nile-cruise.png';
+        }
+        if (category === "Safari") {
+           if (isRedSea) return index === 0 ? '/images/tour-desert-safari.png' : '/images/siwa-safari.png';
+           if (isAswan || isLuxor) return index === 0 ? '/images/siwa-safari.png' : '/images/tour-desert-safari.png';
+           return index === 0 ? '/images/tour-desert-safari.png' : '/images/siwa-safari.png';
+        }
+        if (category === "Bazaars") {
+           if (isLuxor) return index === 0 ? '/images/luxor-souk.png' : '/images/era-islamic.png';
+           if (isAswan) return index === 0 ? '/images/aswan-nubian-market.png' : '/images/luxor-souk.png';
+           if (isAlex) return index === 0 ? '/images/era-islamic.png' : '/images/aswan-nubian-market.png';
+           return index === 0 ? '/images/era-islamic.png' : '/images/luxor-souk.png';
+        }
+        if (category === "Events") {
+           if (isLuxor || isAswan) return index === 0 ? '/images/pyramids-vip.png' : '/images/era-pharaonic.png';
+           if (isRedSea) return index === 0 ? '/images/tour-red-sea.png' : '/images/tour-desert-safari.png';
+           return index === 0 ? '/images/tour-pyramids.png' : '/images/era-islamic.png';
+        }
+        return '/images/home/why-quality.jpg';
+    };
 
-    // Helper to filter and map data roughly equivalent to how it was styled
-    const filterAndMap = (items: any[], isEgypt: boolean, categoryName: string, priceKey: string = "price") => {
-        const destItems = items.filter(h => isEgypt || (h.location && h.location.toLowerCase() === destination.toLowerCase()));
-        const valid = destItems.length > 0 ? destItems : items.slice(0, 2);
-        return valid.slice(0, 2).map((item: any) => ({
-            id: item.id,
-            title: item.title || item.name || '',
-            image: item.image || item.image_url || '',
-            category: item.category || categoryName,
-            rating: item.rating || 4.5,
-            reviews: item.reviews_count || item.reviews || 0,
-            location: destinationName,
-            price: `$${item[priceKey] || item.ticket_price || item.price_range_min || 0}`
-        }));
+    // Fallbacks array for each category using dynamically evaluated city-specific images
+    const fallbacks: Record<string, any[]> = {
+        "Hotels": [
+            { id: 101, title: `Grand ${destinationName} Oasis Hotel`, image: getCitySpecificImage(destinationName, "Hotels", 0), rating: 4.8, reviews: 341, location: destinationName, price: 120 },
+            { id: 102, title: `${destinationName} Boutique Resort`, image: getCitySpecificImage(destinationName, "Hotels", 1), rating: 4.5, reviews: 201, location: destinationName, price: 85 }
+        ],
+        "Museums": [
+            { id: 201, title: `Antiquities Museum of ${destinationName}`, image: getCitySpecificImage(destinationName, "Museums", 0), rating: 4.9, reviews: 540, location: destinationName, price: 15 },
+            { id: 202, title: `${destinationName} History Center`, image: getCitySpecificImage(destinationName, "Museums", 1), rating: 4.7, reviews: 120, location: destinationName, price: 12 }
+        ],
+        "Restaurants": [
+            { id: 301, title: 'Nile Breeze Gourmet Dining', image: getCitySpecificImage(destinationName, "Restaurants", 0), rating: 4.8, reviews: 412, location: destinationName, price: 25 },
+            { id: 302, title: 'Authentic Traditional Grill', image: getCitySpecificImage(destinationName, "Restaurants", 1), rating: 4.6, reviews: 320, location: destinationName, price: 15 }
+        ],
+        "Safari": [
+            { id: 401, title: 'Sunset Desert Quad Biking ATV', image: getCitySpecificImage(destinationName, "Safari", 0), rating: 4.9, reviews: 620, location: destinationName, price: 40 },
+            { id: 402, title: 'Bedouin Star Gazing Camp', image: getCitySpecificImage(destinationName, "Safari", 1), rating: 4.8, reviews: 240, location: destinationName, price: 55 }
+        ],
+        "Bazaars": [
+            { id: 501, title: `Historic ${destinationName} Tourist Souk`, image: getCitySpecificImage(destinationName, "Bazaars", 0), rating: 4.7, reviews: 890, location: destinationName, price: 0 },
+            { id: 502, title: 'Premium Artisan Silver & Papyrus Bazaar', image: getCitySpecificImage(destinationName, "Bazaars", 1), rating: 4.9, reviews: 620, location: destinationName, price: 0 }
+        ],
+        "Events": [
+            { id: 601, title: `Spectacular Sound & Light Show`, image: getCitySpecificImage(destinationName, "Events", 0), rating: 4.8, reviews: 1050, location: destinationName, price: 30 },
+            { id: 602, title: 'Traditional Dervish & Folklore Show', image: getCitySpecificImage(destinationName, "Events", 1), rating: 4.7, reviews: 325, location: destinationName, price: 20 }
+        ]
+    };
+
+    const filterAndMap = (items: any[], isEgypt: boolean, categoryName: string, fallbackKey: string, priceKey: string = "price") => {
+        // Find items that loosely match the destination
+        const destItems = items.filter(h => isEgypt || (h.location && h.location.toLowerCase().includes(destination.toLowerCase())));
+        
+        // If we don't have enough data for THIS specific destination, completely fallback to real items from DB first.
+        let valid = destItems;
+        if (valid.length < 2 && items.length >= 2) {
+            valid = [...items].sort(() => 0.5 - Math.random());
+        } else if (valid.length < 2) {
+            valid = fallbacks[fallbackKey];
+        }
+
+        return valid.slice(0, 2).map((item: any, idx: number) => {
+            const rawImage = item.image || item.image_url;
+            
+            // Extreme safety net: Check if image is obviously broken or missing
+            const isInvalidImg = !rawImage 
+                || rawImage.includes('unsplash.com') 
+                || rawImage.includes('hotel_fallback')
+                || (!rawImage.startsWith('/') && !rawImage.startsWith('http'));
+
+            const finalImage = isInvalidImg ? fallbacks[fallbackKey][idx].image : rawImage;
+            
+            return {
+                id: item.id,
+                title: item.title || item.name || fallbacks[fallbackKey][idx].title,
+                image: finalImage,
+                category: item.category || categoryName,
+                rating: item.rating || 4.5,
+                reviews: item.reviews_count || item.reviews || fallbacks[fallbackKey][idx].reviews,
+                location: item.location || destinationName,
+                price: `$${item[priceKey] || item.ticket_price || item.price_range_min || fallbacks[fallbackKey][idx].price}`
+            };
+        });
     };
 
     const isEgypt = destination.toLowerCase() === "egypt";
-    const localRestaurants = filterAndMap(apiRestaurants, isEgypt, "Local Cuisine", "price_range_min");
-    const localSafari = filterAndMap(apiSafari, isEgypt, "Adventure", "price");
-    const localBazaars = filterAndMap(apiBazaars, isEgypt, "Local Market", "ticket_price");
-    const localEvents = filterAndMap(apiEvents, isEgypt, "Event", "price");
-    const localMuseums = filterAndMap(apiMuseums, isEgypt, "History", "ticket_price");
+    
+    // Hotels are a bit different because they were separated logic above, so we unify it here simply
+    const localHotels = filterAndMap(apiHotels, isEgypt, "Luxury/Budget Hotel", "Hotels", "price_starts_from");
+    const localRestaurants = filterAndMap(apiRestaurants, isEgypt, "Local Cuisine", "Restaurants", "price_range_min");
+    const localSafari = filterAndMap(apiSafari, isEgypt, "Adventure", "Safari", "price");
+    const localBazaars = filterAndMap(apiBazaars, isEgypt, "Local Market", "Bazaars", "ticket_price");
+    const localEvents = filterAndMap(apiEvents, isEgypt, "Event", "Events", "price");
+    const localMuseums = filterAndMap(apiMuseums, isEgypt, "History", "Museums", "ticket_price");
 
     // Simple Render Card (Make the ENTIRE card perfectly clickable)
     const GenericCard = ({ item, linkTo }: { item: any; linkTo: string }) => (
         <Link to={linkTo} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_12px_30px_rgba(212,175,55,0.25)] transition-all duration-500 group flex flex-col border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-2 block">
             <div className="relative h-56 overflow-hidden">
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-gray-100" />
                 <div className="absolute top-4 right-4 bg-white/90 px-2 py-1 rounded-lg text-sm font-bold shadow-sm text-[#05073C]">
                     ★ {item.rating} <span className="text-gray-500 font-normal">({item.reviews})</span>
                 </div>
@@ -138,7 +211,7 @@ const ExplorePage = () => {
                 <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
                     <Link to="/" className="hover:text-[#EB662B] transition">Home</Link>
                     <FaChevronRight className="w-3 h-3" />
-                    <span className="text-gray-500">Destinations</span>
+                    <Link to="/#trending-destinations" className="text-gray-500 hover:text-[#EB662B] transition">Destinations</Link>
                     <FaChevronRight className="w-3 h-3" />
                     <span className="text-[#05073C] font-bold">{destinationName}</span>
                 </nav>

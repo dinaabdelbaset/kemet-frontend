@@ -65,7 +65,7 @@ const TrendingDestinationSection = () => {
     <Link to={`/explore/${item.title}`} key={item.id} data-dest-card>
       <DestinationCard 
         id={item.id}
-        src={item.image || item.src} 
+        src={item.src || '/placeholder.png'} 
         alt={item.title || item.alt} 
         title={item.title} 
         tours={item.tours || Math.floor(Math.random() * 500) + 50} 
@@ -73,10 +73,11 @@ const TrendingDestinationSection = () => {
     </Link>
   ));
   return (
-    <SectionWrapper>
-      <div className="flex items-center justify-between mb-6" ref={headingRef}>
-        <Heading title="trending destination" />
-      </div>
+    <div id="trending-destinations">
+      <SectionWrapper>
+        <div className="flex items-center justify-between mb-6" ref={headingRef}>
+          <Heading title="trending destination" />
+        </div>
       <div ref={gridRef} className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8" style={{ perspective: "1000px" }}>
         {loading ? (
           <div className="col-span-full py-10 text-center text-gray-500">جاري تحميل الوجهات...</div>
@@ -84,7 +85,8 @@ const TrendingDestinationSection = () => {
           content
         )}
       </div>
-    </SectionWrapper>
+      </SectionWrapper>
+    </div>
   );
 };
 

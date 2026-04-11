@@ -324,9 +324,26 @@ const HotelsPage = () => {
                   alt={hotel.title || "Hotel"}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-[#05073C] font-bold shadow-sm flex items-center gap-1">
-                  <FaStar className="text-yellow-400" />
-                  {hotel.rating}
+                
+                {/* Booking.com Style Badges */}
+                <div className="absolute top-4 left-4 flex flex-col gap-2">
+                   {hotel.id % 3 === 0 && (
+                     <span className="bg-red-600 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-md w-max">
+                        High Demand - Only 2 rooms left!
+                     </span>
+                   )}
+                   {hotel.id % 2 === 0 && (
+                     <span className="bg-[#003580] text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-md flex items-center gap-1 w-max">
+                        Kemet VIP Genius Level 2
+                     </span>
+                   )}
+                </div>
+
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-[#05073C] font-bold shadow-sm flex flex-col items-center gap-1">
+                  <div className="flex gap-1 items-center">
+                     <span className="text-xl">{(hotel.rating || 9.8).toFixed(1)}</span>
+                  </div>
+                  <span className="text-[10px] text-gray-500 uppercase">{hotel.rating >= 9 ? 'Exceptional' : 'Fabulous'}</span>
                 </div>
               </div>
 
@@ -336,14 +353,21 @@ const HotelsPage = () => {
                   <FaMapMarkerAlt />
                   {hotel.location || hotel.city}
                 </div>
-                <h3 className="text-xl font-bold text-[#05073C] mb-3 group-hover:text-[#EB662B] transition-colors">
+                <h3 className="text-xl font-bold text-[#05073C] group-hover:text-[#EB662B] transition-colors leading-tight">
                   {hotel.title || hotel.name}
                 </h3>
-                <p className="text-sm text-gray-500 line-clamp-2 mb-6">
-                  {hotel.description || "Experience the ultimate comfort and hospitality with world-class amenities and stunning views."}
+                
+                {/* Free Cancellation Badge */}
+                <div className="mt-2 mb-3">
+                   <p className="text-green-700 font-bold text-xs">✓ Free cancellation</p>
+                   <p className="text-green-700 text-[10px]">No prepayment needed – pay at the property</p>
+                </div>
+                
+                <p className="text-sm text-gray-500 line-clamp-2 mt-auto mb-4">
+                  {hotel.description || "Experience luxury with top-tier amenities and stunning views."}
                 </p>
 
-                <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-50 mt-auto">
                   <div>
                     <p className="text-xs text-gray-400 uppercase font-bold">
                       Starts from

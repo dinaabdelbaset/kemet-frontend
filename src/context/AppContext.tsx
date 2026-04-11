@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, type ReactNode, useRef } from 'react';
+import axiosClient from '../api/axiosClient';
 
 export type CurrencyCode = "EGP" | "USD" | "EUR" | "GBP" | "SAR";
 export type Theme = "light" | "dark";
@@ -72,7 +73,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const [wishlist, setWishlistState] = useState<string[]>(() => {
     const saved = localStorage.getItem('app_wishlist');
-    return saved ? JSON.parse(saved) : [];
+    const savedUser = localStorage.getItem('app_user');
+    return (saved && savedUser) ? JSON.parse(saved) : [];
   });
 
   const [recentlyViewed, setRecentlyViewedState] = useState<RecentlyViewedItem[]>(() => {
@@ -80,7 +82,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Theme logic
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -88,6 +89,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
+
+  // Optionally, if the user was already logged in on refresh, pull Wishlist:
+  useEffect(() => {
+     if (user) {
+        axiosClient.get("/wishlist").then(({ data }) => {
+           const wList = data.map((d: any) => {
+               let strType = "";
+               if (d.item_type.includes("Hotel")) strType = "hotel";
+               else if (d.item_type.includes("Tour")) strType = "tour";
+               else if (d.item_type.includes("Activity")) strType = "activity";
+               else if (d.item_type.includes("Safari")) strType = "safari";
+               else if (d.item_type.includes("Bazaar")) strType = "bazaar";
+               else if (d.item_type.includes("Museum")) strType = "museum";
+               else if (d.item_type.includes("Restaurant")) strType = "restaurant";
+               return strType ? `${strType}-${d.item_id}` : d.item_id;
+           });
+           setWishlistState(wList);
+           localStorage.setItem('app_wishlist', JSON.stringify(wList));
+        }).catch(() => {});
+     }
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -115,7 +137,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const logout = () => {
     setUserState(null);
+    setWishlistState([]);
+    setRecentlyViewedState([]);
     localStorage.removeItem('app_user');
+    localStorage.removeItem('app_wishlist');
+    localStorage.removeItem('app_recently_viewed');
     showToast('You have been logged out.');
   };
 
@@ -128,17 +154,49 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
   };
 
-  const toggleWishlist = (id: string) => {
+  const toggleWishlist = async (id: string) => {
+    if (!user) {
+      showToast('Please login to use your wishlist.', true);
+      return;
+    }
+    
+    const isAdding = !wishlist.includes(id);
     let newWishlist;
-    if (wishlist.includes(id)) {
+    if (!isAdding) {
       newWishlist = wishlist.filter(itemId => itemId !== id);
       showToast('Removed from your wishlist');
     } else {
       newWishlist = [...wishlist, id];
       showToast('Added to your wishlist!');
     }
+    
     setWishlistState(newWishlist);
     localStorage.setItem('app_wishlist', JSON.stringify(newWishlist));
+    
+    // Background DB Sync
+    try {
+        const [type, actualId] = id.split('-'); // format from click e.g. "hotel-12"
+        const mappedType = type ? `App\\Models\\ucfirst(${type})` : 'App\\Models\\Item';
+        let finalType = mappedType;
+        
+        if (type === 'hotel') finalType = 'App\\Models\\Hotel';
+        else if (type === 'tour') finalType = 'App\\Models\\Tour';
+        else if (type === 'safari') finalType = 'App\\Models\\Safari';
+        else if (type === 'museum') finalType = 'App\\Models\\Museum';
+        else if (type === 'bazaar') finalType = 'App\\Models\\Bazaar';
+        else if (type === 'restaurant') finalType = 'App\\Models\\Restaurant';
+        else if (type === 'deal') finalType = 'App\\Models\\Deal';
+        else if (type === 'activity') finalType = 'App\\Models\\Activity';
+
+        if (isAdding) {
+            await axiosClient.post("/wishlist", { item_id: actualId, type: finalType });
+        } else {
+            // Because the backend expects the primary ID of wishlist to delete, we should send a query param of the item format
+            await axiosClient.delete(`/wishlist/${actualId}?type=${finalType}`);
+        }
+    } catch (e) {
+        console.error("Failed to sync wishlist", e);
+    }
   };
 
   const isInWishlist = (id: string) => wishlist.includes(id);

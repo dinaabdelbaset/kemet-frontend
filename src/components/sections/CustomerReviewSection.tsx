@@ -72,7 +72,7 @@ const CustomerReviewSection = () => {
             "
           </span>
           <Image
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+            src="/images/home/customer-avatar.jpg"
             alt="user"
             className="w-full h-full rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
           />

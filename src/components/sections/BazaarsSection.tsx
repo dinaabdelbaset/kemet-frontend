@@ -17,10 +17,9 @@ const BazaarsSection = () => {
   useEffect(() => {
     const fetchBazaars = async () => {
       try {
-        const response = await axiosClient.get("/search?q=bazaar");
-        // Bazaars don't have a dedicated endpoint yet, use local approach
-        const resp = await axiosClient.get("/restaurants");
-        setBazaars(Array.isArray(resp.data) ? resp.data.slice(0, 3) : []);
+        const response = await axiosClient.get("/bazaars");
+        const productsList = response.data.data ? response.data.data : (Array.isArray(response.data) ? response.data : []);
+        setBazaars(productsList.slice(0, 3));
       } catch (error) {
         console.error("Error fetching bazaars:", error);
         setBazaars([]);
@@ -76,20 +75,21 @@ const BazaarsSection = () => {
               {/* Image Container */}
               <div className="relative h-56 overflow-hidden">
                 <img 
-                  src={bazaar.image} 
+                  src={bazaar.image || '/placeholder.png'} 
                   alt={bazaar.title} 
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 flex items-center gap-1.5 text-white text-sm font-medium bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full">
-                  <FaMapMarkerAlt className="text-[#D4AF37]" /> {bazaar.location}
+                  <FaMapMarkerAlt className="text-[#D4AF37]" /> {bazaar.location || 'Khan El Khalili'}
                 </div>
               </div>
 
               {/* Content Container */}
               <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-xl font-bold text-[#05073C] mb-2 group-hover:text-[#EB662B] transition-colors line-clamp-1">
-                  {bazaar.title}
+                  {bazaar.name || bazaar.title}
                 </h3>
                 
                 <p className="text-gray-500 text-sm mb-4 line-clamp-3 leading-relaxed">
@@ -98,15 +98,18 @@ const BazaarsSection = () => {
 
                 <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
                   <div className="flex flex-wrap gap-2">
-                    {Array.isArray(bazaar.specialty) ? bazaar.specialty.slice(0, 2).map((item: any, i: number) => (
-                      <span key={i} className="text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-1 rounded-md flex items-center gap-1">
-                        <FaShoppingBag className="text-gray-400 text-[10px]" /> {item}
+                    <span className="text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-1 rounded-md flex items-center gap-1">
+                       <FaShoppingBag className="text-gray-400 text-[10px]" /> {bazaar.category || 'Souvenirs'}
+                    </span>
+                    {bazaar.price && (
+                      <span className="text-xs font-bold text-[#EB662B] bg-orange-50 px-2 py-1 rounded-md flex items-center gap-1">
+                        ${Number(bazaar.price).toFixed(2)}
                       </span>
-                    )) : null}
+                    )}
                   </div>
                   
                   <Link 
-                    to={`/bazaars/${bazaar.id}`} 
+                    to={`/shop`} 
                     className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-[#EB662B] group-hover:bg-[#EB662B] group-hover:text-white transition-colors"
                   >
                     &rarr;

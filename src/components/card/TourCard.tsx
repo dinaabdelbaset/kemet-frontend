@@ -58,7 +58,7 @@ const TourCard = ({ tour }: IProps) => {
             onError={(e) => {
               if (!e.currentTarget.dataset.fb) {
                 e.currentTarget.dataset.fb = "1";
-                e.currentTarget.src = "https://images.unsplash.com/photo-1600868205423-1c3906a4b162?q=80&w=800";
+                e.currentTarget.src = "/images/tour-pyramids.png";
               }
             }}
             className={`w-full h-full object-cover object-center transition-all duration-700 ${isHovered && tour.video ? 'opacity-0 scale-110' : 'opacity-100 group-hover:scale-110'}`}
@@ -85,13 +85,24 @@ const TourCard = ({ tour }: IProps) => {
           {isSaved ? <FaHeart /> : <FaRegHeart />}
         </button>
 
-        {tour.label && (
-          <div className="absolute top-4 left-4 z-10 shadow-lg">
-            <span className="bg-[#EB662B] text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-md shadow-md capitalize tracking-wide flex items-center gap-1">
+        {/* Booking.com Style Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-2 z-10 shadow-lg">
+          {tour.label && (
+            <span className="bg-[#EB662B] text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-md shadow-md capitalize tracking-wide flex items-center gap-1 w-max">
               🔥 {tour.label}
             </span>
-          </div>
-        )}
+          )}
+          {tour.id % 4 === 0 && (
+            <span className="bg-red-600 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-md w-max">
+               High Demand - Selling Fast!
+            </span>
+          )}
+          {tour.id % 3 === 0 && (
+            <span className="bg-[#003580] text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-md flex items-center gap-1 w-max">
+               Kemet VIP Genius Level 1
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Content */}
@@ -107,9 +118,13 @@ const TourCard = ({ tour }: IProps) => {
           {tour.title}
         </h3>
 
-        {/* Rating */}
-        <div className="mt-1.5 flex items-center gap-1 text-xs text-[#05073C]">
-          <span className="text-yellow-400">⭐</span> <span className="font-bold">{tour.rating}</span> <span className="text-gray-400 font-medium">({tour.reviewCount} reviews)</span>
+        {/* Rating - Booking Style */}
+        <div className="mt-2 flex items-center gap-2">
+          <div className="bg-[#05073C] text-white px-2 py-1 rounded-md text-sm font-bold shadow-sm">
+            {tour.rating}
+          </div>
+          <span className="text-xs font-bold text-[#05073C]">{tour.rating >= 4.5 ? 'Exceptional' : 'Fabulous'}</span>
+          <span className="text-[10px] text-gray-400 font-medium">({tour.reviewCount} reviews)</span>
         </div>
 
         {/* Includes */}

@@ -31,8 +31,9 @@ const DealCard = ({ deal }: { deal: DealCategory }) => {
       {/* Image */}
       <div className="relative h-52 overflow-hidden">
         <img
-          src={deal.image}
+          src={deal.image || '/placeholder.png'}
           alt={deal.title}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

@@ -1,53 +1,22 @@
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import { Link } from "react-router-dom";
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaArrowRight } from "react-icons/fa";
+import { useQuery } from '@tanstack/react-query';
+import { getEvents } from '@/api/eventService';
 
 const EventsPage = () => {
+  const { data: events, isLoading, error } = useQuery({
+    queryKey: ['events'],
+    queryFn: getEvents
+  });
 
-  const events = [
-    {
-      id: 1,
-      title: "Pyramids Sound & Light Show",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/pyramids",
-      details: ["2 Hours", "Daily Shows", "8:00 PM"],
-      price: "1500 EGP",
-    },
-    {
-      id: 2,
-      title: "Whirling Dervishes (El Tanoura)",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/dervishes",
-      details: ["1.5 Hours", "Mon, Wed, Sat", "7:30 PM"],
-      price: "400 EGP",
-    },
-    {
-      id: 3,
-      title: "Opera Aida at Luxor Temple",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/opera",
-      details: ["4 Hours", "November 12, 2026", "8:00 PM"],
-      price: "3500 EGP",
-    },
-    {
-      id: 4,
-      title: "Cairo Jazz Festival",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/jazz",
-      details: ["3 Days", "Oct 22-24, 2026", "6:00 PM"],
-      price: "1200 EGP",
-    },
-    {
-      id: 5,
-      title: "Red Sea EDM Beach Festival",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/edm",
-      details: ["Weekend Pass", "July 15, 2026", "10:00 PM"],
-      price: "2500 EGP",
-    },
-    {
-      id: 6,
-      title: "Cairo International Book Fair",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/book",
-      details: ["Full Day", "Jan 28 - Feb 6", "10:00 AM"],
-      price: "100 EGP",
-    },
-  ];
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#fdfaf7]"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div></div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#fdfaf7] text-red-500">Failed to load events. Please try again later.</div>;
+  }
 
   return (
     <div className="bg-[#fdfaf7] min-h-screen">
@@ -55,80 +24,98 @@ const EventsPage = () => {
       <section className="relative h-[400px] md:h-[500px] w-full">
         <div className="absolute inset-0">
           <img 
-            src="https://dinaabdelbaset-kemet.hf.space/api/kamet-images/hero" 
+            src="/images/events_hero.png" 
             alt="Events Hero" 
             className="w-full h-full object-cover brightness-50"
           />
         </div>
-        <div className="absolute inset-0 bg-black/30"></div>
-      </section>
-
-      {/* Main Content */}
-      <SectionWrapper className="py-20 -mt-20 relative z-10 bg-white rounded-t-[40px] shadow-sm">
-        <div className="text-center max-w-3xl mx-auto px-4 mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#14213d] mb-6 uppercase tracking-wider font-serif">
-            EVENTS AND SHOWS
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <span className="text-[#D4AF37] font-bold tracking-[0.2em] uppercase text-sm mb-4 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm border border-[#D4AF37]/30">
+            Kemet Calendar
+          </span>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-white mb-6 drop-shadow-lg font-bold">
+            Live The Moment
           </h1>
-          <p className="text-gray-600 leading-relaxed text-lg">
-            Experience the vibrant pulse of Egypt through our curated selection of cultural festivals, dynamic musical performances, and historic theatrical shows. From the mesmerizing lights of the Pyramids to the modern beats of the Red Sea, secure your tickets to unforgettable memories today.
+          <p className="text-lg md:text-2xl text-gray-200 max-w-2xl font-light drop-shadow-md">
+            Discover legendary festivals and timeless performances across Egypt's majestic governorates.
           </p>
         </div>
+      </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
-          {events.map((evt) => (
-            <div key={evt.id} className="group bg-white rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col">
-              <div className="relative w-full aspect-[4/3] overflow-hidden">
-                <img 
-                  src={evt.image} 
-                  alt={evt.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#14213d]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-white/20">
-                  <span className="text-xs font-black text-[#E76F51] flex items-center gap-1"><FaTicketAlt /> {evt.price}</span>
-                </div>
-              </div>
+      {/* Grid Section */}
+      <SectionWrapper className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-[#14213d] mb-2">Upcoming Experiences</h2>
+              <p className="text-gray-500">Secure your spot at the most anticipated events.</p>
+            </div>
+          </div>
 
-              <div className="p-6 flex flex-col flex-grow">
-                <Link to={`/events/${evt.id}`}>
-                  <h2 className="text-xl font-black text-[#14213d] mb-5 group-hover:text-[#E76F51] transition-colors line-clamp-2">
-                    {evt.title}
-                  </h2>
-                </Link>
-                
-                <div className="space-y-4 mb-8 mt-auto">
-                  <div className="text-gray-500 text-sm flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#fdfaf7] flex items-center justify-center text-[#E76F51] shrink-0 transition-colors group-hover:bg-[#E76F51]/10">
-                      <FaClock />
-                    </div>
-                    <span className="font-medium tracking-wide">{evt.details[0]} • {evt.details[2]}</span>
-                  </div>
-                  <div className="text-gray-500 text-sm flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#fdfaf7] flex items-center justify-center text-[#E76F51] shrink-0 transition-colors group-hover:bg-[#E76F51]/10">
-                      <FaCalendarAlt />
-                    </div>
-                    <span className="font-medium tracking-wide">{evt.details[1]}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {events?.map((evt: any) => (
+              <div 
+                key={evt.id} 
+                className="group bg-[#fcfbf9] rounded-3xl border border-gray-100 shadow-sm hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col"
+              >
+                {/* Card Image */}
+                <div className="relative w-full aspect-[4/3] overflow-hidden">
+                  <img 
+                    src={evt.image || '/placeholder.png'} 
+                    alt={evt.title} 
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  
+                  {/* Price Badge */}
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-white/20">
+                    <span className="font-bold text-[#cf4a36] text-sm flex items-center gap-2">
+                       <FaTicketAlt /> {evt.price} EGP
+                    </span>
                   </div>
                 </div>
 
-                <div className="flex border-t border-gray-100 pt-5 gap-4 mt-auto">
+                {/* Card Content */}
+                <div className="p-6 flex flex-col flex-grow">
+                  <div className="mb-4">
+                    <h3 className="text-xl font-bold text-[#14213d] group-hover:text-[#D4AF37] transition-colors leading-tight mb-2">
+                      {evt.title}
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-3 mb-6 flex-grow">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <div className="w-6 h-6 rounded-full bg-[#fcfbf9] border border-gray-100 flex items-center justify-center mr-3 shrink-0">
+                        <FaMapMarkerAlt className="text-[#E76F51] text-xs" />
+                      </div>
+                      <span className="truncate">{evt.location}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <div className="w-6 h-6 rounded-full bg-[#fcfbf9] border border-gray-100 flex items-center justify-center mr-3 shrink-0">
+                         <FaCalendarAlt className="text-[#E76F51] text-xs" />
+                      </div>
+                      <span className="truncate">{evt.date}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <div className="w-6 h-6 rounded-full bg-[#fcfbf9] border border-gray-100 flex items-center justify-center mr-3 shrink-0">
+                         <FaClock className="text-[#E76F51] text-xs" />
+                      </div>
+                      <span className="truncate">{evt.duration || evt.time || 'N/A'}</span>
+                    </div>
+                  </div>
+
+                  <hr className="border-gray-100 mb-5" />
+
                   <Link 
                     to={`/events/${evt.id}`}
-                    className="flex-1 px-4 py-3.5 bg-[#fdfaf7] hover:bg-gray-100 text-[#14213d] text-sm font-bold uppercase tracking-wider rounded-xl transition text-center border border-gray-100"
+                    className="w-full text-center bg-[#D4AF37] text-white py-3 rounded-xl font-semibold hover:bg-[#b5952f] transition-colors duration-300 flex items-center justify-center gap-2"
                   >
-                    Details
-                  </Link>
-                  <Link 
-                    to="/checkout"
-                    state={{ type: 'event', id: evt.id, title: evt.title, price: parseInt(evt.price.replace(' EGP', '')), image: evt.image }}
-                    className="flex-1 px-4 py-3.5 bg-[#E76F51] hover:bg-[#d65f41] text-white text-sm font-bold uppercase tracking-wider rounded-xl transition text-center shadow-lg shadow-[#E76F51]/25 flex items-center justify-center gap-2"
-                  >
-                    Book <FaArrowRight className="text-[10px]" />
+                    View Details <FaArrowRight />
                   </Link>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </SectionWrapper>
     </div>

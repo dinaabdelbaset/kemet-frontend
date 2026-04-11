@@ -6,31 +6,36 @@ import { getProducts } from "../api/shopService";
 import type { Product } from "../api/shopService";
 import { useCart } from "../context/CartContext";
 
-const SHOP_IMAGE_MAP: Record<string, string> = {
-  'Authentic Hand-Painted Papyrus': '/shop-products/papyrus.png',
-  'Alabaster Nefertiti Statue': '/shop-products/nefertiti.png',
-  'Mask of Tutankhamun Replica': '/shop-products/tutankhamun.png',
-  'Custom Silver Cartouche': '/shop-products/cartouche.png',
-  'Premium Egyptian Cotton Scarf': '/shop-products/scarf.png',
-  'Handmade Nubian Basket Craft': '/shop-products/basket.png',
-  'Pharaonic God Anubis Statue': '/shop-products/anubis.png',
-  'Khan El Khalili Spice Box': '/shop-products/spice_box.png'
-};
-
 const getProductImage = (product: Product) => {
-  if (product.name && SHOP_IMAGE_MAP[product.name]) {
-    return SHOP_IMAGE_MAP[product.name];
-  }
+  const n = product.name?.toLowerCase() || '';
+  if (n.includes('papyrus')) return '/shop-products/papyrus.png';
+  if (n.includes('canvas')) return '/shop-products/canvas_art.png';
+  if (n.includes('tapestry')) return '/shop-products/tapestry.png';
+  if (n.includes('basket')) return '/shop-products/basket.png';
+  
+  if (n.includes('spice')) return '/shop-products/spice_box.png';
+  if (n.includes('hibiscus')) return '/shop-products/hibiscus.png';
+  if (n.includes('date')) return '/shop-products/dates.png';
+  if (n.includes('coffee')) return '/shop-products/coffee.png';
+  
+  if (n.includes('nefertiti')) return '/shop-products/nefertiti.png';
+  if (n.includes('tutankhamun') || n.includes('mask')) return '/shop-products/tutankhamun.png';
+  if (n.includes('anubis')) return '/shop-products/anubis.png';
+  if (n.includes('bastet')) return '/shop-products/bastet.png';
+  
+  if (n.includes('scarf')) return '/shop-products/scarf.png';
+  if (n.includes('galabeya')) return '/shop-products/galabeya.png';
+  if (n.includes('cartouche')) return '/shop-products/cartouche.png';
+  if (n.includes('necklace')) return '/shop-products/necklace.png';
+  
+  if (n.includes('lantern')) return '/shop-products/lantern.png';
+  if (n.includes('jewelry box')) return '/shop-products/jewelry_box.png';
+  if (n.includes('perfume')) return '/shop-products/perfume_bottle.png';
+  if (n.includes('rug')) return '/shop-products/rug.png';
+  
   return product.image || "https://images.unsplash.com/photo-1555026615-560bf974fa2e?w=500";
 };
 
-const SHOP_CATEGORIES = [
-  { name: "Art & Crafts", image: "/shop-categories/art_and_crafts.png" },
-  { name: "Statues", image: "/shop-categories/statues.png" },
-  { name: "Jewelry", image: "/shop-categories/jewelry.png" },
-  { name: "Gifts", image: "/shop-categories/gifts.png" },
-  { name: "Clothing", image: "/shop-categories/clothing.png" }
-];
 
 const ShopPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -92,22 +97,31 @@ const ShopPage = () => {
         <div className="mb-16">
            <h2 className="text-3xl font-extrabold text-[#05073C] mb-8 text-center sm:text-left">Shop by Category</h2>
            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
-              {SHOP_CATEGORIES.map(cat => (
+              {Array.from(new Set(products.map(p => p.category))).slice(0, 5).map(catName => {
+                 let image = "/shop-categories/gifts.png";
+                 const str = catName.toLowerCase();
+                 if (str.includes('art') || str.includes('craft')) image = "/shop-categories/art_and_crafts.png";
+                 else if (str.includes('statue') || str.includes('antiq')) image = "/shop-categories/statues.png";
+                 else if (str.includes('jewel') || str.includes('gold')) image = "/shop-categories/jewelry.png";
+                 else if (str.includes('cloth') || str.includes('fashion') || str.includes('textil')) image = "/shop-categories/clothing.png";
+                 else if (str.includes('food') || str.includes('herb') || str.includes('spice')) image = "/shop-products/spice_box.png";
+                 
+                 return (
                  <div 
-                   key={cat.name} 
-                   onClick={() => setSelectedCategory(cat.name)}
-                   className={`relative h-48 md:h-64 rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer group shadow-sm transition-all transform hover:-translate-y-2 ${selectedCategory === cat.name ? 'ring-4 ring-[#EB662B] shadow-2xl' : 'hover:shadow-xl'}`}
+                   key={catName} 
+                   onClick={() => setSelectedCategory(catName)}
+                   className={`relative h-48 md:h-64 rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer group shadow-sm transition-all transform hover:-translate-y-2 ${selectedCategory === catName ? 'ring-4 ring-[#EB662B] shadow-2xl' : 'hover:shadow-xl'}`}
                  >
                     <img 
-                      src={cat.image} 
-                      alt={cat.name} 
+                      src={image} 
+                      alt={catName} 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#05073C]/90 via-[#05073C]/30 to-transparent flex flex-col justify-end p-4 md:p-6">
-                       <span className="text-white font-extrabold text-lg md:text-2xl transform group-hover:translate-x-2 transition-transform duration-300">{cat.name}</span>
+                       <span className="text-white font-extrabold text-lg md:text-2xl transform group-hover:translate-x-2 transition-transform duration-300">{catName}</span>
                     </div>
                  </div>
-              ))}
+              )})}
            </div>
         </div>
 
@@ -115,7 +129,7 @@ const ShopPage = () => {
         <div className="flex items-center justify-between mb-10 border-b border-gray-200 pb-6 overflow-x-auto">
           <h2 className="text-3xl font-extrabold text-[#05073C] shrink-0 mr-4">Featured Artifacts</h2>
           <div className="flex items-center gap-4 text-sm font-medium text-gray-500 whitespace-nowrap">
-             {["All Categories", "Art & Crafts", "Statues", "Jewelry", "Gifts", "Clothing"].map(cat => (
+             {["All Categories", ...Array.from(new Set(products.map(p => p.category)))].map(cat => (
                <span 
                  key={cat}
                  onClick={() => setSelectedCategory(cat)}

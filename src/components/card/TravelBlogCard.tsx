@@ -10,8 +10,9 @@ const TravelBlogCard = ({ pkg }: IProps) => {
     <Link to={`/packages/${pkg.id}`} className="group cursor-pointer block border-2 border-transparent hover:border-[#D4AF37] rounded-2xl bg-white dark:bg-gray-800 hover:shadow-[0_12px_30px_rgba(212,175,55,0.25)] transition-all duration-500 hover:-translate-y-2 h-full">
       <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
         <img
-          src={pkg.image}
+          src={pkg.image || '/placeholder.png'}
           alt={pkg.alt}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute top-4 left-4">

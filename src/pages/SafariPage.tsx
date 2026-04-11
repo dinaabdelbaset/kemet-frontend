@@ -45,7 +45,7 @@ const SafariPage = () => {
       <section className="relative h-[60vh] w-full flex items-center justify-center">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1600"
+            src="/images/safari_hero.png"
             alt="Safari Hero"
             className="w-full h-full object-cover"
           />
@@ -104,12 +104,31 @@ const SafariPage = () => {
                     <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_15px_30px_rgba(212,175,55,0.25)] transition-all duration-500 hover:-translate-y-2 group flex flex-col border-2 border-transparent hover:border-[#D4AF37]">
                       <div className="relative h-56 overflow-hidden">
                         <img
-                          src={item.cover_image || item.image_url || item.image}
+                          src={item.image || '/placeholder.png'}
                           alt={item.title}
+                          loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                         />
-                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-sm font-bold text-[#05073C] shadow-sm">
-                          ★ {item.rating}
+                        
+                        {/* Booking.com Style Badges */}
+                        <div className="absolute top-4 left-4 flex flex-col gap-2">
+                           {item.id % 4 === 0 && (
+                             <span className="bg-red-600 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-md w-max">
+                                High Demand - Only 1 spot left!
+                             </span>
+                           )}
+                           {item.id % 3 === 0 && (
+                             <span className="bg-[#003580] text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-md flex items-center gap-1 w-max">
+                                Kemet VIP Genius Level 1
+                             </span>
+                           )}
+                        </div>
+
+                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-[#05073C] font-bold shadow-sm flex flex-col items-center gap-1">
+                          <div className="flex gap-1 items-center">
+                             <span className="text-xl">{(parseFloat(item.rating) || 9.5).toFixed(1)}</span>
+                          </div>
+                          <span className="text-[10px] text-gray-500 uppercase">{parseFloat(item.rating) >= 4.5 ? 'Exceptional' : 'Fabulous'}</span>
                         </div>
                       </div>
 
@@ -120,6 +139,13 @@ const SafariPage = () => {
                         <h3 className="text-lg font-bold text-[#05073C] mb-3 leading-tight group-hover:text-[#EB662B] transition line-clamp-2">
                           {item.title}
                         </h3>
+                        
+                        {/* Free Cancellation Badge */}
+                        <div className="mt-1 mb-3">
+                           <p className="text-green-700 font-bold text-xs">✓ Free cancellation</p>
+                           <p className="text-green-700 text-[10px]">No prepayment needed</p>
+                        </div>
+
                         <div className="flex items-center gap-2 text-gray-500 text-sm mb-5 pb-5 border-b border-gray-100 flex-grow">
                           <FaClock /> {item.duration}
                         </div>

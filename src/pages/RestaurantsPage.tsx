@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import { Link } from "react-router-dom";
-import { FaCheckCircle, FaStar } from "react-icons/fa";
+import { FaCheckCircle, FaStar, FaMapMarkerAlt } from "react-icons/fa";
+import { useQuery } from '@tanstack/react-query';
+import { getRestaurants } from '@/api/restaurantService';
 
 const DealItem = ({ deal }: { deal: any }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -59,6 +61,11 @@ const DealItem = ({ deal }: { deal: any }) => {
 };
 
 const RestaurantsPage = () => {
+  const { data: restaurants, isLoading } = useQuery({
+    queryKey: ['restaurants'],
+    queryFn: getRestaurants
+  });
+
   return (
     <div className="bg-[#FAFAFA]">
       {/* 1. Hero Section */}
@@ -126,7 +133,56 @@ const RestaurantsPage = () => {
         </div>
       </SectionWrapper>
 
-      {/* 3. Fastest Food Delivery */}
+      {/* Featured Restaurants from DB */}
+      <SectionWrapper className="py-20 bg-[#FAFAFA]">
+        <div className="max-w-7xl mx-auto px-4" dir="rtl">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-[#222] mb-4">أشهر المطاعم المصرية</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              اكتشف أشهر والذ المطاعم اللي بتقدم تجربة أكل مصري وعربي مفيش زيها!
+            </p>
+          </div>
+
+          {isLoading ? (
+            <div className="flex justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#cd4f3c]"></div></div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {restaurants?.map((restaurant: any) => (
+                <div key={restaurant.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(212,175,55,0.06)] border border-gray-100 hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                  <div className="relative w-full aspect-video overflow-hidden">
+                    <img 
+                      src={restaurant.image || '/placeholder.png'} 
+                      alt={restaurant.name} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                    />
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm text-[#cd4f3c] text-xs font-bold flex items-center gap-1.5">
+                      <FaMapMarkerAlt /> {restaurant.location}
+                    </div>
+                  </div>
+                  <div className="p-6 flex flex-col flex-grow text-right">
+                    <h3 className="text-2xl font-bold text-[#14213d] mb-2">{restaurant.name}</h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{restaurant.description}</p>
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-[#cd4f3c] font-bold text-sm bg-[#cd4f3c]/10 px-3 py-1 rounded-md">{restaurant.cuisine}</span>
+                      <div className="flex items-center gap-1.5">
+                        <FaStar className="text-yellow-400" />
+                        <span className="text-sm font-bold">{restaurant.rating}</span>
+                        <span className="text-xs text-gray-500">({restaurant.reviews_count})</span>
+                      </div>
+                    </div>
+                    <div className="border-t border-gray-100 pt-4 flex justify-between items-center mt-auto">
+                      <span className="text-[#cd4f3c] font-bold">{restaurant.price_range_min} - {restaurant.price_range_max} EGP</span>
+                      <span className="text-gray-500 text-xs">{restaurant.opening_hours}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </SectionWrapper>
+
+      {/* 4. Fastest Food Delivery */}
       <SectionWrapper className="py-20 bg-[#FAFAFA]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center px-4 max-w-6xl mx-auto">
           {/* Images Masonry */}

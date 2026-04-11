@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import RootLayout from "../layout/RootLayout";
+import ProtectedRoute from "../components/common/ProtectedRoute";
 
 // ── Loading fallback ──
 const PageLoader = () => (
@@ -109,10 +110,10 @@ const router = createBrowserRouter(
         <Route path="activities" element={withSuspense(ActivitiesPage)} />
         <Route path="search" element={withSuspense(SearchPage)} />
         <Route path="support" element={withSuspense(SupportPage)} />
-        <Route path="wishlist" element={withSuspense(WishlistPage)} />
-        <Route path="bookings" element={withSuspense(MyBookingsPage)} />
-        <Route path="profile" element={withSuspense(ProfileSettingsPage)} />
-        <Route path="dashboard" element={withSuspense(DashboardPage)} />
+        <Route path="wishlist" element={<ProtectedRoute>{withSuspense(WishlistPage)}</ProtectedRoute>} />
+        <Route path="bookings" element={<ProtectedRoute>{withSuspense(MyBookingsPage)}</ProtectedRoute>} />
+        <Route path="profile" element={<ProtectedRoute>{withSuspense(ProfileSettingsPage)}</ProtectedRoute>} />
+        <Route path="dashboard" element={<ProtectedRoute>{withSuspense(DashboardPage)}</ProtectedRoute>} />
 
         {/* Footer Pages */}
         <Route path="about" element={withSuspense(AboutPage)} />
@@ -127,9 +128,9 @@ const router = createBrowserRouter(
         <Route path="app" element={withSuspense(MobileAppPage)} />
 
         {/* Checkout */}
-        <Route path="checkout" element={withSuspense(CheckoutPage)} />
+        <Route path="checkout" element={<ProtectedRoute>{withSuspense(CheckoutPage)}</ProtectedRoute>} />
         <Route path="shop" element={withSuspense(ShopPage)} />
-        <Route path="shop-checkout" element={withSuspense(ShopCheckoutPage)} />
+        <Route path="shop-checkout" element={<ProtectedRoute>{withSuspense(ShopCheckoutPage)}</ProtectedRoute>} />
 
         {/* 404 Catch All */}
         <Route path="*" element={withSuspense(NotFoundPage)} />

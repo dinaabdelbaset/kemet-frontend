@@ -7,65 +7,65 @@ import { FaGift, FaArrowRight, FaStar, FaClock, FaTag } from "react-icons/fa";
 gsap.registerPlugin(ScrollTrigger);
 
 const experiences = [
-  { id: 1, image: "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=600&q=85", name: "الأهرامات", icon: "🏛️" },
-  { id: 2, image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=85", name: "البحر الأحمر", icon: "🤿" },
-  { id: 3, image: "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600&q=85", name: "الأقصر", icon: "𓂀" },
-  { id: 4, image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=85", name: "الصحراء", icon: "⭐" },
-  { id: 5, image: "https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=600&q=85", name: "الإسكندرية", icon: "🏺" },
-  { id: 6, image: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=600&q=85", name: "سيناء", icon: "⛰️" },
-  { id: 7, image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=600&q=85", name: "خان الخليلي", icon: "🧆" },
-  { id: 8, image: "https://images.unsplash.com/photo-1600868205423-1c3906a4b162?w=600&q=85", name: "القاهرة", icon: "🌆" },
+  { id: 1, image: "/images/home/cta-pyramids.jpg", name: "الأهرامات", icon: "🏛️" },
+  { id: 2, image: "/images/home/cta-redsea.jpg", name: "البحر الأحمر", icon: "🤿" },
+  { id: 3, image: "/images/home/cta-luxor.jpg", name: "الأقصر", icon: "𓂀" },
+  { id: 4, image: "/images/home/cta-desert.jpg", name: "الصحراء", icon: "⭐" },
+  { id: 5, image: "/images/home/cta-alex.jpg", name: "الإسكندرية", icon: "🏺" },
+  { id: 6, image: "/images/home/cta-sinai.jpg", name: "سيناء", icon: "⛰️" },
+  { id: 7, image: "/images/home/cta-khan.jpg", name: "خان الخليلي", icon: "🧆" },
+  { id: 8, image: "/images/home/cta-cairo.jpg", name: "القاهرة", icon: "🌆" },
 ];
 
 // 4 packages per destination
 const destinationPackages: Record<number, { title: string; image: string; days: number; rating: number; originalPrice: number; tag: string }[]> = {
   1: [
-    { title: "جولة الأهرامات الكاملة", image: "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=400&q=80", days: 3, rating: 4.9, originalPrice: 350, tag: "الأكثر حجزاً" },
-    { title: "سفاري الصحراء والأهرام", image: "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=400&q=80", days: 4, rating: 4.8, originalPrice: 480, tag: "مغامرة" },
-    { title: "القاهرة والجيزة VIP", image: "https://images.unsplash.com/photo-1600868205423-1c3906a4b162?w=400&q=80", days: 5, rating: 4.7, originalPrice: 620, tag: "VIP" },
-    { title: "رحلة الحضارة الفرعونية", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&q=80", days: 7, rating: 4.9, originalPrice: 890, tag: "شامل" },
+    { title: "جولة الأهرامات الكاملة", image: "/images/home/cta-pyramids.jpg", days: 3, rating: 4.9, originalPrice: 350, tag: "الأكثر حجزاً" },
+    { title: "سفاري الصحراء والأهرام", image: "/images/home/cta-desert.jpg", days: 4, rating: 4.8, originalPrice: 480, tag: "مغامرة" },
+    { title: "القاهرة والجيزة VIP", image: "/images/home/cta-cairo.jpg", days: 5, rating: 4.7, originalPrice: 620, tag: "VIP" },
+    { title: "رحلة الحضارة الفرعونية", image: "/images/home/cta-luxor.jpg", days: 7, rating: 4.9, originalPrice: 890, tag: "شامل" },
   ],
   2: [
-    { title: "غوص البحر الأحمر", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&q=80", days: 4, rating: 4.9, originalPrice: 420, tag: "الأكثر حجزاً" },
-    { title: "سنوركل وشاطئ هرغدة", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80", days: 5, rating: 4.7, originalPrice: 550, tag: "عائلي" },
-    { title: "يخت خاص في البحر الأحمر", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&q=80", days: 3, rating: 4.8, originalPrice: 780, tag: "VIP" },
-    { title: "بكدج شرم الشيخ الشامل", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80", days: 7, rating: 4.9, originalPrice: 950, tag: "شامل" },
+    { title: "غوص البحر الأحمر", image: "/images/home/cta-redsea.jpg", days: 4, rating: 4.9, originalPrice: 420, tag: "الأكثر حجزاً" },
+    { title: "سنوركل وشاطئ هرغدة", image: "/images/home/cta-sinai.jpg", days: 5, rating: 4.7, originalPrice: 550, tag: "عائلي" },
+    { title: "يخت خاص في البحر الأحمر", image: "/images/home/cta-redsea.jpg", days: 3, rating: 4.8, originalPrice: 780, tag: "VIP" },
+    { title: "بكدج شرم الشيخ الشامل", image: "/images/home/cta-sinai.jpg", days: 7, rating: 4.9, originalPrice: 950, tag: "شامل" },
   ],
   3: [
-    { title: "معابد الأقصر والكرنك", image: "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=400&q=80", days: 3, rating: 4.9, originalPrice: 380, tag: "الأكثر حجزاً" },
-    { title: "رحلة النيل الكاملة", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&q=80", days: 5, rating: 4.8, originalPrice: 590, tag: "رومانسي" },
-    { title: "وادي الملوك VIP", image: "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=400&q=80", days: 4, rating: 4.7, originalPrice: 670, tag: "VIP" },
-    { title: "أسوان والأقصر شامل", image: "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=400&q=80", days: 7, rating: 4.9, originalPrice: 1050, tag: "شامل" },
+    { title: "معابد الأقصر والكرنك", image: "/images/home/cta-luxor.jpg", days: 3, rating: 4.9, originalPrice: 380, tag: "الأكثر حجزاً" },
+    { title: "رحلة النيل الكاملة", image: "/images/home/cta-bg.jpg", days: 5, rating: 4.8, originalPrice: 590, tag: "رومانسي" },
+    { title: "وادي الملوك VIP", image: "/images/home/cta-pyramids.jpg", days: 4, rating: 4.7, originalPrice: 670, tag: "VIP" },
+    { title: "أسوان والأقصر شامل", image: "/images/home/cta-luxor.jpg", days: 7, rating: 4.9, originalPrice: 1050, tag: "شامل" },
   ],
   4: [
-    { title: "سفاري الصحراء الغربية", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&q=80", days: 3, rating: 4.8, originalPrice: 310, tag: "مغامرة" },
-    { title: "واحة سيوة الليلية", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&q=80", days: 4, rating: 4.9, originalPrice: 450, tag: "الأكثر حجزاً" },
-    { title: "ليلة في قلب الصحراء", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400&q=80", days: 2, rating: 4.7, originalPrice: 280, tag: "رومانسي" },
-    { title: "جيب سفاري الواحات", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&q=80", days: 5, rating: 4.8, originalPrice: 580, tag: "شامل" },
+    { title: "سفاري الصحراء الغربية", image: "/images/home/cta-desert.jpg", days: 3, rating: 4.8, originalPrice: 310, tag: "مغامرة" },
+    { title: "واحة سيوة الليلية", image: "/images/home/cta-sinai.jpg", days: 4, rating: 4.9, originalPrice: 450, tag: "الأكثر حجزاً" },
+    { title: "ليلة في قلب الصحراء", image: "/images/home/cta-desert.jpg", days: 2, rating: 4.7, originalPrice: 280, tag: "رومانسي" },
+    { title: "جيب سفاري الواحات", image: "/images/home/cta-khan.jpg", days: 5, rating: 4.8, originalPrice: 580, tag: "شامل" },
   ],
   5: [
-    { title: "إسكندرية التاريخية", image: "https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=400&q=80", days: 2, rating: 4.7, originalPrice: 220, tag: "تاريخي" },
-    { title: "كورنيش وقلعة قايتباي", image: "https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=400&q=80", days: 3, rating: 4.8, originalPrice: 340, tag: "الأكثر حجزاً" },
-    { title: "ساحل الإسكندرية VIP", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80", days: 4, rating: 4.6, originalPrice: 490, tag: "VIP" },
-    { title: "رحلة البحر الأبيض المتوسط", image: "https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=400&q=80", days: 5, rating: 4.9, originalPrice: 670, tag: "شامل" },
+    { title: "إسكندرية التاريخية", image: "/images/home/cta-alex.jpg", days: 2, rating: 4.7, originalPrice: 220, tag: "تاريخي" },
+    { title: "كورنيش وقلعة قايتباي", image: "/images/home/cta-alex.jpg", days: 3, rating: 4.8, originalPrice: 340, tag: "الأكثر حجزاً" },
+    { title: "ساحل الإسكندرية VIP", image: "/images/home/cta-sinai.jpg", days: 4, rating: 4.6, originalPrice: 490, tag: "VIP" },
+    { title: "رحلة البحر الأبيض المتوسط", image: "/images/home/cta-alex.jpg", days: 5, rating: 4.9, originalPrice: 670, tag: "شامل" },
   ],
   6: [
-    { title: "جبل موسى وسانت كاترين", image: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=400&q=80", days: 2, rating: 4.9, originalPrice: 290, tag: "الأكثر حجزاً" },
-    { title: "شاطئ سيناء الجنوبية", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80", days: 4, rating: 4.8, originalPrice: 460, tag: "عائلي" },
-    { title: "غوص رأس محمد", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&q=80", days: 3, rating: 4.7, originalPrice: 540, tag: "مغامرة" },
-    { title: "سيناء الشامل - برية وبحر", image: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=400&q=80", days: 7, rating: 4.9, originalPrice: 980, tag: "شامل" },
+    { title: "جبل موسى وسانت كاترين", image: "/images/home/cta-sinai.jpg", days: 2, rating: 4.9, originalPrice: 290, tag: "الأكثر حجزاً" },
+    { title: "شاطئ سيناء الجنوبية", image: "/images/home/cta-redsea.jpg", days: 4, rating: 4.8, originalPrice: 460, tag: "عائلي" },
+    { title: "غوص رأس محمد", image: "/images/home/cta-redsea.jpg", days: 3, rating: 4.7, originalPrice: 540, tag: "مغامرة" },
+    { title: "سيناء الشامل - برية وبحر", image: "/images/home/cta-sinai.jpg", days: 7, rating: 4.9, originalPrice: 980, tag: "شامل" },
   ],
   7: [
-    { title: "جولة خان الخليلي", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400&q=80", days: 1, rating: 4.7, originalPrice: 85, tag: "الأكثر حجزاً" },
-    { title: "القاهرة الإسلامية", image: "https://images.unsplash.com/photo-1600868205423-1c3906a4b162?w=400&q=80", days: 2, rating: 4.8, originalPrice: 195, tag: "تاريخي" },
-    { title: "قلعة صلاح الدين + الأزهر", image: "https://images.unsplash.com/photo-1600868205423-1c3906a4b162?w=400&q=80", days: 3, rating: 4.6, originalPrice: 310, tag: "مع مرشد" },
-    { title: "القاهرة الكاملة الشامل", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400&q=80", days: 5, rating: 4.9, originalPrice: 550, tag: "شامل" },
+    { title: "جولة خان الخليلي", image: "/images/home/cta-khan.jpg", days: 1, rating: 4.7, originalPrice: 85, tag: "الأكثر حجزاً" },
+    { title: "القاهرة الإسلامية", image: "/images/home/cta-cairo.jpg", days: 2, rating: 4.8, originalPrice: 195, tag: "تاريخي" },
+    { title: "قلعة صلاح الدين + الأزهر", image: "/images/home/cta-cairo.jpg", days: 3, rating: 4.6, originalPrice: 310, tag: "مع مرشد" },
+    { title: "القاهرة الكاملة الشامل", image: "/images/home/cta-khan.jpg", days: 5, rating: 4.9, originalPrice: 550, tag: "شامل" },
   ],
   8: [
-    { title: "القاهرة في يوم واحد", image: "https://images.unsplash.com/photo-1600868205423-1c3906a4b162?w=400&q=80", days: 1, rating: 4.7, originalPrice: 120, tag: "الأكثر حجزاً" },
-    { title: "القاهرة والجيزة 3 أيام", image: "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=400&q=80", days: 3, rating: 4.8, originalPrice: 360, tag: "عائلي" },
-    { title: "القاهرة الحديثة والقديمة", image: "https://images.unsplash.com/photo-1600868205423-1c3906a4b162?w=400&q=80", days: 4, rating: 4.6, originalPrice: 480, tag: "تاريخي" },
-    { title: "مصر كلها من القاهرة", image: "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=400&q=80", days: 10, rating: 4.9, originalPrice: 1450, tag: "شامل" },
+    { title: "القاهرة في يوم واحد", image: "/images/home/cta-cairo.jpg", days: 1, rating: 4.7, originalPrice: 120, tag: "الأكثر حجزاً" },
+    { title: "القاهرة والجيزة 3 أيام", image: "/images/home/cta-pyramids.jpg", days: 3, rating: 4.8, originalPrice: 360, tag: "عائلي" },
+    { title: "القاهرة الحديثة والقديمة", image: "/images/home/cta-cairo.jpg", days: 4, rating: 4.6, originalPrice: 480, tag: "تاريخي" },
+    { title: "مصر كلها من القاهرة", image: "/images/home/cta-bg.jpg", days: 10, rating: 4.9, originalPrice: 1450, tag: "شامل" },
   ],
 };
 
@@ -142,7 +142,7 @@ const ParallaxCTA = () => {
   return (
     <div ref={sectionRef} className="relative w-full overflow-hidden my-16 md:my-24">
       <img ref={bgRef}
-        src="https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=1600&h=900&fit=crop"
+        src="/images/home/cta-bg.jpg"
         alt="Egypt"
         loading="lazy"
         decoding="async"

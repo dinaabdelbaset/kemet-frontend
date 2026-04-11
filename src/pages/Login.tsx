@@ -1,8 +1,9 @@
 import { useState, type FormEvent, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaArrowRight, FaGoogle, FaFacebookF } from "react-icons/fa";
 import { useApp } from "../context/AppContext";
 import { login as loginApi, socialLogin } from "../api/authService";
+import { useGoogleLogin } from '@react-oauth/google';
 
 const LOGIN_HERO = "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?q=80&w=2000&auto=format&fit=crop";
 
@@ -13,6 +14,7 @@ const LoginPage = () => {
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
     const [isLoading, setIsLoading] = useState(false);
     const [generalError, setGeneralError] = useState("");
+    const location = useLocation();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -34,6 +36,7 @@ const LoginPage = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setGeneralError("");
@@ -44,7 +47,8 @@ const LoginPage = () => {
             localStorage.setItem("token", response.token);
             setFormData({ email: "", password: "" });
             login({ id: String(response.user.id), name: response.user.name, email: response.user.email });
-            navigate("/");
+            const from = location.state?.from || "/";
+            navigate(from, { state: location.state?.routeState, replace: true });
         } catch (error: any) {
             setGeneralError(error.response?.data?.message || "Invalid credentials");
         } finally {
@@ -52,15 +56,23 @@ const LoginPage = () => {
         }
     };
 
+    const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null);
+
     const handleSocial = async (provider: string) => {
+        setIsSocialLoading(provider);
+        setGeneralError("");
         try {
             const data = { name: provider + " User", email: `user@${provider}.com`, provider };
             const response = await socialLogin(data);
             localStorage.setItem("token", response.token);
             login({ id: String(response.user.id), name: response.user.name, email: response.user.email });
-            navigate("/");
-        } catch (error) {
+            const from = location.state?.from || "/";
+            navigate(from, { state: location.state?.routeState, replace: true });
+        } catch (error: any) {
             console.error(error);
+            setGeneralError(error.response?.data?.message || "Failed to authenticate with " + provider);
+        } finally {
+            setIsSocialLoading(null);
         }
     };
 
@@ -109,18 +121,22 @@ const LoginPage = () => {
                     <div className="flex gap-4 mb-4">
                         <div className={`flex-1 overflow-hidden`}>
                             <button 
+                                type="button"
+                                disabled={isSocialLoading !== null}
                                 onClick={() => handleSocial("google")}
-                                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-semibold transition-all duration-700 delay-[600ms] hover:-translate-y-1 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-semibold transition-all duration-700 delay-[600ms] hover:-translate-y-1 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'} ${isSocialLoading !== null ? "opacity-50 cursor-not-allowed" : ""}`}
                             >
-                                <FaGoogle className="text-red-400" /> Google
+                                {isSocialLoading === "google" ? "..." : <><FaGoogle className="text-red-400" /> Google</>}
                             </button>
                         </div>
                         <div className={`flex-1 overflow-hidden`}>
                             <button 
+                                type="button"
+                                disabled={isSocialLoading !== null}
                                 onClick={() => handleSocial("facebook")}
-                                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-semibold transition-all duration-700 delay-[700ms] hover:-translate-y-1 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-semibold transition-all duration-700 delay-[700ms] hover:-translate-y-1 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'} ${isSocialLoading !== null ? "opacity-50 cursor-not-allowed" : ""}`}
                             >
-                                <FaFacebookF className="text-blue-500" /> Facebook
+                                {isSocialLoading === "facebook" ? "..." : <><FaFacebookF className="text-blue-500" /> Facebook</>}
                             </button>
                         </div>
                     </div>
@@ -183,7 +199,7 @@ const LoginPage = () => {
                     </form>
 
                     <p className={`mt-5 text-center text-slate-500 font-medium text-xs transition-all duration-1000 delay-[1200ms] ${mounted ? 'opacity-100' : 'opacity-0'}`}>
-                        New to Kamet? <Link to="/sign-up" className="text-[#05073C] hover:text-[#D4AF37] font-bold border-b border-[#05073C] hover:border-[#D4AF37] pb-0.5 transition-all">Create an account</Link>
+                        New to Kamet? <Link to="/sign-up" state={{ from: location.state?.from, routeState: location.state?.routeState }} className="text-[#05073C] hover:text-[#D4AF37] font-bold border-b border-[#05073C] hover:border-[#D4AF37] pb-0.5 transition-all">Create an account</Link>
                     </p>
                 </div>
             </div>

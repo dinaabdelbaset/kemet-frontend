@@ -126,9 +126,23 @@ const SafariDetailsPage = () => {
                   type="button" 
                   onClick={() => navigate("/checkout", {
                     state: {
-                      title: safari.title,
-                      price: safari.price,
-                      image: safari.image
+                      checkoutData: {
+                        item: {
+                          id: 1,
+                          type: "safari",
+                          title: safari.title,
+                          price: safari.price,
+                          image: safari.image
+                        },
+                        booking: {
+                          date: "2026-04-20", // default placeholder
+                          time: "07:00 AM",
+                          tickets: { adult: 1, child: 0, infant: 0 }
+                        },
+                        details: { firstName: "", lastName: "", phone: "", email: "" },
+                        payment: { method: "credit_card", cardNumber: "", expirationDate: "", cvc: "" },
+                        totalPrice: safari.price
+                      }
                     }
                   })}
                   className="w-full py-4 mt-4 bg-[#cd4f3c] hover:bg-[#b03c2b] text-white font-bold text-lg rounded-xl transition shadow-md"

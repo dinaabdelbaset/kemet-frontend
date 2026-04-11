@@ -95,7 +95,7 @@ const PromoBanner = () => {
             Limited time offer, don't miss the opportunity
           </p>
 
-          <Link to="/checkout" state={{ title: "Special Destination Offer", price: 199, image: "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1200" }}>
+          <Link to="/checkout" state={{ title: "Special Destination Offer", price: 199, image: "/images/home/promo-banner.jpg" }}>
             <Button className="transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(212,175,55,0.4)] text-white px-11 py-4 mt-7 rounded-xl hover:bg-[#1A365D]">
               Book Now
             </Button>
@@ -104,7 +104,7 @@ const PromoBanner = () => {
 
         {/* Right image with clip-path reveal */}
         <div ref={imageRef} className="relative w-full h-full overflow-hidden rounded-2xl group border-2 border-transparent transition-all duration-500 hover:border-[#D4AF37] hover:shadow-[0_15px_30px_rgba(212,175,55,0.25)]">
-          <Image src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1200" alt="Promo image" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          <Image src="/images/home/promo-banner.jpg" alt="Promo image" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
         </div>
       </div>
     </SectionWrapper>

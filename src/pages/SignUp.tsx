@@ -1,10 +1,12 @@
 import { useState, useEffect, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { register, socialLogin } from "../api/authService";
+import { useGoogleLogin } from '@react-oauth/google';
 
 const SignUpPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { login } = useApp();
     const [formData, setFormData] = useState({
         name: "",
@@ -58,7 +60,8 @@ const SignUpPage = () => {
             localStorage.setItem("token", response.token);
             setFormData({ name: "", email: "", password: "" }); 
             login({ id: String(response.user.id), name: response.user.name, email: response.user.email });
-            navigate("/");
+            const from = location.state?.from || "/";
+            navigate(from, { state: location.state?.routeState, replace: true });
         } catch (error: any) {
             console.error(error);
             const errorMessage = error.response?.data?.message || error.response?.data?.errors?.email?.[0] || "Registration failed. Please try again.";
@@ -79,7 +82,8 @@ const SignUpPage = () => {
             const response = await socialLogin(fakeSocialData);
             localStorage.setItem("token", response.token);
             login({ id: String(response.user.id), name: response.user.name, email: response.user.email });
-            navigate("/");
+            const from = location.state?.from || "/";
+            navigate(from, { state: location.state?.routeState, replace: true });
         } catch (error) {
             console.error(error);
         } finally {
@@ -137,11 +141,15 @@ const SignUpPage = () => {
                                 type="button"
                                 onClick={() => handleOAuthLogin("google")}
                                 disabled={oAuthLoading.google || isLoading}
-                                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-semibold transition-all duration-700 delay-[600ms] hover:-translate-y-1 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-semibold transition-all duration-700 delay-[600ms] hover:-translate-y-1 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'} ${(oAuthLoading.google || isLoading) ? "opacity-50 cursor-not-allowed" : ""}`}
                             >
-                                <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" />
-                                </svg> Google
+                                {oAuthLoading.google ? "..." : (
+                                    <>
+                                        <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" />
+                                        </svg> Google
+                                    </>
+                                )}
                             </button>
                         </div>
                         <div className={`flex-1 overflow-hidden`}>
@@ -149,11 +157,15 @@ const SignUpPage = () => {
                                 type="button"
                                 onClick={() => handleOAuthLogin("facebook")}
                                 disabled={oAuthLoading.facebook || isLoading}
-                                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-semibold transition-all duration-700 delay-[700ms] hover:-translate-y-1 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                                className={`w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-semibold transition-all duration-700 delay-[700ms] hover:-translate-y-1 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'} ${(oAuthLoading.facebook || isLoading) ? "opacity-50 cursor-not-allowed" : ""}`}
                             >
-                                <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                                </svg> Facebook
+                                {oAuthLoading.facebook ? "..." : (
+                                    <>
+                                        <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                            <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
+                                        </svg> Facebook
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
@@ -234,7 +246,7 @@ const SignUpPage = () => {
                     </form>
 
                     <p className={`mt-5 text-center text-gray-500 font-medium text-xs transition-all duration-1000 delay-[1200ms] ${mounted ? 'opacity-100' : 'opacity-0'}`}>
-                        Already have an account? <Link to="/login" className="text-[#05073C] hover:text-[#D4AF37] font-bold border-b border-[#05073C] hover:border-[#D4AF37] pb-0.5 transition-all">Sign In</Link>
+                        Already have an account? <Link to="/login" state={{ from: location.state?.from, routeState: location.state?.routeState }} className="text-[#05073C] hover:text-[#D4AF37] font-bold border-b border-[#05073C] hover:border-[#D4AF37] pb-0.5 transition-all">Sign In</Link>
                     </p>
                 </div>
             </div>

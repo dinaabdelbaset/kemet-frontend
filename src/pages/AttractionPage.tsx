@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt, FaStar, FaClock, FaTicketAlt, FaChevronRight, FaCalendarAlt, FaUsers, FaShieldAlt, FaCheckCircle } from "react-icons/fa";
 import { getAttraction } from "../api/contentService";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import DateTimePicker from "@/components/Ui/DateTimePicker";
 
 const AttractionPage = () => {
   const { destination = "" } = useParams();
@@ -221,12 +222,12 @@ const AttractionPage = () => {
                     <label className="block text-xs font-black text-gray-500 dark:text-white/50 uppercase tracking-widest mb-2">
                       📅 تاريخ الزيارة
                     </label>
-                    <input
-                      type="date"
-                      min={new Date().toISOString().split("T")[0]}
-                      value={visitDate}
-                      onChange={(e) => setVisitDate(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-white text-sm font-semibold focus:outline-none focus:border-[#D4AF37] transition"
+                    <DateTimePicker
+                      compact
+                      showTime={false}
+                      accentColor="#EB662B"
+                      dateLabel="اختر التاريخ"
+                      onDateChange={(val) => setVisitDate(val)}
                     />
                   </div>
 

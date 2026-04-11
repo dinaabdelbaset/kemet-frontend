@@ -2,89 +2,24 @@ import SectionWrapper from "@/components/sections/SectionWrapper";
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaClock, FaLandmark, FaTicketAlt } from "react-icons/fa";
 
+import { useQuery } from '@tanstack/react-query';
+import { getMuseums } from '@/api/museumService';
+
 const MuseumsPage = () => {
-  const MUSEUMS_DB = [
-    {
-      id: 1,
-      title: "Grand Egyptian Museum",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_gem",
-      details: ["Giza", "Daily: 9AM - 6PM", "Guided Available"],
-      price: "150 EGP",
-      icon: <FaLandmark className="text-[#E76F51]" />
-    },
-    {
-      id: 2,
-      title: "National Museum of Egyptian Civilization",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_nmec",
-      details: ["Cairo", "Daily: 9AM - 5PM", "Mummies Hall"],
-      price: "80 EGP",
-      icon: <FaLandmark className="text-[#E76F51]" />
-    },
-    {
-      id: 3,
-      title: "Karnak Temple Complex",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_karnak",
-      details: ["Luxor", "Daily: 6AM - 5PM", "Ancient Columns"],
-      price: "40 EGP",
-      icon: <FaMapMarkerAlt className="text-[#E76F51]" />
-    },
-    {
-      id: 4,
-      title: "Luxor Museum",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_luxor_museum",
-      details: ["Luxor", "Daily: 9AM - 9PM", "Priceless Artifacts"],
-      price: "40 EGP",
-      icon: <FaLandmark className="text-[#E76F51]" />
-    },
-    {
-      id: 5,
-      title: "Abu Simbel Temple",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_abu_simbel",
-      details: ["Aswan", "Daily: 5AM - 5PM", "Ramses II statues"],
-      price: "60 EGP",
-      icon: <FaMapMarkerAlt className="text-[#E76F51]" />
-    },
-    {
-      id: 6,
-      title: "Philae Temple",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_philae",
-      details: ["Aswan", "Daily: 7AM - 4PM", "Island Sanctuary"],
-      price: "40 EGP",
-      icon: <FaMapMarkerAlt className="text-[#E76F51]" />
-    },
-    {
-      id: 7,
-      title: "Graeco-Roman Museum",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_graeco_roman",
-      details: ["Alexandria", "Daily: 9AM - 5PM", "Restored Halls"],
-      price: "40 EGP",
-      icon: <FaLandmark className="text-[#E76F51]" />
-    },
-    {
-      id: 8,
-      title: "Citadel of Qaitbay",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_qaitbay",
-      details: ["Alexandria", "Daily: 8AM - 5PM", "Medieval Fortress"],
-      price: "60 EGP",
-      icon: <FaMapMarkerAlt className="text-[#E76F51]" />
-    },
-    {
-      id: 9,
-      title: "Hurghada National Museum",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_hurghada_museum",
-      details: ["Red Sea", "Daily: 10AM - 1PM & 5PM", "Coastal Heritage"],
-      price: "80 EGP",
-      icon: <FaLandmark className="text-[#E76F51]" />
-    },
-    {
-      id: 10,
-      title: "Sharm El-Sheikh Museum",
-      image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_sharm",
-      details: ["South Sinai", "Daily: 10AM - 1PM & 5PM", "Modern Displays"],
-      price: "40 EGP",
-      icon: <FaLandmark className="text-[#E76F51]" />
-    },
-  ];
+  const { data: museums, isLoading, error } = useQuery({
+    queryKey: ['museums'],
+    queryFn: getMuseums
+  });
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#fdfaf7]"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div></div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#fdfaf7] text-red-500">Failed to load museums. Please try again later.</div>;
+  }
+
+  // MUSEUMS_DB is completely replaced by real data from api.
 
   return (
     <div className="bg-[#fdfaf7] min-h-screen">
@@ -92,7 +27,7 @@ const MuseumsPage = () => {
       <section className="relative h-[400px] md:h-[500px] w-full">
         <div className="absolute inset-0">
           <img 
-            src="https://dinaabdelbaset-kemet.hf.space/api/kamet-images/lm_hero" 
+            src="/images/museums/museums-hero.jpg" 
             alt="Museums Hero" 
             className="w-full h-full object-cover brightness-50"
           />
@@ -121,7 +56,7 @@ const MuseumsPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {MUSEUMS_DB.map((museum) => (
+            {museums?.map((museum: any) => (
               <div 
                 key={museum.id} 
                 className="group bg-[#fcfbf9] rounded-3xl border border-gray-100 shadow-sm hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col"
@@ -129,41 +64,22 @@ const MuseumsPage = () => {
                 {/* Card Image */}
                 <div className="relative w-full aspect-[4/3] overflow-hidden">
                   <img 
-                    src={museum.image} 
-                    alt={museum.title} 
+                    src={museum.image || '/placeholder.png'} 
+                    alt={museum.name} 
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   
                   {/* Price Badge */}
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-white/20">
                     <span className="font-bold text-[#cf4a36] text-sm flex items-center gap-2">
-                       <FaTicketAlt className="text-[#D4AF37]" /> {museum.price}
-                    </span>
-                  </div>
-
-                  {/* Gradient Overlay for icons */}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent pt-12 pb-4 px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex justify-between items-center">
-                    <span className="text-white font-medium text-sm flex items-center gap-2">
-                       {museum.icon} {museum.details[0]}
+                       <FaTicketAlt /> {museum.ticket_price} EGP
                     </span>
                   </div>
                 </div>
 
-                {/* Card Body */}
+                {/* Card Content */}
                 <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-bold text-[#14213d] mb-4 group-hover:text-[#E76F51] transition-colors line-clamp-2">
-                    {museum.title}
-                  </h3>
-                  
-                  <div className="flex flex-col gap-3 mb-6 flex-grow justify-end">
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <div className="w-8 h-8 rounded-full bg-[#E76F51]/10 flex items-center justify-center">
-                        {museum.icon}
-                      </div>
-                      <span className="font-medium text-[#14213d]">{museum.details[0]}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <div className="w-8 h-8 rounded-full bg-[#E76F51]/10 flex items-center justify-center">
                         <FaClock className="text-[#E76F51]" />
                       </div>
                       <span>{museum.details[1]}</span>
