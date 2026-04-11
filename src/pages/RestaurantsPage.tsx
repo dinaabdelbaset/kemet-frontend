@@ -66,8 +66,9 @@ const RestaurantsPage = () => {
 
   // @ts-ignore
   useEffect(() => {
-    getRestaurants().then(data => {
-      setRestaurants(Array.isArray(data) ? data : []);
+    getRestaurants().then(res => {
+      const restaurantsArray = Array.isArray(res) ? res : (res?.data || []);
+      setRestaurants(restaurantsArray);
       setIsLoading(false);
     }).catch(err => {
       console.error("Error fetching restaurants:", err);
