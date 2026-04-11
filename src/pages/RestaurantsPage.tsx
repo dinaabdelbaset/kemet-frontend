@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import { Link } from "react-router-dom";
 import { FaCheckCircle, FaStar, FaMapMarkerAlt } from "react-icons/fa";
@@ -61,10 +61,19 @@ const DealItem = ({ deal }: { deal: any }) => {
 };
 
 const RestaurantsPage = () => {
-  const { data: restaurants, isLoading } = useQuery({
-    queryKey: ['restaurants'],
-    queryFn: getRestaurants
-  });
+  const [restaurants, setRestaurants] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // @ts-ignore
+  useEffect(() => {
+    getRestaurants().then(data => {
+      setRestaurants(Array.isArray(data) ? data : []);
+      setIsLoading(false);
+    }).catch(err => {
+      console.error("Error fetching restaurants:", err);
+      setIsLoading(false);
+    });
+  }, []);
 
   return (
     <div className="bg-[#FAFAFA]">
