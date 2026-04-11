@@ -341,9 +341,9 @@ const HotelsPage = () => {
 
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-[#05073C] font-bold shadow-sm flex flex-col items-center gap-1">
                   <div className="flex gap-1 items-center">
-                     <span className="text-xl">{(hotel.rating || 9.8).toFixed(1)}</span>
+                     <span className="text-xl">{(Number(hotel.rating) || 9.8).toFixed(1)}</span>
                   </div>
-                  <span className="text-[10px] text-gray-500 uppercase">{hotel.rating >= 9 ? 'Exceptional' : 'Fabulous'}</span>
+                  <span className="text-[10px] text-gray-500 uppercase">{Number(hotel.rating) >= 4.5 ? 'Exceptional' : 'Fabulous'}</span>
                 </div>
               </div>
 
