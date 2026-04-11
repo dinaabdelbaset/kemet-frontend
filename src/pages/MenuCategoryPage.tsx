@@ -175,27 +175,27 @@ const CartDrawer = ({ isOpen, onClose, cart, onRemove }: { isOpen: boolean; onCl
   const cartTotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
 
   return (
-    <>
+    <div className={`fixed inset-0 z-[120] flex items-center justify-center p-4 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
       {/* Backdrop */}
       <div 
-        className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-[110] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose} 
       />
       
-      {/* Drawer */}
-      <div className={`fixed top-0 right-0 h-full w-full max-w-md bg-white z-[120] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="px-6 py-8 border-b border-gray-100 flex items-center justify-between bg-white">
+      {/* Modal */}
+      <div className={`relative bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] transition-all duration-300 ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'}`}>
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white" dir="auto">
           <h2 className="text-2xl font-black text-[#05073C] flex items-center gap-3">
             <FaShoppingCart /> Your Order
           </h2>
-          <button onClick={onClose} className="bg-gray-100 p-3 rounded-full hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors">
+          <button onClick={onClose} className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors">
             <FaTimes />
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
           {cart.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-gray-400">
+            <div className="h-full flex flex-col items-center justify-center text-gray-400 py-10">
               <FaShoppingCart className="text-6xl mb-4 text-gray-200" />
               <p className="text-lg font-medium">Your cart is empty.</p>
               <p className="text-sm">Start adding some delicious food!</p>
@@ -233,14 +233,14 @@ const CartDrawer = ({ isOpen, onClose, cart, onRemove }: { isOpen: boolean; onCl
             <Link 
               to="/checkout" 
               state={{ type: 'food_cart', items: cart, price: cartTotal, title: 'Restaurant Order', image: cart[0]?.meal?.img || '/food/category_food.png' }}
-              className="w-full block text-center bg-[#05073C] text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all"
+              className="w-full text-center block bg-[#05073C] text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all"
             >
               Proceed to Checkout
             </Link>
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
