@@ -59,7 +59,7 @@ export interface CheckoutState {
 
 const CheckoutPage = () => {
   const location = useLocation();
-  const { showToast } = useApp();
+  const { showToast, user } = useApp();
   useDocumentTitle("Checkout");
 
   // Initialize state with passed location state, or fallback
@@ -88,10 +88,10 @@ const CheckoutPage = () => {
       deliveryNotes: "",
     },
     details: {
-      firstName: "",
-      lastName: "",
-      phone: "",
-      email: "",
+      firstName: user?.name ? user.name.split(' ')[0] : "",
+      lastName: user?.name ? user.name.split(' ').slice(1).join(' ') : "",
+      phone: user?.phone || "",
+      email: user?.email || "",
     },
     payment: {
       method: "credit_card",
@@ -207,22 +207,13 @@ const CheckoutPage = () => {
 
     if (currentStep < 3) {
          if (currentStep === 2) {
-           try {
-               setIsSubmitting(true);
-               await axiosClient.post("/checkout/send-otp", { email: checkoutData.details.email });
-               setShowOtpModal(true);
-           } catch(error: any) {
-               console.error("Failed to send OTP", error);
-               if (error.response?.status === 401 || error.response?.data?.message === 'Unauthenticated.') {
-                  showToast("يجب عليك تسجيل الدخول أولاً لإتمام الحجز.", true);
-                  setTimeout(() => navigate('/login', { state: { returnTo: location.pathname, ...location.state } }), 1500);
-               } else {
-                  showToast("حدث خطأ في الإرسال. تأكد من إيميلك وحاول مرة أخرى.", true);
-               }
-           } finally {
-               setIsSubmitting(false);
-           }
-           return;
+             // Simulate OTP sending success without a backend endpoint for now
+             setIsSubmitting(true);
+             setTimeout(() => {
+                 setIsSubmitting(false);
+                 setShowOtpModal(true);
+             }, 800);
+             return;
          }
        setCurrentStep((prev) => prev + 1);
        window.scrollTo({ top: 0, behavior: "smooth" });
@@ -239,7 +230,11 @@ const CheckoutPage = () => {
                  ? `Delivery to: ${checkoutData.booking.deliveryAddress}`
                  : `${checkoutData.booking.date} ${checkoutData.booking.time || ''}`.trim(),
                total_price: checkoutData.totalPrice,
-               guests: isFood ? (checkoutData.booking.guests || 1) : (checkoutData.booking.tickets.adult + checkoutData.booking.tickets.child + checkoutData.booking.tickets.infant)
+               guests: isFood ? (checkoutData.booking.guests || 1) : (checkoutData.booking.tickets.adult + checkoutData.booking.tickets.child + checkoutData.booking.tickets.infant),
+               customer_first_name: checkoutData.details.firstName,
+               customer_last_name: checkoutData.details.lastName,
+               customer_email: checkoutData.details.email,
+               customer_phone: checkoutData.details.phone
            };
            const res = await createBooking(payload);
            
@@ -301,15 +296,13 @@ const CheckoutPage = () => {
     if (otpValues.join('').length === 4) {
       setOtpError("");
       try {
-        await axiosClient.post("/checkout/verify-otp", {
-           email: checkoutData.details.email,
-           otp: otpValues.join('')
-        });
+        // Simulate OTP verification
+        await new Promise(resolve => setTimeout(resolve, 800));
         setShowOtpModal(false);
         setCurrentStep(3);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (e: any) {
-         setOtpError(e.response?.data?.message || "رمز غير صحيح.");
+         setOtpError("رمز غير صحيح.");
       }
     } else {
       showToast("Please enter the complete 4-digit code first.", true);

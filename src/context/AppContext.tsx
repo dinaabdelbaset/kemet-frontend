@@ -18,6 +18,7 @@ export interface User {
   email: string;
   avatar?: string;
   phone?: string;
+  points?: number;
 }
 
 export interface RecentlyViewedItem {

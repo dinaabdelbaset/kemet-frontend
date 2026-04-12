@@ -153,6 +153,10 @@ const ProfileSettingsPage = () => {
                         </button>
                         <p className="text-xs text-gray-400 mt-2 font-medium">JPG, JPEG or PNG. Max size 2MB.</p>
                       </div>
+                      <div className="ml-auto bg-orange-50 border border-orange-100 rounded-2xl p-4 flex flex-col items-center justify-center min-w-[120px]">
+                        <span className="text-xs font-bold text-[#EB662B] uppercase tracking-wider mb-1">Your Points</span>
+                        <span className="text-3xl font-black text-[#14213d]">{user?.points || 0}</span>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -2,16 +2,19 @@ import { RouterProvider } from "react-router-dom";
 import router from "./router";
 import { CartProvider } from "./context/CartContext";
 import "flowbite";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient();
 
 function App() {
   // App starts without background triggers
 
-
   return (
-    <CartProvider>
-      <RouterProvider router={router} />
-    </CartProvider>
+    <QueryClientProvider client={queryClient}>
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
+    </QueryClientProvider>
   );
 }
 

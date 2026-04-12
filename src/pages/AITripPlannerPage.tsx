@@ -329,7 +329,7 @@ const AITripPlannerPage = () => {
         clearInterval(interval);
         return prev;
       });
-    }, 1500);
+    }, 400);
 
     setTimeout(() => {
       setIsGenerating(false);
@@ -349,7 +349,7 @@ const AITripPlannerPage = () => {
         formData.vibe
       );
       setResult(trip);
-    }, 6000);
+    }, 1500);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

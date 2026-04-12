@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getTravelPackages } from "../../api/tripService";
+import { getDeals } from "../../api/tripService";
 import { Link } from "react-router-dom";
 import SectionWrapper from "./SectionWrapper";
 import { FaStar, FaArrowRight, FaMapMarkerAlt, FaChevronRight } from "react-icons/fa";
@@ -124,7 +124,7 @@ const DealsOffersSection = () => {
   useEffect(() => {
     const fetchDeals = async () => {
       try {
-        const data = await getTravelPackages();
+        const data = await getDeals();
         const normalized = (Array.isArray(data) ? data : []).map((deal: any) => ({
           ...deal,
           items: Array.isArray(deal.items) 

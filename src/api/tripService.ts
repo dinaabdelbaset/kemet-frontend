@@ -22,6 +22,11 @@ export const generateAiTrip = async (reqData: any) => {
 };
 
 export const getTravelPackages = async () => {
+    const response = await axiosClient.get("/travelpackages");
+    return response.data;
+};
+
+export const getDeals = async () => {
     const response = await axiosClient.get("/deals");
     return response.data;
 };

@@ -46,7 +46,9 @@ const MyBookingsPage = () => {
     setIsCancelling(true);
     try {
       const res = await cancelBooking(cancelModal.bookingId);
-      setBookings((prev) => prev.filter((booking) => booking.id !== cancelModal.bookingId));
+      setBookings((prev) => prev.map((booking) => 
+        booking.id === cancelModal.bookingId ? { ...booking, status: "cancelled" } : booking
+      ));
       if (showToast) showToast((res as any).message || "تم إلغاء الحجز واسترداد المبلغ", false);
     } catch (error: any) {
       console.error("Failed to cancel booking", error);

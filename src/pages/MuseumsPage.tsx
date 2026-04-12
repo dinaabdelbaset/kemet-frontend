@@ -80,9 +80,28 @@ const MuseumsPage = () => {
 
                 {/* Card Content */}
                 <div className="p-6 flex flex-col flex-grow">
-                        <FaClock className="text-[#E76F51]" />
+                  <div className="mb-4">
+                    <h3 className="text-2xl font-bold text-[#14213d] group-hover:text-[#cf4a36] transition-colors mb-2">
+                       {museum.name}
+                    </h3>
+                    <p className="text-gray-500 text-sm line-clamp-2">
+                       {museum.description || "Explore this amazing museum and its history."}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-3 py-4 border-y border-dashed border-gray-200 mb-6 flex-grow">
+                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                      <div className="p-2 bg-[#f4e8e1] rounded-lg">
+                        <FaMapMarkerAlt className="text-[#cf4a36]" />
                       </div>
-                      <span>{museum.details[1]}</span>
+                      <span className="font-medium truncate" title={museum.location}>{museum.location}</span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                      <div className="p-2 bg-[#f4e8e1] rounded-lg">
+                        <FaClock className="text-[#cf4a36]" />
+                      </div>
+                      <span className="font-medium">{museum.opening_hours || "9:00 AM - 5:00 PM"}</span>
                     </div>
                   </div>
 
@@ -90,7 +109,7 @@ const MuseumsPage = () => {
                   <div className="mt-auto">
                     <Link 
                       to={`/museums/${museum.id}`} 
-                      className="flex items-center justify-center w-full px-6 py-3.5 bg-[#E76F51] hover:bg-[#cf4a36] text-white rounded-xl font-bold transition-all shadow-md gap-2 text-lg"
+                      className="flex items-center justify-center w-full px-6 py-3.5 bg-[#cf4a36] hover:bg-[#b03a28] text-white rounded-xl font-bold transition-all shadow-md hover:shadow-lg gap-2 text-md"
                     >
                       Details & Booking &rarr;
                     </Link>

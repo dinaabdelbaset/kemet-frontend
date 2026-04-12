@@ -13,7 +13,7 @@ interface FlightState {
 }
 
 interface Flight {
-  id: string;
+  id: number;
   airline: string;
   logo: string;
   from: string;
@@ -35,11 +35,11 @@ const CLASSES = [
 ];
 
 const generateFlights = (from: string, to: string): Flight[] => [
-  { id: "MS-101", airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "07:30", arr: "09:15", duration: "1س 45د", stops: 0, class: "economy", price: 89, seats: 12, rating: 4.7 },
-  { id: "FS-204", airline: "فلاي إيجيبت", logo: "✈️", from, to, dep: "10:00", arr: "12:05", duration: "2س 05د", stops: 0, class: "economy", price: 74, seats: 6, rating: 4.5 },
-  { id: "MS-305", airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "13:45", arr: "15:30", duration: "1س 45د", stops: 0, class: "economy", price: 95, seats: 24, rating: 4.8 },
-  { id: "AH-512", airline: "إيرعربية مصر", logo: "🌙", from, to, dep: "16:20", arr: "18:50", duration: "2س 30د", stops: 1, class: "economy", price: 61, seats: 18, rating: 4.3 },
-  { id: "MS-701", airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "20:00", arr: "21:45", duration: "1س 45د", stops: 0, class: "economy", price: 112, seats: 4, rating: 4.9 },
+  { id: 101, airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "07:30", arr: "09:15", duration: "1س 45د", stops: 0, class: "economy", price: 89, seats: 12, rating: 4.7 },
+  { id: 204, airline: "فلاي إيجيبت", logo: "✈️", from, to, dep: "10:00", arr: "12:05", duration: "2س 05د", stops: 0, class: "economy", price: 74, seats: 6, rating: 4.5 },
+  { id: 305, airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "13:45", arr: "15:30", duration: "1س 45د", stops: 0, class: "economy", price: 95, seats: 24, rating: 4.8 },
+  { id: 512, airline: "إيرعربية مصر", logo: "🌙", from, to, dep: "16:20", arr: "18:50", duration: "2س 30د", stops: 1, class: "economy", price: 61, seats: 18, rating: 4.3 },
+  { id: 701, airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "20:00", arr: "21:45", duration: "1س 45د", stops: 0, class: "economy", price: 112, seats: 4, rating: 4.9 },
 ];
 
 const SEAT_ROWS = Array.from({ length: 8 }, (_, i) => i + 1);
