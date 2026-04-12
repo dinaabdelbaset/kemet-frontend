@@ -27,6 +27,40 @@ const SearchPage = () => {
         // Normalize results from multiple categories
         const results: any[] = [];
         
+        // Static internal pages logic
+        const pagesKeywords = [
+          { title: "المخطط الذكي (AI Planner)", path: "/ai-planner", keywords: ["ذكاء اصطناعي", "مخطط", "ai", "planner", "chat", "شات"], icon: "✨" },
+          { title: "متجر الهدايا والبازارات", path: "/bazaars", keywords: ["متجر", "هدايا", "منتجات", "shop", "store", "bazaar", "بازار", "بازارات", "souvenirs", "تسوق"], icon: "🛍️" },
+          { title: "حجوزاتي", path: "/bookings", keywords: ["حجوزاتي", "bookings", "حجوزات"], icon: "📅" },
+          { title: "المفضلة", path: "/wishlist", keywords: ["المفضلة", "wishlist", "قلب"], icon: "❤️" },
+          { title: "الملف الشخصي", path: "/profile", keywords: ["الحساب", "profile", "الملف الشخصي", "حسابي"], icon: "👤" },
+          { title: "سلة المشتريات", path: "/shop-checkout", keywords: ["السلة", "مشتريات", "cart", "عربة", "دفع"], icon: "🛒" },
+          { title: "تسجيل الدخول / خروج", path: "/login", keywords: ["دخول", "تسجيل", "login", "sign in", "حساب"], icon: "🔑" },
+          { title: "لوحة التحكم", path: "/dashboard", keywords: ["لوحة", "تحكم", "dashboard", "ادارة"], icon: "📊" },
+          { title: "المواصلات", path: "/transportation", keywords: ["مواصلات", "تنقل", "سيارات", "نقل", "transport", "transportation", "bus"], icon: "🚌" },
+          { title: "باقات السفر", path: "/packages", keywords: ["باقات", "عروض", "سفر", "packages", "travel"], icon: "📦" },
+          { title: "تذاكر الطيران", path: "/flights", keywords: ["طيران", "تذاكر", "مطار", "flights", "flight"], icon: "✈️" },
+          { title: "تواصل معنا (الدعم)", path: "/support", keywords: ["دعم", "تواصل", "support", "contact", "اتصل", "مساعدة"], icon: "📞" },
+        ];
+
+        const lowerQuery = query.toLowerCase();
+        pagesKeywords.forEach(p => {
+          if (p.title.toLowerCase().includes(lowerQuery) || p.keywords.some(k => lowerQuery.includes(k) || k.includes(lowerQuery))) {
+            results.push({
+              id: `page-${p.path}`,
+              title: p.title,
+              image: "https://images.unsplash.com/photo-1551244072-5d12891562da?auto=format&fit=crop&w=400&q=80",
+              category: "Quick Link",
+              categoryAr: "رابط سريع",
+              rating: "5.0",
+              reviews: 0,
+              location: "صفحات وميزات الموقع",
+              price: p.icon,
+              linkTo: p.path
+            });
+          }
+        });
+
         if (data.hotels && Array.isArray(data.hotels)) {
           data.hotels.forEach((h: any) => results.push({
             id: `hotel-${h.id}`, title: h.title || h.name, image: h.image,
