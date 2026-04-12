@@ -4,9 +4,27 @@ import { useCart } from "@/context/CartContext";
 import { Link } from "react-router-dom";
 import { FaUserEdit, FaEnvelope, FaPhoneAlt, FaCalendarAlt, FaHeart, FaShoppingBag, FaHistory } from "react-icons/fa";
 
+import { useState, useEffect } from "react";
+import { getUserBookings } from "@/api/bookingService";
+
 const DashboardPage = () => {
   const { user, wishlist, recentlyViewed } = useApp();
   const { totalItems } = useCart();
+  const [bookingsCount, setBookingsCount] = useState<number | string>("--");
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const data = await getUserBookings();
+        if (Array.isArray(data)) {
+          setBookingsCount(data.length);
+        }
+      } catch (error) {
+        setBookingsCount(0);
+      }
+    };
+    fetchBookings();
+  }, []);
 
   return (
     <div className="bg-[#fcfbf9] min-h-screen pt-24 pb-16">
@@ -74,7 +92,7 @@ const DashboardPage = () => {
                    <Link to="/bookings" className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all group flex flex-col justify-between h-full">
                       <div className="w-12 h-12 rounded-2xl bg-orange-50 text-[#EB662B] flex items-center justify-center text-xl mb-4 group-hover:bg-[#EB662B] group-hover:text-white transition-colors"><FaCalendarAlt /></div>
                       <div>
-                         <p className="text-3xl font-black text-[#14213d]">--</p>
+                         <p className="text-3xl font-black text-[#14213d]">{bookingsCount}</p>
                          <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mt-1">Bookings</p>
                       </div>
                    </Link>
