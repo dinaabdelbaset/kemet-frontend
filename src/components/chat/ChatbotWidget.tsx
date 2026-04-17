@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaCommentDots, FaTimes, FaPaperPlane, FaRobot } from "react-icons/fa";
-import { askChatbot } from "../../api/chatService";
+import { askChatbot, resetChatHistory } from "../../api/chatService";
 
 interface Message {
   id: string;

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { FaRobot, FaTimes, FaPaperPlane } from "react-icons/fa";
-import { askChatbot } from "../../api/chatService";
+import { askChatbot, resetChatHistory } from "../../api/chatService";
 
 const chatbotTranslations = {
   en: {
@@ -170,6 +170,7 @@ const FloatingChatbot = () => {
               onClick={() => {
                 setIsOpen(false);
                 // Reset chat history when closing
+                resetChatHistory();
                 const t = chatbotTranslations[lang] || chatbotTranslations['en'];
                 setMessages([{ id: 1, text: t.greeting, sender: "bot" }]);
               }}
@@ -248,6 +249,7 @@ const FloatingChatbot = () => {
         onClick={() => {
           if (isOpen) {
             // Reset chat history when closing via toggle
+            resetChatHistory();
             const t = chatbotTranslations[lang] || chatbotTranslations['en'];
             setMessages([{ id: 1, text: t.greeting, sender: "bot" }]);
           }
