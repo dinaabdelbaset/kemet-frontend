@@ -17,7 +17,7 @@ const EventDetailsPage = () => {
     const fetchEvent = async () => {
       try {
         const res = await axiosClient.get(`/events/${id}`);
-        setEvent(res.data);
+        setEvent(res.data?.data || res.data);
       } catch (err) {
         console.error("Error loading event details", err);
       } finally {

@@ -19,7 +19,7 @@ const SafariDetailsPage = () => {
     const fetchSafari = async () => {
       try {
         const res = await axiosClient.get(`/safaris/${id}`);
-        setSafari(res.data);
+        setSafari(res.data?.data || res.data);
       } catch (err) {
         console.error("Failed to load safari details", err);
       } finally {

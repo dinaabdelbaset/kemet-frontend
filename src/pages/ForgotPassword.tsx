@@ -122,6 +122,7 @@ const ForgotPasswordPage = () => {
                         <form className="space-y-6" onSubmit={handleEmailSubmit}>
                             <Input
                                 label="Email Address"
+                                name="email"
                                 type="email"
                                 placeholder="name@example.com"
                                 value={email}
@@ -144,6 +145,7 @@ const ForgotPasswordPage = () => {
                         <form className="space-y-6" onSubmit={handleOtpSubmit}>
                             <Input
                                 label="6-Digit OTP Code"
+                                name="otp"
                                 type="text"
                                 placeholder="123456"
                                 value={otp}
@@ -173,6 +175,7 @@ const ForgotPasswordPage = () => {
                         <form className="space-y-6" onSubmit={handlePasswordSubmit}>
                             <Input
                                 label="New Password"
+                                name="password"
                                 type="password"
                                 placeholder="••••••••"
                                 value={password}
@@ -182,6 +185,7 @@ const ForgotPasswordPage = () => {
                             />
                             <Input
                                 label="Confirm New Password"
+                                name="password_confirmation"
                                 type="password"
                                 placeholder="••••••••"
                                 value={passwordConfirmation}

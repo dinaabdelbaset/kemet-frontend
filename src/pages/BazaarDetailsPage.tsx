@@ -13,12 +13,16 @@ const BazaarDetailsPage = () => {
 
   const [bazaar, setBazaar] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const TIME_SLOTS = ["10:15 - 12:15", "12:15 - 14:15", "14:15 - 16:15", "16:15 - 18:15"];
+  const [selectedTime, setSelectedTime] = useState<string>(TIME_SLOTS[0]);
+  const [tickets, setTickets] = useState<Record<string, number>>({ person: 1 });
 
   useEffect(() => {
     const fetchBazaar = async () => {
       try {
         const res = await axiosClient.get(`/bazaars/${id}`);
-        setBazaar(res.data);
+        setBazaar(res.data?.data || res.data);
       } catch (err) {
         console.error("Error loading bazaar details", err);
       } finally {
@@ -51,11 +55,7 @@ const BazaarDetailsPage = () => {
     "https://images.unsplash.com/photo-1599839619722-39751411ea63?w=600"
   ];
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const TIME_SLOTS = ["10:15 - 12:15", "12:15 - 14:15", "14:15 - 16:15", "16:15 - 18:15"];
-  const [selectedTime, setSelectedTime] = useState<string>(TIME_SLOTS[0]);
 
-  const [tickets, setTickets] = useState<Record<string, number>>({ person: 1 });
   
   const handleTicketChange = (key: string, delta: number) => {
     setTickets(prev => ({ ...prev, [key]: Math.max(0, (prev[key] || 0) + delta) }));

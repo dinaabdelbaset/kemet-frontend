@@ -5,7 +5,7 @@ import InteractiveMap from "@/components/common/InteractiveMap";
 import SocialShare from "@/components/common/SocialShare";
 import ReviewSection from "@/components/common/ReviewSection";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 
 const MuseumDetailsPage = () => {
@@ -14,12 +14,14 @@ const MuseumDetailsPage = () => {
 
   const [museum, setMuseum] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [tickets, setTickets] = useState({ egAdult: 1, egStudent: 0, foreign: 0 });
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMuseum = async () => {
       try {
         const res = await axiosClient.get(`/museums/${id}`);
-        setMuseum(res.data);
+        setMuseum(res.data?.data || res.data);
       } catch (err) {
         console.error("Error loading museum details", err);
       } finally {
@@ -45,8 +47,7 @@ const MuseumDetailsPage = () => {
   
   const highlights = museum.highlights ? (typeof museum.highlights === 'string' ? JSON.parse(museum.highlights) : museum.highlights) : ["Historical artifacts", "Guided tours available", "Cultural heritage"];
 
-  const [tickets, setTickets] = useState({ egAdult: 1, egStudent: 0, foreign: 0 });
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
 
   const handleTicketChange = (type: 'egAdult' | 'egStudent' | 'foreign', delta: number) => {
     setTickets(prev => ({ ...prev, [type]: Math.max(0, prev[type] + delta) }));

@@ -40,7 +40,26 @@ const ExplorePage = () => {
                 ];
 
                 const res = await axiosClient.get("/all-data").catch(() => ({ data: {} }));
-                const allData = res.data || {};
+                const allData = res.data?.data || res.data || {};
+                
+                if (allData.restaurants) {
+                    allData.restaurants = allData.restaurants.map((r: any) => {
+                       const title = r.title || r.name || "";
+                       const titleLc = title.toLowerCase();
+                       let newImage = r.image;
+                       
+                       if (titleLc.includes("kadoura") || title.includes("قدورة")) newImage = "/images/restaurants/kadoura.png";
+                       else if (titleLc.includes("balbaa") || title.includes("بلبع")) newImage = "/images/restaurants/balbaa.png";
+                       else if (titleLc.includes("fares") || title.includes("فارس")) newImage = "/images/restaurants/fares.png";
+                       else if (titleLc.includes("masrien") || title.includes("المصريين")) newImage = "/images/restaurants/masrien.png";
+                       else if (newImage?.includes("unsplash") || newImage?.includes("hotel") || newImage === "placeholder.png") newImage = "/images/restaurants/generic.png";
+                       // If we know this is a restaurant and it happens to have the globally shared hotel image (we don't know the exact string, so we force generic onto missing/plain hotel images)
+                       else if (r.image === "hotel_fallback" || !r.image || (typeof r.image === 'string' && r.image.includes("red-sea.png"))) newImage = "/images/restaurants/generic.png";
+                       
+                       return { ...r, image: newImage || "/images/restaurants/generic.png", image_url: newImage || "/images/restaurants/generic.png" };
+                    });
+                }
+                
                 setApiHotels(allData.hotels || []);
                 setApiRestaurants(allData.restaurants || []);
                 setApiSafari(allData.safaris || []);
@@ -238,7 +257,7 @@ const ExplorePage = () => {
                                 {localRestaurants.length > 0 ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {localRestaurants.map(rest => (
-                                            <GenericCard key={`rest-${rest.id}`} item={rest} linkTo={`/restaurants/meal/${rest.id}`} />
+                                            <GenericCard key={`rest-${rest.id}`} item={rest} linkTo={`/restaurants/${rest.id}`} />
                                         ))}
                                     </div>
                                 ) : (
