@@ -13,7 +13,7 @@ import {
   FaUtensils,
   FaWifi,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Button from "../components/Ui/Button";
 import SectionWrapper from "../components/sections/SectionWrapper";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
@@ -21,9 +21,6 @@ import AdvancedFilters from "../components/common/AdvancedFilters";
 
 const getHotelImage = (hotel: any) => {
   if (hotel.image) {
-      if (hotel.image.startsWith('/')) {
-         return 'http://localhost:5173' + hotel.image;
-      }
       return hotel.image;
   }
   return "https://via.placeholder.com/400";
@@ -40,6 +37,7 @@ const amenities = [
 
 const HotelsPage = () => {
   useDocumentTitle("Hotels | Kemet");
+  const routerLocation = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState("All");
   const [hotels, setHotels] = useState<any[]>([]);
@@ -50,7 +48,21 @@ const HotelsPage = () => {
   });
   const [apiError, setApiError] = useState<string | null>(null);
 
-  const cities = ["All", "Cairo", "Giza", "Hurghada", "Sharm El-Sheikh", "Alexandria", "Luxor", "Aswan", "Marsa Matrouh", "Port Said", "Fayoum"];
+  const cities = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum"];
+
+  // Apply filters from URL when page loads
+  useEffect(() => {
+    const params = new URLSearchParams(routerLocation.search);
+    const locParam = params.get("location") || params.get("city") || params.get("q");
+    if (locParam) {
+      const match = cities.find(c => c.toLowerCase().includes(locParam.toLowerCase()));
+      if (match) {
+        setSelectedCity(match);
+      } else {
+        setSearchTerm(locParam);
+      }
+    }
+  }, [routerLocation.search]);
 
   useEffect(() => {
     const fetchHotels = async () => {

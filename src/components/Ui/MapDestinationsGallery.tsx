@@ -72,17 +72,6 @@ const governorates = [
     link: "/tours?location=hurghada"
   },
   {
-    id: "dahab",
-    title: "Dahab",
-    arabic: "دهب",
-    subtitle: "Blue Hole & Mountains",
-    mapCenter: { lat: 28.5029, lng: 34.5151 },
-    mapBounds: { north: 28.55, south: 28.45, west: 34.45, east: 34.55 },
-    image: "https://images.unsplash.com/photo-1493962853295-0fd70327578a?auto=format&fit=crop&ar=2:1&q=80&w=4000",
-    color: "#14B8A6",
-    link: "/tours?location=dahab"
-  },
-  {
     id: "marsa_alam",
     title: "Marsa Alam",
     arabic: "مرسى علم",

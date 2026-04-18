@@ -39,20 +39,14 @@ const ExplorePage = () => {
                     { id: 4, title: `Premium Spice Bazaar`, image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/baz_luxor", category: "Shopping", rating: 4.9, reviews_count: 620, location: destinationName, ticket_price: 25 },
                 ];
 
-                const [hotels, rests, safaris, bazaars, events, museums] = await Promise.all([
-                    axiosClient.get("/hotels").catch(() => ({ data: [] })),
-                    axiosClient.get("/restaurants").catch(() => ({ data: [] })),
-                    axiosClient.get("/safaris").catch(() => ({ data: [] })),
-                    axiosClient.get("/bazaars").catch(() => ({ data: fallbackBazaars })),
-                    axiosClient.get("/events").catch(() => ({ data: [] })),
-                    axiosClient.get("/museums").catch(() => ({ data: [] })),
-                ]);
-                setApiHotels(hotels.data);
-                setApiRestaurants(rests.data);
-                setApiSafari(safaris.data);
-                setApiBazaars(bazaars.data);
-                setApiEvents(events.data);
-                setApiMuseums(museums.data);
+                const res = await axiosClient.get("/all-data").catch(() => ({ data: {} }));
+                const allData = res.data || {};
+                setApiHotels(allData.hotels || []);
+                setApiRestaurants(allData.restaurants || []);
+                setApiSafari(allData.safaris || []);
+                setApiBazaars(allData.bazaars?.length > 0 ? allData.bazaars : fallbackBazaars);
+                setApiEvents(allData.events || []);
+                setApiMuseums(allData.museums || []);
             } catch (err) {
                 console.error("Error fetching data:", err);
             }
@@ -60,93 +54,55 @@ const ExplorePage = () => {
         fetchData();
     }, []);
 
-    // Smart dynamic image mapping based on City + Category
+    const getCityHash = (str: string) => {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return Math.abs(hash);
+    };
+
+    // Smart dynamic image mapping based on City + Category using deterministic hashing
     const getCitySpecificImage = (city: string, category: string, index: number) => {
-        const c = city.toLowerCase();
-        const isAlex = c.includes('alex');
-        const isLuxor = c.includes('luxor');
-        const isAswan = c.includes('aswan');
-        const isRedSea = c.includes('hurgh') || c.includes('sharm') || c.includes('dahab') || c.includes('marsa');
-        const isSinai = c.includes('sinai') || c.includes('cather');
-        
+        const hash = getCityHash(city) + (index * 7); // Multiply index to avoid sequential adjacent picks
+
         if (category === "Hotels") {
-           if (isRedSea) return index === 0 ? '/images/tour-red-sea.png' : '/images/home/why-quality.jpg';
-           if (isAlex) return index === 0 ? '/images/era-greco-roman.png' : '/images/home/why-flex.jpg';
-           if (isLuxor || isAswan) return index === 0 ? '/images/nile-cruise.png' : '/images/nile-luxor-aswan.png';
-           return index === 0 ? '/images/home/why-quality.jpg' : '/images/home/why-flex.jpg';
+           const imgs = ['/images/tour-red-sea.png', '/images/home/why-quality.jpg', '/images/era-greco-roman.png', '/images/home/why-flex.jpg', '/images/nile-cruise.png', '/images/nile-luxor-aswan.png', '/images/destinations/giza.png', '/images/destinations/fayoum.png'];
+           return imgs[hash % imgs.length];
         }
         if (category === "Museums") {
-           if (isAlex) return index === 0 ? '/images/era-greco-roman.png' : '/images/tour-museum.png';
-           if (isLuxor) return index === 0 ? '/images/era-pharaonic.png' : '/images/tour-museum.png';
-           if (isSinai) return index === 0 ? '/images/saint-catherine.png' : '/images/era-coptic.png';
-           return index === 0 ? '/images/tour-museum.png' : '/images/era-coptic.png';
+           const imgs = ['/images/era-greco-roman.png', '/images/tour-museum.png', '/images/era-pharaonic.png', '/images/saint-catherine.png', '/images/era-coptic.png', '/images/era-islamic.png'];
+           return imgs[hash % imgs.length];
         }
         if (category === "Restaurants") {
-           if (isAlex || isRedSea) return index === 0 ? '/images/tour-red-sea.png' : '/images/tour-cairo-food.png';
-           if (isLuxor || isAswan) return index === 0 ? '/images/tour-nile-cruise.png' : '/images/tour-cairo-food.png';
-           return index === 0 ? '/images/tour-cairo-food.png' : '/images/nile-cruise.png';
+           const imgs = ['/images/tour-cairo-food.png', '/images/tour-nile-cruise.png', '/food/koshary.png', '/food/molokhia.png', '/food/grills.png', '/food/chicken-tajine.png', '/food/pigeon.png', '/food/meat-tajine.png'];
+           return imgs[hash % imgs.length];
         }
         if (category === "Safari") {
-           if (isRedSea) return index === 0 ? '/images/tour-desert-safari.png' : '/images/siwa-safari.png';
-           if (isAswan || isLuxor) return index === 0 ? '/images/siwa-safari.png' : '/images/tour-desert-safari.png';
-           return index === 0 ? '/images/tour-desert-safari.png' : '/images/siwa-safari.png';
+           const imgs = ['/images/tour-desert-safari.png', '/images/siwa-safari.png', '/images/destinations/marsa-matrouh.png', '/images/home/why-flex.jpg'];
+           return imgs[hash % imgs.length];
         }
         if (category === "Bazaars") {
-           if (isLuxor) return index === 0 ? '/images/luxor-souk.png' : '/images/era-islamic.png';
-           if (isAswan) return index === 0 ? '/images/aswan-nubian-market.png' : '/images/luxor-souk.png';
-           if (isAlex) return index === 0 ? '/images/era-islamic.png' : '/images/aswan-nubian-market.png';
-           return index === 0 ? '/images/era-islamic.png' : '/images/luxor-souk.png';
+           const imgs = ['/images/luxor-souk.png', '/images/era-islamic.png', '/images/aswan-nubian-market.png', '/images/tour-pyramids.png'];
+           return imgs[hash % imgs.length];
         }
         if (category === "Events") {
-           if (isLuxor || isAswan) return index === 0 ? '/images/pyramids-vip.png' : '/images/era-pharaonic.png';
-           if (isRedSea) return index === 0 ? '/images/tour-red-sea.png' : '/images/tour-desert-safari.png';
-           return index === 0 ? '/images/tour-pyramids.png' : '/images/era-islamic.png';
+           const imgs = ['/images/pyramids-vip.png', '/images/era-pharaonic.png', '/images/tour-pyramids.png', '/images/era-islamic.png', '/images/destinations/port-said.png', '/images/era-greco-roman.png'];
+           return imgs[hash % imgs.length];
         }
         return '/images/home/why-quality.jpg';
     };
 
-    // Fallbacks array for each category using dynamically evaluated city-specific images
-    const fallbacks: Record<string, any[]> = {
-        "Hotels": [
-            { id: 101, title: `Grand ${destinationName} Oasis Hotel`, image: getCitySpecificImage(destinationName, "Hotels", 0), rating: 4.8, reviews: 341, location: destinationName, price: 120 },
-            { id: 102, title: `${destinationName} Boutique Resort`, image: getCitySpecificImage(destinationName, "Hotels", 1), rating: 4.5, reviews: 201, location: destinationName, price: 85 }
-        ],
-        "Museums": [
-            { id: 201, title: `Antiquities Museum of ${destinationName}`, image: getCitySpecificImage(destinationName, "Museums", 0), rating: 4.9, reviews: 540, location: destinationName, price: 15 },
-            { id: 202, title: `${destinationName} History Center`, image: getCitySpecificImage(destinationName, "Museums", 1), rating: 4.7, reviews: 120, location: destinationName, price: 12 }
-        ],
-        "Restaurants": [
-            { id: 301, title: 'Nile Breeze Gourmet Dining', image: getCitySpecificImage(destinationName, "Restaurants", 0), rating: 4.8, reviews: 412, location: destinationName, price: 25 },
-            { id: 302, title: 'Authentic Traditional Grill', image: getCitySpecificImage(destinationName, "Restaurants", 1), rating: 4.6, reviews: 320, location: destinationName, price: 15 }
-        ],
-        "Safari": [
-            { id: 401, title: 'Sunset Desert Quad Biking ATV', image: getCitySpecificImage(destinationName, "Safari", 0), rating: 4.9, reviews: 620, location: destinationName, price: 40 },
-            { id: 402, title: 'Bedouin Star Gazing Camp', image: getCitySpecificImage(destinationName, "Safari", 1), rating: 4.8, reviews: 240, location: destinationName, price: 55 }
-        ],
-        "Bazaars": [
-            { id: 501, title: `Historic ${destinationName} Tourist Souk`, image: getCitySpecificImage(destinationName, "Bazaars", 0), rating: 4.7, reviews: 890, location: destinationName, price: 0 },
-            { id: 502, title: 'Premium Artisan Silver & Papyrus Bazaar', image: getCitySpecificImage(destinationName, "Bazaars", 1), rating: 4.9, reviews: 620, location: destinationName, price: 0 }
-        ],
-        "Events": [
-            { id: 601, title: `Spectacular Sound & Light Show`, image: getCitySpecificImage(destinationName, "Events", 0), rating: 4.8, reviews: 1050, location: destinationName, price: 30 },
-            { id: 602, title: 'Traditional Dervish & Folklore Show', image: getCitySpecificImage(destinationName, "Events", 1), rating: 4.7, reviews: 325, location: destinationName, price: 20 }
-        ]
-    };
-
     const filterAndMap = (items: any[], isEgypt: boolean, categoryName: string, fallbackKey: string, priceKey: string = "price") => {
-        // Find items that loosely match the destination
-        const destItems = items.filter(h => isEgypt || (h.location && h.location.toLowerCase().includes(destination.toLowerCase())));
-        
-        // If we don't have enough data for THIS specific destination, completely fallback to real items from DB first.
-        let valid = destItems;
-        if (valid.length < 2 && items.length >= 2) {
-            valid = [...items].sort(() => 0.5 - Math.random());
-        } else if (valid.length < 2) {
-            valid = fallbacks[fallbackKey];
-        }
+        if (!items || items.length === 0) return [];
+        const normalizedDest = destination.toLowerCase() === "sharm el.s" ? "sharm" : destination.toLowerCase();
+        const destItems = items.filter(h => isEgypt || (h.location && h.location.toLowerCase().includes(normalizedDest)));
+        // STRICT MODE: Only show real items that match exactly, no fake fallbacks!
+        // Show max 2 items per category as requested by the user
+        const valid = destItems.slice(0, 2);
 
-        return valid.slice(0, 2).map((item: any, idx: number) => {
-            const rawImage = item.image || item.image_url;
+        return valid.map((item: any, idx: number) => {
+            const rawImage = item.image || item.image_url || '/placeholder.png';
             
             // Extreme safety net: Check if image is obviously broken or missing
             const isInvalidImg = !rawImage 
@@ -154,17 +110,17 @@ const ExplorePage = () => {
                 || rawImage.includes('hotel_fallback')
                 || (!rawImage.startsWith('/') && !rawImage.startsWith('http'));
 
-            const finalImage = isInvalidImg ? fallbacks[fallbackKey][idx].image : rawImage;
+            const finalImage = isInvalidImg ? getCitySpecificImage(destinationName, categoryName, idx) : rawImage;
             
             return {
                 id: item.id,
-                title: item.title || item.name || fallbacks[fallbackKey][idx].title,
+                title: item.title || item.name || 'Egypt Destination',
                 image: finalImage,
                 category: item.category || categoryName,
                 rating: item.rating || 4.5,
-                reviews: item.reviews_count || item.reviews || fallbacks[fallbackKey][idx].reviews,
+                reviews: item.reviews_count || item.reviews || 120,
                 location: item.location || destinationName,
-                price: `$${item[priceKey] || item.ticket_price || item.price_range_min || fallbacks[fallbackKey][idx].price}`
+                price: `$${item[priceKey] || item.ticket_price || item.price_range_min || item.price || 0}`
             };
         });
     };
@@ -179,11 +135,10 @@ const ExplorePage = () => {
     const localEvents = filterAndMap(apiEvents, isEgypt, "Event", "Events", "price");
     const localMuseums = filterAndMap(apiMuseums, isEgypt, "History", "Museums", "ticket_price");
 
-    // Simple Render Card (Make the ENTIRE card perfectly clickable)
     const GenericCard = ({ item, linkTo }: { item: any; linkTo: string }) => (
         <Link to={linkTo} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_12px_30px_rgba(212,175,55,0.25)] transition-all duration-500 group flex flex-col border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-2 block">
-            <div className="relative h-56 overflow-hidden">
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 bg-gray-100" />
+            <div className="relative h-56 overflow-hidden bg-gray-100">
+                <img src={item.image} alt={item.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 <div className="absolute top-4 right-4 bg-white/90 px-2 py-1 rounded-lg text-sm font-bold shadow-sm text-[#05073C]">
                     ★ {item.rating} <span className="text-gray-500 font-normal">({item.reviews})</span>
                 </div>
@@ -239,86 +194,110 @@ const ExplorePage = () => {
                     <div className="lg:w-3/4 flex-grow space-y-12">
                         
                         {/* 1. Hotels */}
-                        {(category === "all" || category === "hotels") && (
+                        {(category === "all" || category === "hotels") && (localHotels.length > 0 || category === "hotels") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Hotels (فنادق)</h2>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {localHotels.map(hotel => (
-                                        <GenericCard key={`hotel-${hotel.id}`} item={hotel} linkTo={`/hotels/${hotel.id}`} />
-                                    ))}
-                                </div>
+                                {localHotels.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {localHotels.map(hotel => (
+                                            <GenericCard key={`hotel-${hotel.id}`} item={hotel} linkTo={`/hotels/${hotel.id}`} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-8 text-center bg-white rounded-xl shadow-sm"><p className="text-gray-500 font-bold">No hotels available in this location yet.</p></div>
+                                )}
                             </section>
                         )}
 
                         {/* 2. Museums */}
-                        {(category === "all" || category === "museums") && (
+                        {(category === "all" || category === "museums") && (localMuseums.length > 0 || category === "museums") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Museums (متاحف)</h2>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {localMuseums.map(museum => (
-                                        <GenericCard key={`museum-${museum.id}`} item={museum} linkTo={`/museums/${museum.id}`} />
-                                    ))}
-                                </div>
+                                {localMuseums.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {localMuseums.map(museum => (
+                                            <GenericCard key={`museum-${museum.id}`} item={museum} linkTo={`/museums/${museum.id}`} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-8 text-center bg-white rounded-xl shadow-sm"><p className="text-gray-500 font-bold">No museums available in this location yet.</p></div>
+                                )}
                             </section>
                         )}
 
                         {/* 3. Restaurants */}
-                        {(category === "all" || category === "restaurants") && (
+                        {(category === "all" || category === "restaurants") && (localRestaurants.length > 0 || category === "restaurants") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Restaurants (مطاعم)</h2>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {localRestaurants.map(rest => (
-                                        <GenericCard key={`rest-${rest.id}`} item={rest} linkTo={`/restaurants/meal/${rest.id}`} />
-                                    ))}
-                                </div>
+                                {localRestaurants.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {localRestaurants.map(rest => (
+                                            <GenericCard key={`rest-${rest.id}`} item={rest} linkTo={`/restaurants/meal/${rest.id}`} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-8 text-center bg-white rounded-xl shadow-sm"><p className="text-gray-500 font-bold">No restaurants available in this location yet.</p></div>
+                                )}
                             </section>
                         )}
 
                         {/* 4. Safari */}
-                        {(category === "all" || category === "safari") && (
+                        {(category === "all" || category === "safari") && (localSafari.length > 0 || category === "safari") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Safari (سفاري)</h2>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {localSafari.map(safari => (
-                                        <GenericCard key={`safari-${safari.id}`} item={safari} linkTo={`/safari/${safari.id}`} />
-                                    ))}
-                                </div>
+                                {localSafari.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {localSafari.map(safari => (
+                                            <GenericCard key={`safari-${safari.id}`} item={safari} linkTo={`/safari/${safari.id}`} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-8 text-center bg-white rounded-xl shadow-sm"><p className="text-gray-500 font-bold">No safari available in this location yet.</p></div>
+                                )}
                             </section>
                         )}
 
                         {/* 5. Bazaars */}
-                        {(category === "all" || category === "bazaars") && (
+                        {(category === "all" || category === "bazaars") && (localBazaars.length > 0 || category === "bazaars") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Bazaars (بازارات)</h2>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {localBazaars.map(bazaar => (
-                                        <GenericCard key={`bazaar-${bazaar.id}`} item={bazaar} linkTo={`/bazaars/${bazaar.id}`} />
-                                    ))}
-                                </div>
+                                {localBazaars.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {localBazaars.map(bazaar => (
+                                            <GenericCard key={`bazaar-${bazaar.id}`} item={bazaar} linkTo={`/bazaars/${bazaar.id}`} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-8 text-center bg-white rounded-xl shadow-sm"><p className="text-gray-500 font-bold">No bazaars available in this location yet.</p></div>
+                                )}
                             </section>
                         )}
 
                         {/* 6. Events */}
-                        {(category === "all" || category === "events") && (
+                        {(category === "all" || category === "events") && (localEvents.length > 0 || category === "events") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Events (فعاليات)</h2>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {localEvents.map(event => (
-                                        <GenericCard key={`event-${event.id}`} item={event} linkTo={`/events/${event.id}`} />
-                                    ))}
-                                </div>
+                                {localEvents.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {localEvents.map(event => (
+                                            <GenericCard key={`event-${event.id}`} item={event} linkTo={`/events/${event.id}`} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-8 text-center bg-white rounded-xl shadow-sm"><p className="text-gray-500 font-bold">No events available in this location yet.</p></div>
+                                )}
                             </section>
                         )}
 

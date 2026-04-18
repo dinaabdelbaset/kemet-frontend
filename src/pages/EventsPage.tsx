@@ -1,5 +1,6 @@
+import { useState, useEffect } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaArrowRight } from "react-icons/fa";
 import { useQuery } from '@tanstack/react-query';
 import { getEvents } from '@/api/eventService';
@@ -9,6 +10,23 @@ const EventsPage = () => {
     queryKey: ['events'],
     queryFn: getEvents
   });
+
+  const [activeCity, setActiveCity] = useState("All");
+  const urlLocation = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(urlLocation.search);
+    const cityParam = params.get("city");
+    if (cityParam) {
+      setActiveCity(cityParam);
+    }
+  }, [urlLocation]);
+
+  const citiesList = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum"];
+
+  const filteredEvents = !events ? [] : (activeCity === "All" 
+    ? events 
+    : events.filter((r: any) => r.location?.toLowerCase().includes(activeCity.toLowerCase())));
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#fdfaf7]"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div></div>;
@@ -45,15 +63,31 @@ const EventsPage = () => {
       {/* Grid Section */}
       <SectionWrapper className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
             <div>
               <h2 className="text-3xl font-bold text-[#14213d] mb-2">Upcoming Experiences</h2>
               <p className="text-gray-500">Secure your spot at the most anticipated events.</p>
             </div>
+            {/* Filter Dropdown */}
+            <div className="flex bg-white p-2 rounded-xl border border-gray-200 shadow-sm w-full md:w-64" dir="ltr">
+               <div className="flex items-center px-4"><span className="text-gray-400"><FaMapMarkerAlt /></span></div>
+               <div className="h-10 w-px bg-gray-200" />
+               <select
+                 className="w-full px-3 py-2 text-sm focus:outline-none bg-transparent cursor-pointer font-bold text-gray-700"
+                 value={activeCity}
+                 onChange={(e) => setActiveCity(e.target.value)}
+               >
+                 {citiesList.map((city) => (
+                   <option key={city} value={city}>
+                     {city === "All" ? "All Locations" : city}
+                   </option>
+                 ))}
+               </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events?.map((evt: any) => (
+            {filteredEvents?.map((evt: any) => (
               <div 
                 key={evt.id} 
                 className="group bg-[#fcfbf9] rounded-3xl border border-gray-100 shadow-sm hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col"

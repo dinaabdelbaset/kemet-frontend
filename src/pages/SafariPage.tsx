@@ -1,5 +1,5 @@
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import PriceDisplay from "../components/Ui/PriceDisplay";
@@ -14,6 +14,18 @@ const SafariPage = () => {
     priceRange: [0, 5000],
     stars: []
   });
+  const [activeCity, setActiveCity] = useState("All");
+  const urlLocation = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(urlLocation.search);
+    const cityParam = params.get("city");
+    if (cityParam) {
+      setActiveCity(cityParam);
+    }
+  }, [urlLocation]);
+
+  const citiesList = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum"];
 
   useEffect(() => {
     axiosClient.get('/safaris')
@@ -34,10 +46,11 @@ const SafariPage = () => {
       const rating = parseFloat(s.rating) || 0;
       const matchPrice = price <= sidebarFilters.priceRange[1];
       const matchStars = sidebarFilters.stars.length === 0 || sidebarFilters.stars.includes(Math.floor(rating));
-      return matchPrice && matchStars;
+      const matchCity = activeCity === "All" || s.location?.toLowerCase().includes(activeCity.toLowerCase());
+      return matchPrice && matchStars && matchCity;
     });
     setFilteredSafaris(result);
-  }, [allSafaris, sidebarFilters]);
+  }, [allSafaris, sidebarFilters, activeCity]);
 
   return (
     <div className="bg-[#f8f9fa] min-h-screen">
@@ -70,9 +83,27 @@ const SafariPage = () => {
       {/* Content with Sidebar */}
       <div id="explore">
         <SectionWrapper className="py-20">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#05073C] mb-4">Top Safari Expeditions</h2>
-            <div className="w-24 h-1 bg-[#EB662B] mx-auto rounded-full"></div>
+          <div className="flex flex-col md:flex-row justify-between items-center mb-16 gap-6">
+            <div className="text-left">
+              <h2 className="text-4xl font-bold text-[#05073C] mb-4">Top Safari Expeditions</h2>
+              <div className="w-24 h-1 bg-[#EB662B] rounded-full"></div>
+            </div>
+            {/* Filter Dropdown */}
+            <div className="flex bg-white p-2 rounded-xl border border-gray-200 shadow-sm min-w-[250px]" dir="ltr">
+               <div className="flex items-center px-4"><span className="text-gray-400"><FaMapMarkerAlt /></span></div>
+               <div className="h-10 w-px bg-gray-200" />
+               <select
+                 className="w-full px-3 py-2 text-sm focus:outline-none bg-transparent cursor-pointer font-bold text-gray-700"
+                 value={activeCity}
+                 onChange={(e) => setActiveCity(e.target.value)}
+               >
+                 {citiesList.map((city) => (
+                   <option key={city} value={city}>
+                     {city === "All" ? "All Locations" : city}
+                   </option>
+                 ))}
+               </select>
+            </div>
           </div>
 
           <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-4 gap-8">

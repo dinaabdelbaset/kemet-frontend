@@ -111,6 +111,24 @@ const getMealDescription = (title: string) => {
   };
 };
 
+const getSimilarDishes = (title: string) => {
+  const t = title.toLowerCase();
+  if (t.includes('koshary')) {
+    return [
+      { id: 1, title: "Chicken Tajine (طاجن فراخ)", price: 2.50, img: "/food/chicken-tajine.png" },
+      { id: 2, title: "Meat Tajine (طاجن لحمة)", price: 3.00, img: "/food/meat-tajine.png" },
+      { id: 3, title: "Dukkah & Shata (دقة وشطة)", price: 0.50, img: "/food/dukkah.png" },
+      { id: 4, title: "Original Koshary (كشري)", price: 1.20, img: "/food/koshary.png" }
+    ];
+  }
+  return [
+    { id: 1, title: "Authentic Molokhia", price: 1.80, img: "/food/molokhia.png" },
+    { id: 2, title: "Mixed Charcoal Grills", price: 8.00, img: "/food/grills.png" },
+    { id: 3, title: "Koshary Abu Tarek", price: 1.20, img: "/food/koshary.png" },
+    { id: 4, title: "Stuffed Pigeon", price: 4.50, img: "/food/pigeon.png" }
+  ];
+};
+
 const MealDetailsPage = () => {
   useParams(); // id can be used to fetch real data later
   const navigate = useNavigate();
@@ -127,7 +145,7 @@ const MealDetailsPage = () => {
   };
 
   const mealTitle = mealData.title || "Authentic Egyptian Koshary like Abu Tarek";
-  const mealImage = mealData.img || "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200";
+  const mealImage = mealData.img || mealData.image || "/food/koshary.png";
   const mealDetails = getMealDescription(mealTitle);
 
   const handleBooking = (e: React.FormEvent) => {
@@ -242,12 +260,7 @@ const MealDetailsPage = () => {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 max-w-7xl mx-auto text-left">
-            {[
-              { id: 1, title: "Authentic Molokhia", price: 1.80, img: "/food/molokhia.png" },
-              { id: 2, title: "Mixed Charcoal Grills", price: 8.00, img: "/food/grills.png" },
-              { id: 3, title: "Koshary Abu Tarek", price: 1.20, img: "/food/koshary.png" },
-              { id: 4, title: "Stuffed Pigeon", price: 4.50, img: "/food/pigeon.png" }
-            ].map(dish => (
+            {getSimilarDishes(mealTitle).map(dish => (
               <div key={dish.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer border border-gray-100">
                 <div className="h-48 overflow-hidden">
                   <img src={dish.img} className="w-full h-full object-cover hover:scale-105 transition duration-500" alt={dish.title} />

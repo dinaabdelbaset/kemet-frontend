@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaCheckCircle, FaStar, FaMapMarkerAlt } from "react-icons/fa";
 import { useQuery } from '@tanstack/react-query';
 import { getRestaurants } from '@/api/restaurantService';
@@ -63,6 +63,8 @@ const DealItem = ({ deal }: { deal: any }) => {
 const RestaurantsPage = () => {
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeCity, setActiveCity] = useState("All");
+  const urlLocation = useLocation();
 
   // @ts-ignore
   useEffect(() => {
@@ -75,6 +77,20 @@ const RestaurantsPage = () => {
       setIsLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(urlLocation.search);
+    const cityParam = params.get("city");
+    if (cityParam) {
+      setActiveCity(cityParam);
+    }
+  }, [urlLocation]);
+
+  const citiesList = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum"];
+  
+  const filteredRestaurants = activeCity === "All" 
+    ? restaurants 
+    : restaurants.filter(r => r.location?.toLowerCase().includes(activeCity.toLowerCase()));
 
   return (
     <div className="bg-[#FAFAFA]">
@@ -113,52 +129,40 @@ const RestaurantsPage = () => {
         </div>
       </section>
 
-      {/* 2. Browse Our Menu */}
-      <SectionWrapper id="menu" className="py-20 bg-white items-center text-center">
-        <h2 className="text-3xl font-bold text-[#222] mb-12 relative inline-flex flex-col items-center">
-          Browse Our Menu
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-4 max-w-5xl mx-auto">
-          {[
-            { title: "Breakfast", id: "breakfast", icon: "☕" },
-            { title: "Main Dishes", id: "main-dishes", icon: "🍜" },
-            { title: "Drinks", id: "drinks", icon: "🍹" },
-            { title: "Desserts", id: "desserts", icon: "🍰" },
-          ].map((item) => (
-            <Link 
-              to={`/restaurants/menu/${item.id}`}
-              key={item.id} 
-              className="border-2 border-transparent hover:border-[#D4AF37] rounded-xl p-8 hover:shadow-[0_10px_25px_rgba(212,175,55,0.2)] transition-all duration-500 hover:-translate-y-2 group cursor-pointer text-center bg-white block"
-            >
-              <div className="w-16 h-16 mx-auto bg-gray-50 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#cd4f3c]/10 transition">
-                <span className="text-2xl text-gray-400 group-hover:text-[#cd4f3c]">{item.icon}</span>
-              </div>
-              <h3 className="font-semibold text-lg text-gray-800 mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-500">Authentic Egyptian recipes bringing you the true taste of local culture and heritage.</p>
-              <span className="text-sm text-[#cd4f3c] font-medium mt-4 inline-block opacity-0 group-hover:opacity-100 transition">
-                Explore Menu
-              </span>
-            </Link>
-          ))}
-        </div>
-      </SectionWrapper>
+
 
       {/* Featured Restaurants from DB */}
       <SectionWrapper className="py-20 bg-[#FAFAFA]">
         <div className="max-w-7xl mx-auto px-4" dir="rtl">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <h2 className="text-4xl font-bold text-[#222] mb-4">أشهر المطاعم المصرية</h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">
+            <p className="text-gray-500 max-w-2xl mx-auto mb-8">
               اكتشف أشهر والذ المطاعم اللي بتقدم تجربة أكل مصري وعربي مفيش زيها!
             </p>
+            {/* Filter Dropdown */}
+            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto bg-white p-2 rounded-xl border border-gray-200 shadow-sm" dir="ltr">
+               <div className="flex items-center px-4"><span className="text-gray-400"><FaMapMarkerAlt /></span></div>
+               <div className="h-10 w-px bg-gray-200 hidden sm:block" />
+               <select
+                 className="w-full px-4 py-3 text-sm focus:outline-none bg-transparent cursor-pointer font-bold text-gray-700"
+                 value={activeCity}
+                 onChange={(e) => setActiveCity(e.target.value)}
+               >
+                 {citiesList.map((city) => (
+                   <option key={city} value={city}>
+                     {city === "All" ? "All Locations" : city}
+                   </option>
+                 ))}
+               </select>
+            </div>
           </div>
 
           {isLoading ? (
             <div className="flex justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#cd4f3c]"></div></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {restaurants?.map((restaurant: any) => (
-                <div key={restaurant.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(212,175,55,0.06)] border border-gray-100 hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+              {filteredRestaurants?.map((restaurant: any) => (
+                <Link to={`/restaurants/${restaurant.id}`} key={restaurant.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(212,175,55,0.06)] border border-gray-100 hover:-translate-y-2 transition-all duration-500 flex flex-col group block">
                   <div className="relative w-full aspect-video overflow-hidden">
                     <img 
                       src={restaurant.image || '/placeholder.png'} 
@@ -170,7 +174,7 @@ const RestaurantsPage = () => {
                     </div>
                   </div>
                   <div className="p-6 flex flex-col flex-grow text-right">
-                    <h3 className="text-2xl font-bold text-[#14213d] mb-2">{restaurant.name}</h3>
+                    <h3 className="text-2xl font-bold text-[#14213d] mb-2 group-hover:text-[#cd4f3c] transition-colors duration-300">{restaurant.name}</h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">{restaurant.description}</p>
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-[#cd4f3c] font-bold text-sm bg-[#cd4f3c]/10 px-3 py-1 rounded-md">{restaurant.cuisine}</span>
@@ -180,12 +184,12 @@ const RestaurantsPage = () => {
                         <span className="text-xs text-gray-500">({restaurant.reviews_count})</span>
                       </div>
                     </div>
-                    <div className="border-t border-gray-100 pt-4 flex justify-between items-center mt-auto">
-                      <span className="text-[#cd4f3c] font-bold">{restaurant.price_range_min} - {restaurant.price_range_max} EGP</span>
+                    <div className="border-t border-gray-100 pt-4 flex justify-between items-center mt-auto cursor-pointer">
+                      <span className="text-gray-700 font-bold group-hover:text-[#cd4f3c]">تصفح المنيو والحجز ←</span>
                       <span className="text-gray-500 text-xs">{restaurant.opening_hours}</span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

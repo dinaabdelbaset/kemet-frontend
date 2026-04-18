@@ -5,14 +5,43 @@ import DateTimePicker from "@/components/Ui/DateTimePicker";
 import { FaMapMarkerAlt, FaShoppingBag, FaCamera, FaCoffee } from "react-icons/fa";
 import InteractiveMap from "@/components/common/InteractiveMap";
 import SocialShare from "@/components/common/SocialShare";
-import { BAZAARS_DB } from "./BazaarsPage";
+import axiosClient from "../api/axiosClient";
 
 const BazaarDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  const bazaarId = id ? parseInt(id) : 1;
-  const bazaar = BAZAARS_DB.find(b => b.id === bazaarId) || BAZAARS_DB[0];
+
+  const [bazaar, setBazaar] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBazaar = async () => {
+      try {
+        const res = await axiosClient.get(`/bazaars/${id}`);
+        setBazaar(res.data);
+      } catch (err) {
+        console.error("Error loading bazaar details", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) fetchBazaar();
+  }, [id]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center p-20 text-xl font-bold">Loading Bazaar Details...</div>;
+  }
+
+  if (!bazaar) {
+    return <div className="min-h-screen flex items-center justify-center p-20 text-xl font-bold text-red-500">Bazaar not found!</div>;
+  }
+
+  const bazaarImage = bazaar.image?.startsWith('/') || bazaar.image?.startsWith('http') ? bazaar.image : 'https://images.unsplash.com/photo-1542036136-23133de5057b?w=600';
+  const bazaarTitle = bazaar.title || bazaar.name || "Amazing Bazaar";
+  const bazaarLocation = bazaar.location || "Egypt";
+  const bazaarOpen = bazaar.opening_hours || "Daily";
+  const bazaarDesc = bazaar.description || "A wonderful traditional market with history and rich culture.";
+  const specialtyList = bazaar.specialty ? (typeof bazaar.specialty === 'string' ? JSON.parse(bazaar.specialty) : bazaar.specialty) : ["Spices", "Textiles", "Antiques"];
   
   // Default gallery fallback if none exists
   const gallery = [
@@ -48,11 +77,11 @@ const BazaarDetailsPage = () => {
     
     navigate('/checkout', {
       state: {
-        id: bazaar.id,
+        id: bazaar.id || id,
         type: 'bazaar', // Dedicated type prevents UI bugs in checkout
-        title: `${bazaar.title} - Guided Tour`,
+        title: `${bazaarTitle} - Guided Tour`,
         price: totalPrice / 50, // Standardize to USD baseline for checkout conversion
-        image: bazaar.image,
+        image: bazaarImage,
         date: selectedDate,
         time: selectedTime,
         tickets: { adult: totalQty, child: 0, infant: 0 },
@@ -65,21 +94,21 @@ const BazaarDetailsPage = () => {
     <div className="bg-white min-h-screen">
       {/* Hero Header */}
       <section className="w-full h-[55vh] relative">
-        <img src={bazaar.image} alt={bazaar.title} className="w-full h-full object-cover" />
+        <img src={bazaarImage} alt={bazaarTitle} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#cd4f3c]/90 via-black/40 to-transparent"></div>
         <div className="absolute inset-x-0 bottom-0 p-8 max-w-5xl mx-auto flex flex-col md:flex-row items-end justify-between gap-6 pointer-events-none">
            <div className="text-white pointer-events-auto">
-             <Link to="/bazaars" className="text-white/80 hover:text-white font-bold text-sm tracking-wider uppercase mb-4 inline-block">
-               ← Explore Markets
-             </Link>
-             <h1 className="text-5xl md:text-7xl font-extrabold mb-4">{bazaar.title}</h1>
+             <button onClick={() => navigate(-1)} className="text-white/80 hover:text-white font-bold text-sm tracking-wider uppercase mb-4 inline-block">
+               ← GO BACK
+             </button>
+             <h1 className="text-5xl md:text-7xl font-extrabold mb-4">{bazaarTitle}</h1>
              <p className="flex items-center gap-2 text-lg font-medium">
-               <FaMapMarkerAlt /> {bazaar.location}
+               <FaMapMarkerAlt /> {bazaarLocation}
              </p>
            </div>
            <div className="bg-white text-[#222] p-4 rounded-xl shadow-xl font-bold pointer-events-auto flex flex-col items-center gap-2">
-             <p className="border-b border-gray-100 pb-2 w-full text-center">Open: {bazaar.open}</p>
-             <SocialShare url={window.location.href} title={bazaar.title} />
+             <p className="border-b border-gray-100 pb-2 w-full text-center">Open: {bazaarOpen}</p>
+             <SocialShare url={window.location.href} title={bazaarTitle} />
            </div>
         </div>
       </section>
@@ -92,12 +121,12 @@ const BazaarDetailsPage = () => {
             <div className="md:col-span-2">
               <h2 className="text-3xl font-bold text-[#222] mb-6">About The Bazaar</h2>
               <p className="text-gray-600 leading-relaxed text-lg mb-8">
-                {bazaar.description}
+                {bazaarDesc}
               </p>
 
               <h3 className="text-2xl font-bold text-[#222] mb-6">What You'll Find Here</h3>
               <div className="flex flex-wrap gap-3">
-                {bazaar.specialty.map((item, idx) => (
+                {specialtyList.map((item: any, idx: number) => (
                   <span key={idx} className="px-5 py-2.5 bg-[#fdfaf7] text-gray-700 font-semibold rounded-full border border-gray-200">
                     {item}
                   </span>
@@ -176,7 +205,7 @@ const BazaarDetailsPage = () => {
           </div>
 
           <div className="mb-20">
-            <InteractiveMap locationName={`${bazaar.title}, ${bazaar.location}`} />
+            <InteractiveMap locationName={bazaarLocation} />
           </div>
 
           {/* Photo Gallery */}

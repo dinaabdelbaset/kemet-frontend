@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
+  Navigate,
 } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import RootLayout from "../layout/RootLayout";
@@ -37,6 +38,7 @@ const TravelPackageDetailsPage = lazy(() => import("../pages/TravelPackageDetail
 const TravelPackagesPage     = lazy(() => import("../pages/TravelPackagesPage"));
 const ThingToDoDetailsPage   = lazy(() => import("../pages/ThingToDoDetailsPage"));
 const ReviewsPage            = lazy(() => import("../pages/ReviewsPage"));
+const RestaurantDetailsPage  = lazy(() => import("../pages/RestaurantDetailsPage"));
 const RestaurantsPage        = lazy(() => import("../pages/RestaurantsPage"));
 const MenuCategoryPage       = lazy(() => import("../pages/MenuCategoryPage"));
 const MealDetailsPage        = lazy(() => import("../pages/MealDetailsPage"));
@@ -94,6 +96,7 @@ const router = createBrowserRouter(
         <Route path="things-to-do/:id" element={withSuspense(ThingToDoDetailsPage)} />
         <Route path="reviews" element={withSuspense(ReviewsPage)} />
         <Route path="restaurants" element={withSuspense(RestaurantsPage)} />
+        <Route path="restaurants/:id" element={withSuspense(RestaurantDetailsPage)} />
         <Route path="restaurants/menu/:category" element={withSuspense(MenuCategoryPage)} />
         <Route path="restaurants/meal/:id" element={withSuspense(MealDetailsPage)} />
         <Route path="events" element={withSuspense(EventsPage)} />

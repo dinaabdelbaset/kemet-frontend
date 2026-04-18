@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FaRobot, FaTimes, FaPaperPlane } from "react-icons/fa";
-import { askChatbot, resetChatHistory } from "../../api/chatService";
+import { Link } from "react-router-dom";
+import { askChatbot, resetChatHistory, fetchChatHistory } from "../../api/chatService";
 
 const chatbotTranslations = {
   en: {
@@ -53,18 +54,125 @@ interface Message {
   sender: "bot" | "user";
 }
 
+const renderMessageContent = (text: string, isBot: boolean, langCode: string) => {
+  if (!isBot || typeof text !== "string") return text;
+  
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  
+  if (!linkRegex.test(text)) {
+     return text;
+  }
+  
+  linkRegex.lastIndex = 0;
+  
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let keyOffset = 0;
+  
+  while ((match = linkRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={`text-${keyOffset++}`}>{text.substring(lastIndex, match.index)}</span>);
+    }
+    
+    const linkText = match[1];
+    const linkUrl = match[2];
+    const isExternal = linkUrl.startsWith('http');
+    
+    const btnClass = `inline-flex items-center justify-center mt-2 mb-1 px-4 py-1.5 bg-gradient-to-r from-[#05073C] to-[#1a1d5e] hover:from-[#EB662B] hover:to-[#d55822] text-white text-xs font-semibold rounded-full shadow-md transition-all duration-300 transform hover:scale-105 mx-1 decoration-transparent no-underline`;
+    
+    if (isExternal) {
+      parts.push(
+        <a key={`link-${keyOffset++}`} href={linkUrl} target="_blank" rel="noopener noreferrer" className={btnClass}>
+          {linkText}
+        </a>
+      );
+    } else {
+      parts.push(
+        <Link key={`link-${keyOffset++}`} to={linkUrl} className={btnClass}>
+          {linkText}
+        </Link>
+      );
+    }
+    
+    lastIndex = linkRegex.lastIndex;
+  }
+  
+  if (lastIndex < text.length) {
+    parts.push(<span key={`text-${keyOffset++}`}>{text.substring(lastIndex)}</span>);
+  }
+  
+  return <>{parts}</>;
+};
+
 const FloatingChatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    return sessionStorage.getItem("kemet_chatbot_isOpen") === "true";
+  });
   const [lang, setLang] = useState<keyof typeof chatbotTranslations>('en');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = sessionStorage.getItem("kemet_chatbot_messages");
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return [];
+  });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Set greeting message on language change
+  // Initialize chat history from backend or session storage
   useEffect(() => {
-    const t = chatbotTranslations[lang] || chatbotTranslations['en'];
-    setMessages([{ id: 1, text: t.greeting, sender: "bot" }]);
+    const initChat = async () => {
+      const history = await fetchChatHistory();
+      if (history && history.length > 0) {
+        const historyMessages: Message[] = history.map((msg, idx) => ({
+          id: Date.now() + idx,
+          text: msg.text,
+          sender: msg.sender as "bot" | "user"
+        }));
+        setMessages(historyMessages);
+      } else {
+        const saved = sessionStorage.getItem("kemet_chatbot_messages");
+        let hasSessionData = false;
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setMessages(parsed);
+              hasSessionData = true;
+            }
+          } catch (e) {}
+        }
+        if (!hasSessionData) {
+          const t = chatbotTranslations[lang] || chatbotTranslations['en'];
+          setMessages([{ id: 1, text: t.greeting, sender: "bot" }]);
+        }
+      }
+    };
+    initChat();
+  }, []);
+
+  // Save state to session storage when things change
+  useEffect(() => {
+    sessionStorage.setItem("kemet_chatbot_isOpen", isOpen.toString());
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      sessionStorage.setItem("kemet_chatbot_messages", JSON.stringify(messages));
+    }
+  }, [messages]);
+
+  // Update greeting only if no real history when lang changes
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length <= 1) {
+        const t = chatbotTranslations[lang] || chatbotTranslations['en'];
+        return [{ id: 1, text: t.greeting, sender: "bot" }];
+      }
+      return prev;
+    });
   }, [lang]);
 
   useEffect(() => {
@@ -167,13 +275,7 @@ const FloatingChatbot = () => {
               </div>
             </div>
             <button
-              onClick={() => {
-                setIsOpen(false);
-                // Reset chat history when closing
-                resetChatHistory();
-                const t = chatbotTranslations[lang] || chatbotTranslations['en'];
-                setMessages([{ id: 1, text: t.greeting, sender: "bot" }]);
-              }}
+              onClick={() => setIsOpen(false)}
               className="text-white/70 hover:text-white transition p-2"
             >
               <FaTimes />
@@ -195,9 +297,9 @@ const FloatingChatbot = () => {
                       ? `bg-[#EB662B] text-white ${lang === 'ar' ? 'rounded-tl-none' : 'rounded-tr-none'}`
                       : `bg-white text-gray-800 border border-gray-100 shadow-sm ${lang === 'ar' ? 'rounded-tr-none' : 'rounded-tl-none'}`
                   }`}
-                  style={{ whiteSpace: "pre-wrap" }}
+                  style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
                 >
-                  {msg.text}
+                  {renderMessageContent(msg.text, msg.sender === "bot", lang)}
                 </div>
               </div>
             ))}
@@ -246,15 +348,7 @@ const FloatingChatbot = () => {
 
       {/* Floating Toggle Button */}
       <button
-        onClick={() => {
-          if (isOpen) {
-            // Reset chat history when closing via toggle
-            resetChatHistory();
-            const t = chatbotTranslations[lang] || chatbotTranslations['en'];
-            setMessages([{ id: 1, text: t.greeting, sender: "bot" }]);
-          }
-          setIsOpen(!isOpen);
-        }}
+        onClick={() => setIsOpen(!isOpen)}
         className={`${
           isOpen ? "bg-[#05073C]" : "bg-[#EB662B]"
         } w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl hover:scale-105 transition-transform duration-300 z-50 group hover:shadow-[#EB662B]/40`}

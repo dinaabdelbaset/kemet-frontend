@@ -61,8 +61,8 @@ const TrendingDestinationSection = () => {
 
   }, [loading]);
 
-  const content = destinations.slice(0, 8).map((item) => (
-    <Link to={`/explore/${item.title}`} key={item.id} data-dest-card>
+  const content = destinations.slice(0, 12).map((item) => (
+    <Link to={`/explore/${item.title}`} key={item.id} data-dest-card className="flex-shrink-0 snap-center min-w-[100px] sm:min-w-[120px]">
       <DestinationCard 
         id={item.id}
         src={item.src || '/placeholder.png'} 
@@ -78,7 +78,16 @@ const TrendingDestinationSection = () => {
         <div className="flex items-center justify-between mb-6" ref={headingRef}>
           <Heading title="trending destination" />
         </div>
-      <div ref={gridRef} className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8" style={{ perspective: "1000px" }}>
+      <div 
+        ref={gridRef} 
+        className="flex overflow-x-auto gap-6 sm:gap-10 pb-8 px-2 snap-x hide-scrollbars 2xl:justify-center" 
+        style={{ perspective: "1000px", scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <style dangerouslySetInnerHTML={{__html: `
+          .hide-scrollbars::-webkit-scrollbar {
+            display: none;
+          }
+        `}} />
         {loading ? (
           <div className="col-span-full py-10 text-center text-gray-500">جاري تحميل الوجهات...</div>
         ) : (

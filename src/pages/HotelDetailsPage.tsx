@@ -13,27 +13,40 @@ import ReviewSection from "../components/common/ReviewSection";
 import SocialShare from "../components/common/SocialShare";
 import { useApp } from "../context/AppContext";
 const ROOM_IMAGE_MAP: Record<string, string> = {
-  'Classic Single Room': '/placeholder.png',
-  'Deluxe Double Room': '/placeholder.png',
-  'Executive Suite': '/placeholder.png',
-  'Presidential Suite': '/placeholder.png'
+  'Classic Single Room': '/images/hotels/resort1.png',
+  'Deluxe Double Room': '/images/hotels/resort2.png',
+  'Executive Suite': '/images/hotels/resort3.png',
+  'Presidential Suite': '/images/hotels/resort4.png'
 };
 
 const getHotelMainImage = (hotel: any) => {
   if (hotel.image) {
-      if (hotel.image.startsWith('/')) {
-         return 'http://localhost:5173' + hotel.image;
-      }
       return hotel.image;
   }
-  return '/placeholder.png'; 
+  return '/images/hotels/resort1.png'; 
 };
 
 const getHotelGallery = (hotel: any) => {
-  if (hotel.gallery && Array.isArray(hotel.gallery) && hotel.gallery.length > 0) {
-      return hotel.gallery.map((img: string) => img.startsWith('/') ? 'http://localhost:5173' + img : img);
+  let g = hotel.gallery;
+  if (typeof g === 'string') {
+      try {
+          g = JSON.parse(g);
+      } catch (e) {
+          console.error("Failed to parse hotel gallery", e);
+      }
   }
-  return [getHotelMainImage(hotel)];
+
+  if (g && Array.isArray(g) && g.length > 0) {
+      return g;
+  }
+  // Fallback gallery using the main image and some high quality resort photos
+  const mainImg = getHotelMainImage(hotel);
+  return [
+    mainImg,
+    '/images/hotels/resort2.png',
+    '/images/hotels/resort3.png',
+    '/images/hotels/resort4.png'
+  ];
 };
 
 const HotelDetailsPage = () => {

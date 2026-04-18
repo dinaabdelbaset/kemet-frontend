@@ -1,5 +1,6 @@
+import { useState, useEffect } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaMapMarkerAlt, FaShoppingBag } from "react-icons/fa";
 import { useQuery } from '@tanstack/react-query';
 import { getBazaars } from '@/api/bazaarService';
@@ -9,6 +10,23 @@ const BazaarsPage = () => {
     queryKey: ['bazaars'],
     queryFn: getBazaars
   });
+
+  const [activeCity, setActiveCity] = useState("All");
+  const urlLocation = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(urlLocation.search);
+    const cityParam = params.get("city");
+    if (cityParam) {
+      setActiveCity(cityParam);
+    }
+  }, [urlLocation]);
+
+  const citiesList = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum"];
+
+  const filteredBazaars = !bazaars ? [] : (activeCity === "All" 
+    ? bazaars 
+    : bazaars.filter((r: any) => r.location?.toLowerCase().includes(activeCity.toLowerCase())));
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#fcfaf8]"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div></div>;
@@ -44,15 +62,31 @@ const BazaarsPage = () => {
       {/* Featured Bazaars */}
       <SectionWrapper className="py-20 bg-[#fafafa]">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-4xl font-bold text-[#222] mb-4">Explore Iconic Markets</h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">
+            <p className="text-gray-500 max-w-2xl mx-auto mb-8">
               From the spice alleys of Cairo to the carpet shops of Istanbul, our curated list of classic bazaars offers an unforgettable shopping journey.
             </p>
+            {/* Filter Dropdown */}
+            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto bg-white p-2 rounded-xl border border-gray-200 shadow-sm" dir="ltr">
+               <div className="flex items-center px-4"><span className="text-gray-400"><FaMapMarkerAlt /></span></div>
+               <div className="h-10 w-px bg-gray-200 hidden sm:block" />
+               <select
+                 className="w-full px-4 py-3 text-sm focus:outline-none bg-transparent cursor-pointer font-bold text-gray-700"
+                 value={activeCity}
+                 onChange={(e) => setActiveCity(e.target.value)}
+               >
+                 {citiesList.map((city) => (
+                   <option key={city} value={city}>
+                     {city === "All" ? "All Locations" : city}
+                   </option>
+                 ))}
+               </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {bazaars?.map((bazaar: any) => (
+            {filteredBazaars?.map((bazaar: any) => (
               <div 
                 key={bazaar.id} 
                 className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] border border-gray-100 hover:-translate-y-2 transition-all duration-500 flex flex-col"
