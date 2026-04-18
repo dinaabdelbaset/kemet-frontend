@@ -28,7 +28,7 @@ const HotelDetailsPage       = lazy(() => import("../pages/HotelDetailsPage"));
 const HotelsPage             = lazy(() => import("../pages/HotelsPage"));
 const LoginPage              = lazy(() => import("../pages/Login"));
 const ForgotPasswordPage     = lazy(() => import("../pages/ForgotPassword"));
-const Service                = lazy(() => import("../pages/Service"));
+
 const SignUpPage              = lazy(() => import("../pages/SignUp"));
 const TourDetailsPage        = lazy(() => import("../pages/TourDetailsPage"));
 const ToursPage              = lazy(() => import("../pages/ToursPage"));
@@ -80,7 +80,7 @@ const router = createBrowserRouter(
     <>
       <Route path="/" element={<RootLayout />}>
         <Route index element={withSuspense(HomePage)} />
-        <Route path="Services" element={withSuspense(Service)} />
+
         <Route path="explore/:destination" element={withSuspense(ExplorePage)} />
         <Route path="attraction/:destination" element={withSuspense(AttractionPage)} />
         <Route path="flights" element={withSuspense(FlightPage)} />
