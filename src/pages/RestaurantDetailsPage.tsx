@@ -39,6 +39,59 @@ const RestaurantDetailsPage = () => {
     );
   }
 
+  let categories = [
+    { title: "الإفطار", id: "breakfast", icon: "☕", enTitle: "Breakfast" },
+    { title: "الأطباق الرئيسية", id: "main-dishes", icon: "🍜", enTitle: "Main Dishes" },
+    { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+  ];
+
+  const cuisineLc = (restaurant.cuisine || "").toLowerCase();
+  const nameLc = (restaurant.name || "").toLowerCase();
+
+  const isSeafood = cuisineLc.includes("seafood") && !cuisineLc.includes("grills");
+  const isGrills = (cuisineLc.includes("grills") && !cuisineLc.includes("seafood")) || nameLc.includes("مشويات") || nameLc.includes("prince") || nameLc.includes("kababgy");
+  const isGrillsAndSeafood = cuisineLc.includes("grills") && cuisineLc.includes("seafood");
+  const isKoshary = cuisineLc.includes("koshary") || cuisineLc.includes("fast food") || nameLc.includes("كشري") || nameLc.includes("tariq");
+  const isSofra = nameLc.includes("sofra") || nameLc.includes("سفرة") || nameLc.includes("صوفرا");
+
+  if (isSeafood || nameLc.includes("kadoura") || nameLc.includes("قدورة") || nameLc.includes("fares")) {
+    categories = [
+      { title: "أسماك طازجة", id: "seafood", icon: "🐟", enTitle: "Fresh Fish" },
+      { title: "جمبري وسي فود", id: "shrimp", icon: "🦐", enTitle: "Shrimp & Seafood" },
+      { title: "أرز ومقبلات", id: "seafood-rice", icon: "🍚", enTitle: "Rice & Apps" },
+      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    ];
+  } else if (isGrills || nameLc.includes("masrien") || nameLc.includes("المصريين")) {
+    categories = [
+      { title: "مشويات على الفحم", id: "grills-category", icon: "🥩", enTitle: "Charcoal Grills" },
+      { title: "طواجن شرقية", id: "tagines", icon: "🥘", enTitle: "Oriental Tagines" },
+      { title: "مقبلات وسلطات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
+      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    ];
+  } else if (isGrillsAndSeafood || nameLc.includes("balbaa") || nameLc.includes("بلبع")) {
+    categories = [
+      { title: "سلطات ومقبلات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
+      { title: "مشويات على الفحم", id: "grills-category", icon: "🥩", enTitle: "Charcoal Grills" },
+      { title: "أسماك طازجة", id: "seafood", icon: "🐟", enTitle: "Fresh Fish" },
+      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    ];
+  } else if (isKoshary) {
+    categories = [
+      { title: "كشري وطواجن", id: "koshary-meals", icon: "🍲", enTitle: "Main Koshary" },
+      { title: "إضافات مكملة", id: "extras", icon: "🌶️", enTitle: "Extras & Sides" },
+      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+    ];
+  } else if (isSofra) {
+    categories = [
+      { title: "حمام وبط محشي", id: "birds", icon: "🦆", enTitle: "Stuffed Birds" },
+      { title: "طواجن بامية ولحم", id: "tagines", icon: "🥘", enTitle: "Meat Tagines" },
+      { title: "مقبلات وعيش بلدي", id: "appetizers", icon: "🧆", enTitle: "Apps & Bread" },
+      { title: "مشروبات تراثية", id: "traditional-drinks", icon: "☕", enTitle: "Local Drinks" },
+    ];
+  }
+
   return (
     <div className="bg-[#FAFAFA] pb-20">
       {/* Hero Header */}
@@ -87,12 +140,7 @@ const RestaurantDetailsPage = () => {
           <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
             <h2 className="text-2xl font-bold text-[#14213d] mb-8 text-center">أقسام المنيو الخاصة بالمطعم</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
-              {[
-                { title: "الإفطار", id: "breakfast", icon: "☕", enTitle: "Breakfast" },
-                { title: "الأطباق الرئيسية", id: "main-dishes", icon: "🍜", enTitle: "Main Dishes" },
-                { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-                { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
-              ].map((item) => (
+              {categories.map((item) => (
                 <Link 
                   to={`/restaurants/menu/${item.id}`}
                   key={item.id} 

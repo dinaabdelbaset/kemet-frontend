@@ -56,6 +56,32 @@ const EventDetailsPage = () => {
     });
   };
 
+  const isLibrary = eventTitle.includes("مكتبة");
+  const isFilm = eventTitle.includes("السينمائي") || eventTitle.includes("فيلم");
+
+  let galleryImages = [
+    "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
+    "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&q=80",
+    "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80",
+    "https://images.unsplash.com/photo-1533174000273-df0aca0d65b1?w=800&q=80"
+  ];
+
+  if (isLibrary) {
+    galleryImages = [
+      "/events/alex_event_1.png",
+      "/events/concert_stage.png",
+      "/events/concert_fireworks.png",
+      "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80"
+    ];
+  } else if (isFilm) {
+    galleryImages = [
+      "/events/film_celeb_1.png",
+      "/events/film_celeb_2.png",
+      "/events/film_celeb_3.png",
+      "/events/alex_event_2.png"
+    ];
+  }
+
   return (
     <div className="bg-[#fcfbf9] min-h-screen">
       {/* Hero */}
@@ -159,8 +185,15 @@ const EventDetailsPage = () => {
 
       <SectionWrapper className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#14213d] mb-10">You May Also Like</h2>
-          <div className="text-gray-500 text-center py-10">More events coming soon...</div>
+          <h2 className="text-3xl font-bold text-[#14213d] mb-10 text-center font-serif border-b border-gray-100 pb-4">Event Photo Gallery</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {galleryImages.map((img, idx) => (
+              <div key={idx} className="w-full h-64 rounded-2xl overflow-hidden shadow-sm border border-gray-100 relative group">
+                <img src={img} alt={`Gallery view ${idx}`} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition duration-300"></div>
+              </div>
+            ))}
+          </div>
         </div>
       </SectionWrapper>
     </div>

@@ -47,13 +47,25 @@ const BazaarDetailsPage = () => {
   const bazaarDesc = bazaar.description || "A wonderful traditional market with history and rich culture.";
   const specialtyList = bazaar.specialty ? (typeof bazaar.specialty === 'string' ? JSON.parse(bazaar.specialty) : bazaar.specialty) : ["Spices", "Textiles", "Antiques"];
   
+  const titleLc = (bazaar?.title || bazaar?.name || "").toLowerCase();
+  const isSettat = titleLc.includes("settat") || titleLc.includes("ستات") || titleLc.includes("زنقة") || titleLc.includes("zan2et");
+
   // Default gallery fallback if none exists
-  const gallery = [
-    "https://images.unsplash.com/photo-1542036136-23133de5057b?w=600",
-    "https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=600",
-    "https://images.unsplash.com/photo-1541355415714-c8172905cc75?w=600",
-    "https://images.unsplash.com/photo-1599839619722-39751411ea63?w=600"
+  let gallery = [
+    "/bazaars/clothing.png",
+    "/bazaars/accessories.png",
+    "/bazaars/spices.png",
+    "/bazaars/lanterns.png"
   ];
+
+  if (isSettat) {
+    gallery = [
+      "/bazaars/fabric_1.png",
+      "/bazaars/fabric_2.png",
+      "/bazaars/fabric_3.png",
+      "/bazaars/clothing.png"
+    ];
+  }
 
 
   
@@ -131,6 +143,17 @@ const BazaarDetailsPage = () => {
                     {item}
                   </span>
                 ))}
+              </div>
+              
+              <div className="mt-8 grid grid-cols-2 gap-4">
+                <div className="rounded-2xl overflow-hidden shadow-sm h-64 border border-gray-100 relative group">
+                  <img src="/bazaars/clothing.png" alt="Bazaar Fabrics and Clothes" className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition duration-300"></div>
+                </div>
+                <div className="rounded-2xl overflow-hidden shadow-sm h-64 border border-gray-100 relative group">
+                  <img src="/bazaars/accessories.png" alt="Traditional Antiquities and Accessories" className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition duration-300"></div>
+                </div>
               </div>
             </div>
 

@@ -344,6 +344,86 @@ const MenuCategoryPage = () => {
       { id: 3, title: "ناتشوز بالجبن", img: `${ASSET_URL}mexican_nachos.png`, price: 3.80, calories: 800 },
       { id: 4, title: "كاساديا دجاج", img: `${ASSET_URL}mexican_quesadilla.png`, price: 4.50, calories: 650 },
     ];
+  } else if (category === 'seafood') {
+    categoryMeals = [
+      { id: 1, title: "سمك دنيس مشوي", img: `/food/grilled_denis.png`, price: 12.0, calories: 350 },
+      { id: 2, title: "سمك بوري سنجاري", img: `/food/singary_bouri.png`, price: 10.0, calories: 450 },
+      { id: 3, title: "سمك قاروص مقلي", img: `/food/fried_bass.png`, price: 15.0, calories: 500 },
+      { id: 4, title: "طويجن كالاماري", img: `/food/calamari_tagine.png`, price: 14.0, calories: 400 },
+    ];
+  } else if (category === 'shrimp') {
+    categoryMeals = [
+      { id: 1, title: "جمبري مشوي جامبو", img: `/food/jumbo_grilled.png`, price: 25.0, calories: 400 },
+      { id: 2, title: "جمبري بترفلاي", img: `https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80`, price: 28.0, calories: 550 },
+      { id: 3, title: "طاجن سي فود بالكريمة", img: `https://images.unsplash.com/photo-1534080564583-6be75777b70a?auto=format&fit=crop&w=600&q=80`, price: 20.0, calories: 650 },
+      { id: 4, title: "شوربة سي فود مخلية", img: `/food/seafood_soup.png`, price: 8.0, calories: 250 },
+    ];
+  } else if (category === 'seafood-rice') {
+    categoryMeals = [
+      { id: 1, title: "أرز صيادية بالجمبري", img: `https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?auto=format&fit=crop&w=600&q=80`, price: 6.0, calories: 500 },
+      { id: 2, title: "أرز خلطة سي فود", img: `/food/seafood_mixed_rice.png`, price: 8.0, calories: 600 },
+      { id: 3, title: "مقبلات طحينة وسلطة", img: `https://images.unsplash.com/photo-1529059997568-3d847b1154f0?auto=format&fit=crop&w=600&q=80`, price: 3.0, calories: 200 },
+      { id: 4, title: "أرز صيادية سادة", img: `/food/sayadia_rice.png`, price: 2.5, calories: 350 },
+    ];
+  } else if (category === 'grills-category') {
+    const ASSET_URL = '/food/';
+    categoryMeals = [
+      { id: 1, title: "مشاوي مشكلة حاتي", img: `${ASSET_URL}grills.png`, price: 8.00, calories: 950 },
+      { id: 2, title: "كباب وكفتة", img: `${ASSET_URL}sausage.png`, price: 7.00, calories: 850 },
+      { id: 3, title: "فراخ مشوية عالفحم", img: `${ASSET_URL}mandi.png`, price: 6.50, calories: 700 },
+      { id: 4, title: "طرب بلدي ضاني", img: `${ASSET_URL}hawawshi.png`, price: 5.50, calories: 600 },
+    ];
+  } else if (category === 'tagines') {
+    const ASSET_URL = '/food/';
+    categoryMeals = [
+      { id: 1, title: "طاجن بامية باللحمة", img: `${ASSET_URL}okra.png`, price: 4.50, calories: 540 },
+      { id: 2, title: "ورق عنب بالكوارع", img: `${ASSET_URL}grape_leaves.png`, price: 5.00, calories: 600 },
+      { id: 3, title: "محاشي مشكلة", img: `${ASSET_URL}mixed_mahshi.png`, price: 3.50, calories: 580 },
+      { id: 4, title: "ملوخية طاجن", img: `${ASSET_URL}molokhia.png`, price: 2.50, calories: 310 },
+    ];
+  } else if (category === 'salads') {
+    categoryMeals = [
+      { id: 1, title: "باذنجان مخلل بالدقة", img: `/food/pickled_eggplant.png`, price: 0.50, calories: 120 },
+      { id: 2, title: "بابا غنوج شرقي", img: `/food/babaganoush.png`, price: 0.90, calories: 120 },
+      { id: 3, title: "سلطة طحينة بيتي", img: `/food/tahini.png`, price: 0.80, calories: 150 },
+      { id: 4, title: "سلطة بلدي خضراء", img: `/food/green_salad.png`, price: 1.00, calories: 100 },
+    ];
+  } else if (category === 'koshary-meals') {
+    const ASSET_URL = '/food/';
+    categoryMeals = [
+      { id: 1, title: "كشري التحرير ميجا", img: `${ASSET_URL}koshary.png`, price: 2.00, calories: 650 },
+      { id: 2, title: "طاجن مكرونة باللحمة", img: `${ASSET_URL}fatta.png`, price: 2.50, calories: 550 },
+      { id: 3, title: "طاجن مكرونة بالفراخ", img: `${ASSET_URL}shawarma.png`, price: 2.20, calories: 500 },
+      { id: 4, title: "كشري وسط", img: `${ASSET_URL}koshary.png`, price: 1.50, calories: 450 },
+    ];
+  } else if (category === 'extras') {
+    categoryMeals = [
+      { id: 1, title: "صلصة كشري زيادة", img: `https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?auto=format&fit=crop&w=600&q=80`, price: 0.30, calories: 50 },
+      { id: 2, title: "دقة وشطة نار", img: `https://images.unsplash.com/photo-1596645391264-b525db8cb9d3?auto=format&fit=crop&w=600&q=80`, price: 0.20, calories: 10 },
+      { id: 3, title: "تقلية بصل مقرمش", img: `https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80`, price: 0.40, calories: 80 },
+      { id: 4, title: "حمص مدشوش زيادة", img: `https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?auto=format&fit=crop&w=600&q=80`, price: 0.50, calories: 90 },
+    ];
+  } else if (category === 'birds') {
+    categoryMeals = [
+      { id: 1, title: "حمام محشي أرز", img: `/food/true_pigeon.png`, price: 4.50, calories: 750 },
+      { id: 2, title: "نصف بطة بلدي", img: `/food/food_mandi_chicken.png`, price: 8.00, calories: 950 },
+      { id: 3, title: "فراخ مشوية عالفحم", img: `/food/pigeon.png`, price: 6.00, calories: 600 },
+      { id: 4, title: "سمك دنيس مشوي", img: `/food/grilled_denis.png`, price: 12.00, calories: 450 },
+    ];
+  } else if (category === 'appetizers') {
+    categoryMeals = [
+      { id: 1, title: "طحينة مصرية أصلية", img: `/food/tahini.png`, price: 0.80, calories: 150 },
+      { id: 2, title: "بابا غنوج بالرمان", img: `/food/babaganoush.png`, price: 0.90, calories: 120 },
+      { id: 3, title: "بصل وثوم مقرمش", img: `/food/food_fries.png`, price: 0.50, calories: 200 },
+      { id: 4, title: "سلطة بلدي خضراء", img: `/food/green_salad.png`, price: 1.00, calories: 80 },
+    ];
+  } else if (category === 'traditional-drinks') {
+    categoryMeals = [
+      { id: 1, title: "شاي مصري بالنعناع", img: `/food/egyptian_tea.png`, price: 0.20, calories: 10 },
+      { id: 2, title: "كركديه عناب صعيدي", img: `/food/enab.png`, price: 0.40, calories: 120 },
+      { id: 3, title: "سوبيا بلدي باللبن", img: `/food/sobia.png`, price: 0.60, calories: 250 },
+      { id: 4, title: "قهوة تركي قوية", img: `/food/turkish_coffee.png`, price: 0.50, calories: 15 },
+    ];
   } else {
     const ASSET_URL = '/food/';
     categoryMeals = [

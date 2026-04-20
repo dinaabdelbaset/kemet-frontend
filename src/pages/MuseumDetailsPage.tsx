@@ -80,6 +80,35 @@ const MuseumDetailsPage = () => {
     });
   };
 
+  const titleLc = (museum?.title || museum?.name || "").toLowerCase();
+  const isMontaza = titleLc.includes("montaza") || titleLc.includes("منتزه") || titleLc.includes("حدائق");
+  const isKom = titleLc.includes("kom") || titleLc.includes("shoqafa") || titleLc.includes("كوم") || titleLc.includes("شقافة");
+  const isKarnak = titleLc.includes("karnak") || titleLc.includes("كرنك");
+  const isLuxor = titleLc.includes("luxor") || titleLc.includes("اقصر") || titleLc.includes("أقصر");
+
+  let galleryTitle = "Exhibition Gallery";
+  // Replacing broken un-related Unsplash links with stunning generic local Pharaonic antiquities 
+  let galleryImages = [
+    "/museums/kom_4.png",
+    "/museums/kom_2.png",
+    "/museums/luxor_1.png",
+    "/museums/luxor_2.png"
+  ];
+
+  if (isMontaza) {
+    galleryTitle = "Park Photo Gallery";
+    galleryImages = ["/museums/montaza_1.png", "/museums/montaza_2.png", "/museums/montaza_3.png", "/museums/montaza_4.png"];
+  } else if (isKom) {
+    galleryTitle = "Catacombs Photo Gallery";
+    galleryImages = ["/museums/kom_1.png", "/museums/kom_2.png", "/museums/kom_3.png", "/museums/kom_4.png"];
+  } else if (isKarnak) {
+    galleryTitle = "Karnak Temple Tourists Gallery";
+    galleryImages = ["/museums/karnak_hero.png", "/museums/karnak_tourists.png", "/museums/kom_2.png", "/museums/luxor_1.png"];
+  } else if (isLuxor) {
+    galleryTitle = "Luxor Artifacts Gallery";
+    galleryImages = ["/museums/luxor_1.png", "/museums/luxor_2.png", "/museums/kom_2.png", "/museums/kom_4.png"];
+  }
+
   return (
     <div className="bg-white min-h-screen pb-16">
       {/* Hero */}
@@ -135,6 +164,21 @@ const MuseumDetailsPage = () => {
             <ReviewSection rating={museum.rating || 4.8} reviewCount={museum.reviews_count || 124} itemId={id || "1"} itemType="museum" />
 
             <InteractiveMap locationName={`${museum.location || 'Egypt'}`} />
+            
+            {/* Gallery Section */}
+            <div className="mt-12">
+              <h3 className="text-3xl font-bold text-[#14213d] font-serif mb-8 text-center border-b border-gray-100 pb-4">
+                {galleryTitle}
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {galleryImages.map((img, idx) => (
+                  <div key={idx} className="w-full aspect-square rounded-2xl overflow-hidden shadow-sm border border-gray-100 relative group">
+                    <img src={img} alt={`Gallery view ${idx}`} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition duration-300"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="lg:col-span-1">
