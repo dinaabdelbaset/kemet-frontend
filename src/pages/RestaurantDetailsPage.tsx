@@ -50,10 +50,20 @@ const RestaurantDetailsPage = () => {
   const nameLc = (restaurant.name || "").toLowerCase();
 
   const isSeafood = cuisineLc.includes("seafood") && !cuisineLc.includes("grills");
-  const isGrills = (cuisineLc.includes("grills") && !cuisineLc.includes("seafood")) || nameLc.includes("مشويات") || nameLc.includes("prince") || nameLc.includes("kababgy");
+  const isGrills = (cuisineLc.includes("grills") && !cuisineLc.includes("seafood")) || nameLc.includes("مشويات") || nameLc.includes("prince") || nameLc.includes("kababgy") || nameLc.includes("shakra");
   const isGrillsAndSeafood = cuisineLc.includes("grills") && cuisineLc.includes("seafood");
   const isKoshary = cuisineLc.includes("koshary") || cuisineLc.includes("fast food") || nameLc.includes("كشري") || nameLc.includes("tariq");
   const isSofra = nameLc.includes("sofra") || nameLc.includes("سفرة") || nameLc.includes("صوفرا");
+  const isStreetFood = nameLc.includes("felfela") || nameLc.includes("gad") || cuisineLc.includes("street") || nameLc.includes("فلفلة");
+  const isTraditional = cuisineLc.includes("egyptian") || cuisineLc.includes("traditional") || cuisineLc.includes("authentic") || nameLc.includes("abou el sid") || nameLc.includes("dar darak");
+  const isBedouin = cuisineLc.includes("bedouin") || cuisineLc.includes("fayoumi") || nameLc.includes("tunis") || nameLc.includes("rayan");
+
+  const isChinese = cuisineLc.includes("chinese") || cuisineLc.includes("asian");
+  const isIndian = cuisineLc.includes("indian");
+  const isKorean = cuisineLc.includes("korean");
+  const isTurkish = cuisineLc.includes("turkish");
+  const isItalian = cuisineLc.includes("italian") || cuisineLc.includes("pizza") || cuisineLc.includes("pasta");
+  const isMexican = cuisineLc.includes("mexican") || cuisineLc.includes("latin");
 
   if (isSeafood || nameLc.includes("kadoura") || nameLc.includes("قدورة") || nameLc.includes("fares")) {
     categories = [
@@ -80,15 +90,71 @@ const RestaurantDetailsPage = () => {
     categories = [
       { title: "كشري وطواجن", id: "koshary-meals", icon: "🍲", enTitle: "Main Koshary" },
       { title: "إضافات مكملة", id: "extras", icon: "🌶️", enTitle: "Extras & Sides" },
-      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
       { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
     ];
-  } else if (isSofra) {
+  } else if (isSofra || isTraditional) {
     categories = [
-      { title: "حمام وبط محشي", id: "birds", icon: "🦆", enTitle: "Stuffed Birds" },
-      { title: "طواجن بامية ولحم", id: "tagines", icon: "🥘", enTitle: "Meat Tagines" },
-      { title: "مقبلات وعيش بلدي", id: "appetizers", icon: "🧆", enTitle: "Apps & Bread" },
+      { title: "محاشي وممبار", id: "stuffed", icon: "🫔", enTitle: "Stuffed Veggies" },
+      { title: "طواجن شرقية", id: "tagines", icon: "🥘", enTitle: "Oriental Tagines" },
+      { title: "حمام وبط", id: "birds", icon: "🦆", enTitle: "Local Birds" },
       { title: "مشروبات تراثية", id: "traditional-drinks", icon: "☕", enTitle: "Local Drinks" },
+    ];
+  } else if (isStreetFood) {
+    categories = [
+      { title: "فطار مصري", id: "breakfast", icon: "🧆", enTitle: "Local Breakfast" },
+      { title: "ساندوتشات", id: "sandwiches", icon: "🥙", enTitle: "Sandwiches" },
+      { title: "أطباق شرقية", id: "main-dishes", icon: "🍲", enTitle: "Oriental Plates" },
+      { title: "عصائر فريش", id: "drinks", icon: "🍹", enTitle: "Fresh Juices" },
+    ];
+  } else if (isBedouin) {
+    categories = [
+      { title: "مندي ولحم ضأن", id: "mandi", icon: "🍖", enTitle: "Mandi & Lamb" },
+      { title: "دجاج زرب", id: "zarb", icon: "🍗", enTitle: "Buried Chicken" },
+      { title: "مقبلات بدوي", id: "bedouin-bread", icon: "🫓", enTitle: "Bedouin Apps" },
+      { title: "شاي وقهوة", id: "bedouin-tea", icon: "🫖", enTitle: "Bedouin Tea" },
+    ];
+  } else if (isItalian) {
+    categories = [
+      { title: "أطباق إيطالية", id: "italian", icon: "🍕", enTitle: "Italian Dishes" },
+      { title: "أطباق رئيسية", id: "main-dishes", icon: "🍲", enTitle: "Main Dishes" },
+      { title: "مقبلات وسلطات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
+      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    ];
+  } else if (isChinese) {
+    categories = [
+      { title: "أطباق صينية", id: "chinese", icon: "🍜", enTitle: "Chinese Dishes" },
+      { title: "أطباق رئيسية", id: "main-dishes", icon: "🍲", enTitle: "Main Dishes" },
+      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    ];
+  } else if (isIndian) {
+    categories = [
+      { title: "أطباق هندية", id: "indian", icon: "🍛", enTitle: "Indian Dishes" },
+      { title: "أطباق رئيسية", id: "main-dishes", icon: "🍲", enTitle: "Main Dishes" },
+      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    ];
+  } else if (isKorean) {
+    categories = [
+      { title: "أطباق كورية", id: "korean", icon: "🥢", enTitle: "Korean Dishes" },
+      { title: "مقبلات وسلطات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
+      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    ];
+  } else if (isTurkish) {
+    categories = [
+      { title: "أطباق تركية", id: "turkish", icon: "🥙", enTitle: "Turkish Dishes" },
+      { title: "مشويات", id: "grills-category", icon: "🥩", enTitle: "Grills" },
+      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
+    ];
+  } else if (isMexican) {
+    categories = [
+      { title: "أطباق مكسيكية", id: "mexican", icon: "🌮", enTitle: "Mexican Dishes" },
+      { title: "مقبلات وسلطات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
+      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
     ];
   }
 
@@ -143,6 +209,7 @@ const RestaurantDetailsPage = () => {
               {categories.map((item) => (
                 <Link 
                   to={`/restaurants/menu/${item.id}`}
+                  state={{ restaurantId: restaurant.id, restaurantName: restaurant.name }}
                   key={item.id} 
                   className="border border-gray-100 hover:border-[#D4AF37] rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center bg-[#fdfaf7] block group"
                 >

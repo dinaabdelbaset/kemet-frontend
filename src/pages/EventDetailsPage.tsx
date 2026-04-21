@@ -57,6 +57,11 @@ const EventDetailsPage = () => {
   };
 
   const isLibrary = eventTitle.includes("مكتبة");
+  const isLuxorFilm = eventTitle.includes("أقصر") || eventTitle.includes("اقصر") || eventTitle.includes("Luxor");
+  const isKarnakShow = eventTitle.includes("صوت") || eventTitle.includes("ضوء") || eventTitle.includes("كرنك");
+  const isSharmTheater = eventTitle.includes("شرم") && eventTitle.includes("مسرح");
+  const isSohoConcert = eventTitle.includes("سوهو") || eventTitle.includes("موسيقية");
+  const isAbuSimbel = eventTitle.includes("تعامد") || eventTitle.includes("رمسيس") || eventTitle.includes("سمبل");
   const isFilm = eventTitle.includes("السينمائي") || eventTitle.includes("فيلم");
 
   let galleryImages = [
@@ -66,7 +71,42 @@ const EventDetailsPage = () => {
     "https://images.unsplash.com/photo-1533174000273-df0aca0d65b1?w=800&q=80"
   ];
 
-  if (isLibrary) {
+  if (isLuxorFilm) {
+    galleryImages = [
+      "/events/luxor_film_1.png",
+      "/events/luxor_film_2.png",
+      "/events/luxor_film_3.png",
+      "/events/luxor_film_4.png"
+    ];
+  } else if (isKarnakShow) {
+    galleryImages = [
+      "/events/karnak_show_1.png",
+      "/events/karnak_show_2.png",
+      "/events/karnak_show_3.png",
+      "/events/karnak_show_4.png"
+    ];
+  } else if (isSharmTheater) {
+    galleryImages = [
+      "/events/sharm_theater_1.png",
+      "/events/sharm_theater_2.png",
+      "/events/sharm_theater_3.png",
+      "/events/sharm_theater_4.png"
+    ];
+  } else if (isSohoConcert) {
+    galleryImages = [
+      "/events/sharm_concert_1.png",
+      "/events/sharm_concert_2.png",
+      "/events/sharm_concert_3.png",
+      "/events/sharm_concert_4.png"
+    ];
+  } else if (isAbuSimbel) {
+    galleryImages = [
+      "/events/abu_simbel_gallery_1.png",
+      "/events/abu_simbel_gallery_2.png",
+      "/events/abu_simbel_gallery_3.png",
+      "/events/abu_simbel_gallery_4.png"
+    ];
+  } else if (isLibrary) {
     galleryImages = [
       "/events/alex_event_1.png",
       "/events/concert_stage.png",
@@ -162,7 +202,7 @@ const EventDetailsPage = () => {
                 <h3 className="text-xl font-bold text-[#14213d] mb-6 border-b border-gray-100 pb-4">Booking Info</h3>
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-gray-500">Price per ticket</span>
-                  <span className="text-2xl font-bold text-[#14213d]">{eventPrice} EGP</span>
+                  <span className="text-2xl font-bold text-[#14213d]"><PriceDisplay price={Number(eventPrice)} /></span>
                 </div>
 
                 <div className="space-y-4 mb-8">

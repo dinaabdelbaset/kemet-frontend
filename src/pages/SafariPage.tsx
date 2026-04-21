@@ -2,7 +2,7 @@ import SectionWrapper from "@/components/sections/SectionWrapper";
 import { Link, useLocation } from "react-router-dom";
 import { FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import PriceDisplay from "../components/Ui/PriceDisplay";
+import PriceDisplay from "../components/common/PriceDisplay";
 import axiosClient from "../api/axiosClient";
 import AdvancedFilters from "../components/common/AdvancedFilters";
 
@@ -183,9 +183,7 @@ const SafariPage = () => {
                         <div className="flex items-center justify-between mt-auto">
                           <div>
                             <span className="text-xs text-gray-500 block mb-0.5">From</span>
-                            <span className="text-xl font-bold text-[#EB662B]">
-                              <PriceDisplay amount={item.price} />
-                            </span>
+                            <PriceDisplay price={item.price} className="text-xl font-bold text-[#EB662B]" />
                           </div>
                           <Link to={`/safari/${item.id}`} className="px-5 py-2.5 bg-white border border-gray-200 text-[#05073C] hover:bg-[#EB662B] hover:text-white hover:border-[#EB662B] font-semibold rounded-xl text-sm transition">
                             View Details

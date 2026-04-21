@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaArrowRight } from "react-icons/fa";
 import { useQuery } from '@tanstack/react-query';
 import { getEvents } from '@/api/eventService';
+import PriceDisplay from "../components/common/PriceDisplay";
 
 const EventsPage = () => {
   const { data: events, isLoading, error } = useQuery({
@@ -104,7 +105,7 @@ const EventsPage = () => {
                   {/* Price Badge */}
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-white/20">
                     <span className="font-bold text-[#cf4a36] text-sm flex items-center gap-2">
-                       <FaTicketAlt /> {evt.price} EGP
+                       <FaTicketAlt /> <PriceDisplay price={evt.price} baseCurrency="EGP" />
                     </span>
                   </div>
                 </div>

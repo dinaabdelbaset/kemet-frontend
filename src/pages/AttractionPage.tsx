@@ -4,12 +4,21 @@ import { FaMapMarkerAlt, FaStar, FaClock, FaTicketAlt, FaChevronRight, FaCalenda
 import { getAttraction } from "../api/contentService";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
+import { useApp, CURRENCY_RATES } from "../context/AppContext";
+import PriceDisplay from "../components/common/PriceDisplay";
 
 const AttractionPage = () => {
   const { destination = "" } = useParams();
   const navigate = useNavigate();
   const [attraction, setAttraction] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { currency } = useApp();
+
+  const getConvertedPrice = (price: number, baseCurr: string) => {
+    const validBase = (baseCurr || "EGP") as keyof typeof CURRENCY_RATES;
+    const priceInUSD = price / (CURRENCY_RATES[validBase] || 1);
+    return priceInUSD * (CURRENCY_RATES[currency] || 1);
+  };
 
   useEffect(() => {
     const fetchAttraction = async () => {
@@ -51,12 +60,12 @@ const AttractionPage = () => {
   }
 
   const totalTickets = Object.entries(selectedTickets).reduce((sum, [idx, qty]) => {
-    const price = attraction.ticketPrices[Number(idx)];
-    return sum + (price ? price.price * qty : 0);
+    const ticket = attraction.ticketPrices[Number(idx)];
+    if (!ticket) return sum;
+    return sum + (getConvertedPrice(ticket.price, ticket.currency || 'EGP') * qty);
   }, 0);
 
   const totalCount = Object.values(selectedTickets).reduce((a, b) => a + b, 0);
-  const currency = attraction.ticketPrices[0]?.currency || "USD";
 
   const handleBook = () => {
     if (!visitDate || totalCount === 0) return;
@@ -246,7 +255,7 @@ const AttractionPage = () => {
                             <p className="text-sm font-bold text-gray-700 dark:text-white truncate">{ticket.type}</p>
                             <p className="text-[11px] text-gray-400 dark:text-white/40 mt-0.5">{ticket.desc}</p>
                             <p className="text-[#EB662B] font-black text-sm mt-1">
-                              {ticket.price === 0 ? "مجاني" : `${ticket.price} ${ticket.currency}`}
+                              {ticket.price === 0 ? "مجاني" : <PriceDisplay price={ticket.price} baseCurrency={(ticket.currency || 'EGP') as keyof typeof CURRENCY_RATES} />}
                             </p>
                           </div>
                           {/* Counter */}
@@ -275,7 +284,7 @@ const AttractionPage = () => {
                         المجموع ({totalCount} تذكرة)
                       </span>
                       <span className="text-xl font-black text-[#05073C] dark:text-white">
-                        {totalTickets} {currency}
+                        <PriceDisplay price={totalTickets} baseCurrency={currency} />
                       </span>
                     </div>
                   )}
@@ -289,7 +298,7 @@ const AttractionPage = () => {
                       hover:shadow-[0_10px_30px_rgba(235,102,43,0.4)] hover:-translate-y-0.5
                       disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
                   >
-                    {!visitDate ? "اختر تاريخ الزيارة" : totalCount === 0 ? "اختر عدد التذاكر" : `احجز الآن — ${totalTickets} ${currency}`}
+                    {!visitDate ? "اختر تاريخ الزيارة" : totalCount === 0 ? "اختر عدد التذاكر" : <span className="flex items-center justify-center gap-1">احجز الآن — <PriceDisplay price={totalTickets} baseCurrency={currency} /></span>}
                   </button>
 
                   {/* Trust badges */}
@@ -317,7 +326,7 @@ const AttractionPage = () => {
                   تاريخ الزيارة: <strong className="text-[#EB662B]">{visitDate}</strong>
                 </p>
                 <p className="text-xl font-black text-[#05073C] dark:text-white mb-6">
-                  المجموع: {totalTickets} {currency}
+                  المجموع: <PriceDisplay price={totalTickets} baseCurrency={currency} />
                 </p>
                 <div className="space-y-3">
                   <Link

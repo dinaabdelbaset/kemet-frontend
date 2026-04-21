@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import { Link, useLocation } from "react-router-dom";
-import { FaMapMarkerAlt, FaClock, FaLandmark, FaTicketAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaClock, FaTicketAlt } from "react-icons/fa";
+import PriceDisplay from "@/components/common/PriceDisplay";
 
 import { useQuery } from '@tanstack/react-query';
 import { getMuseums } from '@/api/museumService';
@@ -107,7 +108,7 @@ const MuseumsPage = () => {
                   {/* Price Badge */}
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-white/20">
                     <span className="font-bold text-[#cf4a36] text-sm flex items-center gap-2">
-                       <FaTicketAlt /> {museum.ticket_price} EGP
+                       <FaTicketAlt /> <PriceDisplay price={museum.ticket_price} baseCurrency="EGP" />
                     </span>
                   </div>
                 </div>

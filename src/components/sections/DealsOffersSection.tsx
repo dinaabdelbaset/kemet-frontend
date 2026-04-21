@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import SectionWrapper from "./SectionWrapper";
 import { FaStar, FaArrowRight, FaMapMarkerAlt, FaChevronRight } from "react-icons/fa";
 import gsap from "gsap";
+import PriceDisplay from "../common/PriceDisplay";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitTextReveal from "../Ui/SplitTextReveal";
 
@@ -16,7 +17,7 @@ interface DealCategory {
   title: string;
   locations: string;
   image: string;
-  price: string;
+  price: any;
   rating: number;
   color: string;
   link: string;
@@ -130,7 +131,7 @@ const DealsOffersSection = () => {
           items: Array.isArray(deal.items) 
             ? deal.items.map((item: any) => typeof item === 'string' ? item : item.name || '')
             : [],
-          price: typeof deal.price === 'string' ? deal.price : `$${deal.price}`,
+          price: <PriceDisplay price={parseFloat(String(deal.price).replace(/[^0-9.]/g, '')) || 0} baseCurrency="EGP" />,
         }));
         setDeals(normalized);
       } catch (error) {

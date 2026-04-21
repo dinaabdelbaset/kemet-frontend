@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import type { ITour } from "../../interface";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useApp } from "../../context/AppContext";
-import PriceDisplay from "../Ui/PriceDisplay";
+import PriceDisplay from "../common/PriceDisplay";
 
 interface IProps {
   tour: ITour;
@@ -148,7 +148,7 @@ const TourCard = ({ tour }: IProps) => {
           <span className="flex items-center gap-1.5 font-semibold text-gray-600 text-[13px]"><span className="text-gray-400">⏱️</span> {tour.duration}</span>
           <div className="flex items-baseline gap-1 font-black text-lg text-[#05073C]">
             <span className="text-[10px] text-gray-400 uppercase tracking-wide font-bold">From</span>
-            <PriceDisplay amount={tour.price} />
+            <PriceDisplay price={Number(tour.price) || 0} baseCurrency="EGP" />
           </div>
         </div>
       </div>

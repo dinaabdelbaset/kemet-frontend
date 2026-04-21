@@ -1,6 +1,7 @@
 import { useSearchParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import SectionWrapper from "../components/sections/SectionWrapper";
+import PriceDisplay from "../components/common/PriceDisplay";
 import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { globalSearch } from "../api/searchService";
@@ -93,7 +94,7 @@ const SearchPage = () => {
           data.museums.forEach((m: any) => results.push({
             id: `museum-${m.id}`, title: m.title, image: m.image,
             category: "Museum", categoryAr: "متحف", rating: m.rating || 4.8, reviews: 0,
-            location: m.location, price: m.ticket_price ? `${m.ticket_price} EGP` : "Free", linkTo: `/museums/${m.id}`
+            location: m.location, price: m.ticket_price ? <PriceDisplay price={m.ticket_price} baseCurrency="EGP" /> : "Free", linkTo: `/museums/${m.id}`
           }));
         }
         if (data.safaris && Array.isArray(data.safaris)) {

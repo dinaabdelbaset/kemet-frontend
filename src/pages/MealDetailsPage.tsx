@@ -6,6 +6,7 @@ import InteractiveMap from "@/components/common/InteractiveMap";
 import SocialShare from "@/components/common/SocialShare";
 import ReviewSection from "@/components/common/ReviewSection";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
+import PriceDisplay from "@/components/common/PriceDisplay";
 
 const getMealDescription = (title: string) => {
   const t = title.toLowerCase();
@@ -136,14 +137,6 @@ const MealDetailsPage = () => {
   const mealData = location.state || {};
   const { currency } = useApp();
 
-  const formatPrice = (usdPrice: number) => {
-    const rates: Record<string, number> = { USD: 1, EUR: 0.9, GBP: 0.8, EGP: 50, SAR: 3.75 };
-    const symbols: Record<string, string> = { USD: '$', EUR: '€', GBP: '£', EGP: 'EGP', SAR: 'SAR' };
-    const rate = rates[currency as keyof typeof rates] || 1;
-    const symbol = symbols[currency as keyof typeof symbols] || '$';
-    return `${symbol} ${(usdPrice * rate).toFixed(2)}`;
-  };
-
   const mealTitle = mealData.title || "Authentic Egyptian Koshary like Abu Tarek";
   const mealImage = mealData.img || mealData.image || "/food/koshary.png";
   const mealDetails = getMealDescription(mealTitle);
@@ -267,7 +260,7 @@ const MealDetailsPage = () => {
                 </div>
                 <div className="p-5 flex flex-col justify-between h-24">
                   <h3 className="font-bold text-[#222] leading-snug">{dish.title}</h3>
-                  <span className="text-sm font-bold text-[#cd4f3c] mb-2 block">{formatPrice(dish.price)}</span>
+                  <span className="text-sm font-bold text-[#cd4f3c] mb-2 block"><PriceDisplay price={dish.price} baseCurrency="USD" /></span>
                 </div>
               </div>
             ))}

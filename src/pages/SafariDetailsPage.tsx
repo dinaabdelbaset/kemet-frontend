@@ -128,7 +128,7 @@ const SafariDetailsPage = () => {
             <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 sticky top-24">
               <div className="text-center pb-6 border-b border-gray-100 mb-6">
                 <p className="text-gray-500 mb-2">Price per person from</p>
-                <p className="text-4xl font-extrabold text-[#cd4f3c]">${safariPrice}</p>
+                <p className="text-4xl font-extrabold text-[#cd4f3c]"><PriceDisplay price={Number(safariPrice)} /></p>
               </div>
 
               <form className="space-y-4">

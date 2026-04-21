@@ -1,5 +1,5 @@
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
-import PriceDisplay from "../Ui/PriceDisplay";
+import PriceDisplay from "../common/PriceDisplay";
 import DateTimePicker from "../Ui/DateTimePicker";
 
 interface BookingDetailsData {
@@ -144,7 +144,7 @@ const BookingDetailsStep = ({ data, itemPrice, itemType, onChange }: Props) => {
             <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
               <div>
                 <h4 className="font-bold text-gray-900">Adult (18+)</h4>
-                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay amount={itemPrice} /></div>
+                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay price={itemPrice} /></div>
               </div>
               <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden h-10">
                 <button 
@@ -165,7 +165,7 @@ const BookingDetailsStep = ({ data, itemPrice, itemType, onChange }: Props) => {
                 <h4 className="font-bold text-gray-900">Child (6-17)</h4>
                 <p className="text-xs text-gray-500 mt-1">With valid ID</p>
                 <p className="text-xs text-gray-500">Only in combination with: Adult (18+)</p>
-                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay amount={itemType === 'flight' ? Math.round(itemPrice * 0.75) : 22} /></div>
+                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay price={itemType === 'flight' ? Math.round(itemPrice * 0.75) : 22} /></div>
               </div>
               <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden h-10">
                 <button 

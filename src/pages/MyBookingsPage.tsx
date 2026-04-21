@@ -223,7 +223,7 @@ const MyBookingsPage = () => {
                                 <p className="font-semibold text-gray-800 text-sm">{item.product?.name || `Product #${item.product_id}`}</p>
                                 <p className="text-xs text-gray-400">Qty: {item.quantity} × ${item.price}</p>
                               </div>
-                              <p className="font-bold text-[#05073C] text-sm">${(item.quantity * item.price).toFixed(2)}</p>
+                              <p className="font-bold text-[#05073C] text-sm"><PriceDisplay price={Number((item.quantity * item.price).toFixed(2))} /></p>
                             </div>
                           ))}
                         </div>
@@ -237,7 +237,7 @@ const MyBookingsPage = () => {
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-gray-400 font-bold uppercase">Total</p>
-                            <p className="text-xl font-extrabold text-[#EB662B]">${parseFloat(order.total_amount || 0).toFixed(2)}</p>
+                            <p className="text-xl font-extrabold text-[#EB662B]"><PriceDisplay price={Number(parseFloat(order.total_amount || 0).toFixed(2))} /></p>
                             <p className="text-xs text-gray-400">{order.payment_method}</p>
                           </div>
                         </div>

@@ -12,6 +12,7 @@ const SignUpPage = () => {
         name: "",
         email: "",
         password: "",
+        nationality: "Egypt",
     });
     const [errors, setErrors] = useState<{
         name?: string;
@@ -58,8 +59,8 @@ const SignUpPage = () => {
         try {
             const response = await register(formData);
             localStorage.setItem("token", response.token);
-            setFormData({ name: "", email: "", password: "" }); 
-            login({ id: String(response.user.id), name: response.user.name, email: response.user.email });
+            setFormData({ name: "", email: "", password: "", nationality: "Egypt" }); 
+            login({ id: String(response.user.id), name: response.user.name, email: response.user.email, nationality: response.user.nationality });
             const from = location.state?.from || "/";
             navigate(from, { state: location.state?.routeState, replace: true });
         } catch (error: any) {
@@ -226,6 +227,24 @@ const SignUpPage = () => {
                                 placeholder="••••••••"
                             />
                             {errors.password && <p className="text-red-400 text-[10px] mt-1">{errors.password}</p>}
+                        </div>
+
+                        {/* Nationality */}
+                        <div className={`space-y-1 transition-all duration-1000 delay-[1100ms] ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Nationality</label>
+                            <select
+                                name="nationality"
+                                value={formData.nationality}
+                                onChange={(e: any) => handleChange(e)}
+                                className="w-full bg-white border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#D4AF37] transition-all font-medium"
+                            >
+                                <option value="Egypt">Egypt (مصر)</option>
+                                <option value="USA">USA (أمريكا)</option>
+                                <option value="UK">UK (بريطانيا)</option>
+                                <option value="Saudi Arabia">Saudi Arabia (السعودية)</option>
+                                <option value="Europe">Europe (أوروبا)</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
 
                         {/* Submit */}

@@ -199,7 +199,7 @@ const FlightPage = () => {
                         <FaStar className="text-[#D4AF37] text-[9px]" />
                         <span className="text-[10px] text-white/50">{flight.rating}</span>
                       </div>
-                      <p className="font-black text-xl" style={{ color: classInfo.color }}>${price}</p>
+                      <p className="font-black text-xl" style={{ color: classInfo.color }}><PriceDisplay price={Number(price)} /></p>
                       <p className="text-white/30 text-[9px]">للشخص</p>
                     </div>
                   </div>
@@ -342,17 +342,17 @@ const FlightPage = () => {
                 <div className="border-t border-white/10 pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-white/50">سعر التذكرة × {search.passengers.adults}</span>
-                    <span className="font-black">${Math.round(selectedFlight.price * classInfo.mult)} × {search.passengers.adults}</span>
+                    <span className="font-black"><PriceDisplay price={Number(Math.round(selectedFlight.price * classInfo.mult))} /> × {search.passengers.adults}</span>
                   </div>
                   {search.passengers.children > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-white/50">أطفال × {search.passengers.children} (75%)</span>
-                      <span className="font-black">${Math.round(selectedFlight.price * classInfo.mult * 0.75)} × {search.passengers.children}</span>
+                      <span className="font-black"><PriceDisplay price={Number(Math.round(selectedFlight.price * classInfo.mult * 0.75))} /> × {search.passengers.children}</span>
                     </div>
                   )}
                   <div className="flex justify-between items-center pt-2 border-t border-white/10">
                     <span className="font-black text-lg">الإجمالي</span>
-                    <span className="font-black text-2xl" style={{ color: classInfo.color }}>${finalPrice}</span>
+                    <span className="font-black text-2xl" style={{ color: classInfo.color }}><PriceDisplay price={Number(finalPrice)} /></span>
                   </div>
 
                   {/* Cashback */}

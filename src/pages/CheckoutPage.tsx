@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCheck, FaCalendarAlt, FaClock, FaGift } from "react-icons/fa";
 import SectionWrapper from "../components/sections/SectionWrapper";
-import PriceDisplay from "../components/Ui/PriceDisplay";
+import PriceDisplay from "../components/common/PriceDisplay";
 
 import BookingDetailsStep from "../components/checkout/BookingDetailsStep";
 import YourDetailsStep from "../components/checkout/YourDetailsStep";
@@ -421,7 +421,7 @@ const CheckoutPage = () => {
                           )}
                         </div>
                       </div>
-                      <span className="font-semibold"><PriceDisplay amount={cartItem.totalPrice} /></span>
+                      <span className="font-semibold"><PriceDisplay price={cartItem.totalPrice} /></span>
                     </div>
                   ))}
                   {checkoutData.booking.serviceType === 'delivery' && (
@@ -429,7 +429,7 @@ const CheckoutPage = () => {
                       <hr className="border-gray-100" />
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-gray-600">Delivery Fee</span>
-                        <span className="font-semibold text-gray-900"><PriceDisplay amount={1.05} /></span>
+                        <span className="font-semibold text-gray-900"><PriceDisplay price={1.05} /></span>
                       </div>
                     </>
                   )}
@@ -444,7 +444,7 @@ const CheckoutPage = () => {
                        {location.state?.breakdown || "Selected Tickets"}
                     </span>
                   </div>
-                  <span className="font-semibold"><PriceDisplay amount={checkoutData.item.price} /></span>
+                  <span className="font-semibold"><PriceDisplay price={checkoutData.item.price} /></span>
                 </div>
               ) : (
                 <>
@@ -454,9 +454,9 @@ const CheckoutPage = () => {
                         <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">
                           {checkoutData.booking.tickets.adult}
                         </span>
-                        <span className="text-gray-600">Adult (18+) (<PriceDisplay amount={checkoutData.item.price} />)</span>
+                        <span className="text-gray-600">Adult (18+) (<PriceDisplay price={checkoutData.item.price} />)</span>
                       </div>
-                      <span className="font-semibold"><PriceDisplay amount={checkoutData.booking.tickets.adult * checkoutData.item.price} /></span>
+                      <span className="font-semibold"><PriceDisplay price={checkoutData.booking.tickets.adult * checkoutData.item.price} /></span>
                     </div>
                   )}
                   {checkoutData.booking.tickets.child > 0 && (
@@ -467,7 +467,7 @@ const CheckoutPage = () => {
                         </span>
                         <span className="text-gray-600">Child (6-17)</span>
                       </div>
-                      <span className="font-semibold"><PriceDisplay amount={checkoutData.booking.tickets.child * (checkoutData.item.type === 'flight' ? Math.round(checkoutData.item.price * 0.75) : 22)} /></span>
+                      <span className="font-semibold"><PriceDisplay price={checkoutData.booking.tickets.child * (checkoutData.item.type === 'flight' ? Math.round(checkoutData.item.price * 0.75) : 22)} /></span>
                     </div>
                   )}
                   {checkoutData.booking.tickets.infant > 0 && (
@@ -478,7 +478,7 @@ const CheckoutPage = () => {
                         </span>
                         <span className="text-gray-600">Infant (0-5)</span>
                       </div>
-                      <span className="font-semibold"><PriceDisplay amount={0} /></span>
+                      <span className="font-semibold"><PriceDisplay price={0} /></span>
                     </div>
                   )}
                 </>
@@ -491,7 +491,7 @@ const CheckoutPage = () => {
             <div className="flex justify-between items-center mb-3">
               <span className="font-bold text-gray-800 text-lg">Total Price</span>
               <span className="font-bold text-[#EB662B] text-xl">
-                <PriceDisplay amount={checkoutData.totalPrice} />
+                <PriceDisplay price={checkoutData.totalPrice} />
               </span>
             </div>
 
@@ -511,7 +511,7 @@ const CheckoutPage = () => {
                   </div>
                   <div className="text-right">
                     <p className="text-[#4caf82] font-black text-lg">
-                      +<PriceDisplay amount={cashbackAmount} />
+                      +<PriceDisplay price={cashbackAmount} />
                     </p>
                     <p className="text-[10px] text-gray-400">كاش باك مكتسب</p>
                   </div>

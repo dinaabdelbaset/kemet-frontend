@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { FaChevronRight, FaCar } from "react-icons/fa";
+import { FaChevronRight, FaCar, FaMapMarkerAlt } from "react-icons/fa";
 import axiosClient from "../api/axiosClient";
 import FilterSidebar from "../components/sections/FilterSidebar";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
@@ -252,12 +252,41 @@ const ExplorePage = () => {
                         {(category === "all" || category === "restaurants") && (localRestaurants.length > 0 || category === "restaurants") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
-                                    <h2 className="text-2xl font-bold text-[#05073C]">Restaurants (مطاعم)</h2>
+                                    <h2 className="text-2xl font-bold text-[#05073C] text-right w-full">أشهر المطاعم في {destinationName}</h2>
                                 </div>
                                 {localRestaurants.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {localRestaurants.map(rest => (
-                                            <GenericCard key={`rest-${rest.id}`} item={rest} linkTo={`/restaurants/${rest.id}`} />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-right" dir="rtl">
+                                        {localRestaurants.map(restaurant => (
+                                            <Link to={`/restaurants/${restaurant.id}`} key={`rest-${restaurant.id}`} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(212,175,55,0.06)] border border-gray-100 hover:-translate-y-2 transition-all duration-500 flex flex-col group block">
+                                              <div className="relative w-full aspect-video overflow-hidden">
+                                                <img 
+                                                  src={restaurant.image || '/placeholder.png'} 
+                                                  alt={restaurant.title} 
+                                                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 relative z-0" 
+                                                />
+                                                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm text-[#cd4f3c] text-xs font-bold flex items-center gap-1.5 z-10">
+                                                  <FaMapMarkerAlt /> {restaurant.location}
+                                                </div>
+                                              </div>
+                                              <div className="p-6 flex flex-col flex-grow text-right">
+                                                <h3 className="text-2xl font-bold text-[#14213d] mb-2 group-hover:text-[#cd4f3c] transition-colors duration-300">{restaurant.title}</h3>
+                                                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{restaurant.description || 'أفضل تجربة طعام مصرية وأجواء رائعة لك ولعائلتك'}</p>
+                                                <div className="flex justify-between items-center mb-4">
+                                                  <span className="text-[#cd4f3c] font-bold text-sm bg-[#cd4f3c]/10 px-3 py-1 rounded-md">{restaurant.category || "أكل مصري"}</span>
+                                                  <div className="flex items-center gap-1.5">
+                                                    <span className="text-yellow-400">★</span>
+                                                    <span className="text-sm font-bold">{restaurant.rating}</span>
+                                                    <span className="text-xs text-gray-500">({restaurant.reviews})</span>
+                                                  </div>
+                                                </div>
+                                                <div className="border-t border-gray-100 pt-4 flex justify-between items-center mt-auto cursor-pointer">
+                                                  <span className="text-gray-700 font-bold group-hover:text-[#cd4f3c] flex-1">
+                                                      {document.cookie.includes('/ar') || document.documentElement.dir === 'rtl' ? 'تصفح المنيو والحجز \u2190' : 'View Menu & Booking \u2192'}
+                                                  </span>
+                                                  <span className="text-gray-500 text-xs">10:00 AM - 12:00 AM</span>
+                                                </div>
+                                              </div>
+                                            </Link>
                                         ))}
                                     </div>
                                 ) : (

@@ -3,7 +3,7 @@ import { FaStar, FaClock, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Button from "../Ui/Button";
 import { useApp } from "../../context/AppContext";
-import PriceDisplay from "../Ui/PriceDisplay";
+import PriceDisplay from "../common/PriceDisplay";
 import HoverMascot from "../common/HoverMascot";
 
 interface IProps {
@@ -89,11 +89,11 @@ const ActivityCard = ({ activity }: IProps) => {
                         <div className="flex items-center gap-4">
                             <div className="text-right flex flex-col items-end">
                                 {activity.originalPrice && (
-                                    <PriceDisplay amount={activity.originalPrice} className="text-sm text-gray-400 line-through" />
+                                    <PriceDisplay price={Number(activity.originalPrice) || 0} className="text-sm text-gray-400 line-through" />
                                 )}
                                 <div className="flex items-baseline gap-1 text-[#05073C]">
                                   <span className="text-xs">From</span>
-                                  <PriceDisplay amount={activity.price} className="text-lg font-bold" />
+                                  <PriceDisplay price={Number(activity.price) || 0} className="text-lg font-bold" />
                                 </div>
                             </div>
                             <Button 

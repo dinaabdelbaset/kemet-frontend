@@ -162,7 +162,7 @@ const BazaarDetailsPage = () => {
               
 
 
-              <div className="text-3xl font-bold text-[#cd4f3c] mb-6">{totalPrice} EGP<span className="text-sm text-gray-400 font-normal"> / total</span></div>
+              <div className="text-3xl font-bold text-[#cd4f3c] mb-6"><PriceDisplay price={Number(totalPrice)} /><span className="text-sm text-gray-400 font-normal"> / total</span></div>
               
               <form onSubmit={handleBooking} className="space-y-6">
                 <div>

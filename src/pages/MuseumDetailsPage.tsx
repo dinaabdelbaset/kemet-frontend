@@ -7,6 +7,7 @@ import ReviewSection from "@/components/common/ReviewSection";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import PriceDisplay from "@/components/common/PriceDisplay";
 
 const MuseumDetailsPage = () => {
   const { id } = useParams();
@@ -43,7 +44,7 @@ const MuseumDetailsPage = () => {
   const museumImage = museum.image?.startsWith('/') || museum.image?.startsWith('http') ? museum.image : 'https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=1000&auto=format&fit=crop';
   
   const basePrice = museum.ticket_price || museum.price || 150;
-  const ticketPrices = { egAdult: `${basePrice} EGP`, egStudent: `${Math.round(basePrice/2)} EGP`, foreigner: `${basePrice * 10} EGP` };
+  const ticketPrices = { egAdult: basePrice, egStudent: Math.round(basePrice/2), foreigner: basePrice * 10 };
   
   const highlights = museum.highlights ? (typeof museum.highlights === 'string' ? JSON.parse(museum.highlights) : museum.highlights) : ["Historical artifacts", "Guided tours available", "Cultural heritage"];
 
@@ -53,11 +54,10 @@ const MuseumDetailsPage = () => {
     setTickets(prev => ({ ...prev, [type]: Math.max(0, prev[type] + delta) }));
   };
 
-  const parsePrice = (priceStr: string) => parseInt(priceStr.replace(/\D/g, '')) || 0;
   const totalPrice = 
-    tickets.egAdult * parsePrice(ticketPrices.egAdult) +
-    tickets.egStudent * parsePrice(ticketPrices.egStudent) +
-    tickets.foreign * parsePrice(ticketPrices.foreigner);
+    tickets.egAdult * ticketPrices.egAdult +
+    tickets.egStudent * ticketPrices.egStudent +
+    tickets.foreign * ticketPrices.foreigner;
 
   const totalQty = tickets.egAdult + tickets.egStudent + tickets.foreign;
 
@@ -85,6 +85,7 @@ const MuseumDetailsPage = () => {
   const isKom = titleLc.includes("kom") || titleLc.includes("shoqafa") || titleLc.includes("كوم") || titleLc.includes("شقافة");
   const isKarnak = titleLc.includes("karnak") || titleLc.includes("كرنك");
   const isLuxor = titleLc.includes("luxor") || titleLc.includes("اقصر") || titleLc.includes("أقصر");
+  const isNmec = titleLc.includes("الحضارة") || titleLc.includes("civilization") || titleLc.includes("nmec");
 
   let galleryTitle = "Exhibition Gallery";
   // Replacing broken un-related Unsplash links with stunning generic local Pharaonic antiquities 
@@ -107,6 +108,9 @@ const MuseumDetailsPage = () => {
   } else if (isLuxor) {
     galleryTitle = "Luxor Artifacts Gallery";
     galleryImages = ["/museums/luxor_1.png", "/museums/luxor_2.png", "/museums/kom_2.png", "/museums/kom_4.png"];
+  } else if (isNmec) {
+    galleryTitle = "NMEC Exhibition Gallery";
+    galleryImages = ["/museums/nmec_1.jpg", "/museums/nmec_2.jpg", "/museums/nmec_3.png", "/museums/nmec_4.png"];
   }
 
   return (
@@ -197,15 +201,15 @@ const MuseumDetailsPage = () => {
                     <div className="space-y-1 text-xs bg-black/20 p-3 rounded-xl border border-white/5">
                       <div className="flex justify-between">
                         <span className="text-gray-400">Egyptian Adult</span>
-                        <span className="font-bold text-[#f4a261]">{ticketPrices.egAdult}</span>
+                        <span className="font-bold text-[#f4a261]"><PriceDisplay price={ticketPrices.egAdult} baseCurrency="EGP" /></span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">Egyptian Student</span>
-                        <span className="font-bold text-[#f4a261]">{ticketPrices.egStudent}</span>
+                        <span className="font-bold text-[#f4a261]"><PriceDisplay price={ticketPrices.egStudent} baseCurrency="EGP" /></span>
                       </div>
                       <div className="border-t border-white/10 mt-1 pt-1 flex justify-between">
                         <span className="text-gray-400">Foreign Tourist</span>
-                        <span className="font-bold text-[#f4a261]">{ticketPrices.foreigner}</span>
+                        <span className="font-bold text-[#f4a261]"><PriceDisplay price={ticketPrices.foreigner} baseCurrency="EGP" /></span>
                       </div>
                     </div>
                   </div>
@@ -252,7 +256,7 @@ const MuseumDetailsPage = () => {
 
                   <div className="border-t border-white/20 pt-3 flex justify-between items-center">
                     <span className="text-gray-300 text-sm">Total Price</span>
-                    <span className="text-xl font-bold text-white">{totalPrice} EGP</span>
+                    <span className="text-xl font-bold text-white"><PriceDisplay price={Number(totalPrice)} baseCurrency="EGP" /></span>
                   </div>
 
                   <button type="submit" disabled={totalQty === 0} className={`w-full py-3 font-bold rounded-xl transition shadow-lg text-base ${totalQty > 0 ? 'bg-[#cd4f3c] hover:bg-[#b03c2b] text-white' : 'bg-gray-600 text-gray-400 cursor-not-allowed'}`}>

@@ -19,6 +19,7 @@ export interface User {
   avatar?: string;
   phone?: string;
   points?: number;
+  nationality?: string;
 }
 
 export interface RecentlyViewedItem {
@@ -134,6 +135,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setUserState(newUser);
     localStorage.setItem('app_user', JSON.stringify(newUser));
     showToast(`Welcome back, ${newUser.name}!`);
+
+    // Auto-detect and set currency based on nationality
+    if (newUser.nationality) {
+       const nat = newUser.nationality.toLowerCase();
+       if (nat.includes('us') || nat.includes('america') || nat === 'usa' || nat.includes('أمريكا') || nat.includes('الولايات')) setCurrency('USD');
+       else if (nat.includes('uk') || nat.includes('britain') || nat.includes('england') || nat.includes('بريطانيا')) setCurrency('GBP');
+       else if (nat === 'saudi arabia' || nat === 'ksa' || nat.includes('saudi') || nat.includes('السعودية')) setCurrency('SAR');
+       else if (nat.includes('europe') || nat.includes('france') || nat.includes('germany') || nat.includes('italy') || nat.includes('فرنسا') || nat.includes('ألمانيا') || nat.includes('اوروبا')) setCurrency('EUR');
+       else setCurrency('EGP');
+    }
   };
 
   const logout = () => {

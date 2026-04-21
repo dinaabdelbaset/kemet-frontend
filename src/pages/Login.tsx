@@ -46,7 +46,7 @@ const LoginPage = () => {
             const response = await loginApi(formData);
             localStorage.setItem("token", response.token);
             setFormData({ email: "", password: "" });
-            login({ id: String(response.user.id), name: response.user.name, email: response.user.email });
+            login({ id: String(response.user.id), name: response.user.name, email: response.user.email, nationality: response.user.nationality });
             const from = location.state?.from || "/";
             navigate(from, { state: location.state?.routeState, replace: true });
         } catch (error: any) {
@@ -65,7 +65,7 @@ const LoginPage = () => {
             const data = { name: provider + " User", email: `user@${provider}.com`, provider };
             const response = await socialLogin(data);
             localStorage.setItem("token", response.token);
-            login({ id: String(response.user.id), name: response.user.name, email: response.user.email });
+            login({ id: String(response.user.id), name: response.user.name, email: response.user.email, nationality: response.user.nationality });
             const from = location.state?.from || "/";
             navigate(from, { state: location.state?.routeState, replace: true });
         } catch (error: any) {

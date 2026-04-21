@@ -528,7 +528,7 @@ const AITripPlannerPage = () => {
                         <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><FaMoneyBillWave className="text-[#D4AF37]" /></div>
                         <div>
                           <p className="text-white/60 text-xs">التكلفة التقديرية</p>
-                          <p className="font-bold text-lg">${result.totalCost}</p>
+                          <p className="font-bold text-lg"><PriceDisplay price={Number(result.totalCost)} /></p>
                         </div>
                      </div>
                      <div className="flex items-center gap-2">
@@ -566,7 +566,7 @@ const AITripPlannerPage = () => {
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 group-hover:text-[#EB662B] transition-colors">{result.hotel.name}</h4>
                           <p className="text-sm text-gray-500 mt-1 mb-4">{result.hotel.city || result.destination} • مطابق لتفضيلاتك</p>
-                          <div className="font-black text-[#05073C]">${result.hotel.price} <span className="text-xs text-gray-400 font-medium">/ليلة</span></div>
+                          <div className="font-black text-[#05073C]"><PriceDisplay price={Number(result.hotel.price)} /> <span className="text-xs text-gray-400 font-medium">/ليلة</span></div>
                         </div>
                       </Link>
                    </div>
@@ -615,7 +615,7 @@ const AITripPlannerPage = () => {
                            <h4 className="font-bold text-gray-900">{result.transport.name}</h4>
                            <p className="text-xs text-gray-500">{result.transport.route}</p>
                          </div>
-                         <div className="font-bold text-[#EB662B]">${result.transport.price}</div>
+                         <div className="font-bold text-[#EB662B]"><PriceDisplay price={Number(result.transport.price)} /></div>
                        </Link>
                      </div>
                    )}

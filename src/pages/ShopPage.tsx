@@ -5,6 +5,7 @@ import SectionWrapper from "../components/sections/SectionWrapper";
 import { getProducts } from "../api/shopService";
 import type { Product } from "../api/shopService";
 import { useCart } from "../context/CartContext";
+import PriceDisplay from "../components/common/PriceDisplay";
 
 const getProductImage = (product: Product) => {
   const n = product.name?.toLowerCase() || '';
@@ -166,7 +167,7 @@ const ShopPage = () => {
                   <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-grow">{product.description}</p>
                   
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-                    <span className="text-xl font-extrabold text-[#EB662B]">${product.price}</span>
+                    <PriceDisplay className="text-xl font-extrabold text-[#EB662B]" price={Number(product.price)} />
                     <button 
                       onClick={() => addToCart({ ...product, image: getProductImage(product) })}
                       className="text-sm font-semibold bg-gray-100 hover:bg-[#05073C] text-[#05073C] hover:text-white px-4 py-2 rounded-lg transition"

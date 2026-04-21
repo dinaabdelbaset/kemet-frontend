@@ -210,7 +210,7 @@ const ShopCheckoutPage = () => {
                   
                   <div className="border-t pt-4 flex justify-between font-bold text-xl text-[#05073C]">
                     <span>Total:</span>
-                    <span className="text-[#EB662B]">${totalPrice.toFixed(2)}</span>
+                    <span className="text-[#EB662B]"><PriceDisplay price={Number(totalPrice.toFixed(2))} /></span>
                   </div>
                 </div>
               )}

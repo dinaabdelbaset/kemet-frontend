@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { FaStar, FaArrowLeft, FaShoppingCart, FaPlus, FaTimes, FaCheck, FaFireAlt, FaMinus } from "react-icons/fa";
 
 // ================= TYPES =================
@@ -56,7 +56,7 @@ const InteractiveFoodCard = ({ meal, onSelect }: { meal: IMeal; onSelect: (m: IM
         </div>
 
         <div className="mt-auto flex items-center justify-between border-t border-gray-50 pt-4">
-          <span className="text-xl font-black text-[#05073C]">${meal.price.toFixed(2)}</span>
+          <span className="text-xl font-black text-[#05073C]"><PriceDisplay price={Number(meal.price.toFixed(2))} /></span>
           <button className="bg-[#f2f2f2] group-hover:bg-[#EB662B] group-hover:text-white text-[#05073C] w-10 h-10 rounded-full flex items-center justify-center transition-colors">
             <FaPlus />
           </button>
@@ -164,7 +164,7 @@ const UpsellModal = ({ meal, isOpen, onClose, onAdd }: { meal: IMeal | null; isO
           className="w-full bg-[#EB662B] text-white py-4 rounded-2xl font-bold text-lg hover:shadow-[0_10px_20px_rgba(235,102,43,0.3)] transition-all flex items-center justify-between px-6"
         >
           <span>Add to Order</span>
-          <span>${finalPrice.toFixed(2)}</span>
+          <span><PriceDisplay price={Number(finalPrice.toFixed(2))} /></span>
         </button>
       </div>
     </div>
@@ -216,7 +216,7 @@ const CartDrawer = ({ isOpen, onClose, cart, onRemove }: { isOpen: boolean; onCl
                         With: {item.extras.join(", ")}
                       </div>
                     )}
-                    <div className="font-black text-[#05073C]">${item.totalPrice.toFixed(2)}</div>
+                    <div className="font-black text-[#05073C]"><PriceDisplay price={Number(item.totalPrice.toFixed(2))} /></div>
                   </div>
                 </div>
               ))}
@@ -228,7 +228,7 @@ const CartDrawer = ({ isOpen, onClose, cart, onRemove }: { isOpen: boolean; onCl
           <div className="p-6 bg-white border-t border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <span className="text-gray-500 font-medium">Subtotal</span>
-              <span className="text-2xl font-black text-[#05073C]">${cartTotal.toFixed(2)}</span>
+              <span className="text-2xl font-black text-[#05073C]"><PriceDisplay price={Number(cartTotal.toFixed(2))} /></span>
             </div>
             <Link 
               to="/checkout" 
@@ -250,18 +250,23 @@ const CartDrawer = ({ isOpen, onClose, cart, onRemove }: { isOpen: boolean; onCl
 const MenuCategoryPage = () => {
   const { category } = useParams();
   
+  const location = useLocation();
+  const { restaurantId, restaurantName } = location.state || {}; // Extract injected state!
+
   const [cart, setCart] = useState<ICartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState<IMeal | null>(null);
 
-  const categoryTitle = category ? category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ') : "Menu";
+  // Use the restaurant name if available, else just "Menu"
+  const baseTitle = category ? category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ') : "Menu";
+  const categoryTitle = restaurantName ? `${baseTitle} at ${restaurantName}` : baseTitle;
 
   // Data mapping with prices
-  let categoryMeals: IMeal[] = [];
+  let baseCategoryMeals: IMeal[] = [];
   
   if (category === 'breakfast') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "طعمية ساخنة", img: `${ASSET_URL}falafel.png`, price: 0.40, calories: 450 },
       { id: 2, title: "فول بالزيت والليمون", img: `${ASSET_URL}foul.png`, price: 0.60, calories: 350 },
       { id: 3, title: "بطاطس محمرة", img: `${ASSET_URL}fries.png`, price: 0.50, calories: 500 },
@@ -270,7 +275,7 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'drinks') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "عصير قصب ساقع", img: `${ASSET_URL}sugarcane.png`, price: 0.40, calories: 150 },
       { id: 2, title: "عناب / كركديه مثلج", img: `${ASSET_URL}enab.png`, price: 0.40, calories: 120 },
       { id: 3, title: "ليمون بالنعناع فريش", img: `${ASSET_URL}lemon_mint.png`, price: 0.70, calories: 90 },
@@ -282,7 +287,7 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'desserts') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "طاجن أم علي بالمكسرات", img: `${ASSET_URL}om_ali.png`, price: 1.20, calories: 550 },
       { id: 2, title: "أرز بلبن بالقشطة", img: `${ASSET_URL}rice_pudding.png`, price: 0.70, calories: 350 },
       { id: 3, title: "زلابية مقرمشة", img: `${ASSET_URL}zalabia.png`, price: 0.60, calories: 420 },
@@ -298,7 +303,7 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'chinese') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "كونغ باو تشيكن حلال", img: `${ASSET_URL}chinese_kungpao.png`, price: 4.50, calories: 600 },
       { id: 2, title: "لحم بقري بالبروكلي", img: `${ASSET_URL}chinese_beefbroc.png`, price: 5.50, calories: 550 },
       { id: 3, title: "دجاج بالبرتقال", img: `${ASSET_URL}chinese_orange.png`, price: 4.80, calories: 650 },
@@ -306,7 +311,7 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'indian') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "دجاج تيكا ماسالا", img: `${ASSET_URL}indian_tikka.png`, price: 4.80, calories: 580 },
       { id: 2, title: "برياني لحم", img: `${ASSET_URL}indian_biryani.png`, price: 6.50, calories: 800 },
       { id: 3, title: "دجاج بالزبدة", img: `${ASSET_URL}indian_butter.png`, price: 5.00, calories: 650 },
@@ -314,7 +319,7 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'korean') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "بولجوجي حلال", img: `${ASSET_URL}korean_bulgogi.png`, price: 6.00, calories: 550 },
       { id: 2, title: "تتبوكي حار", img: `${ASSET_URL}korean_tteok.png`, price: 3.80, calories: 450 },
       { id: 3, title: "دجاج مقلي كوري", img: `${ASSET_URL}korean_fried.png`, price: 5.50, calories: 750 },
@@ -322,7 +327,7 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'turkish') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "إسكندر كباب", img: `${ASSET_URL}turkish_iskender.png`, price: 6.50, calories: 850 },
       { id: 2, title: "كباب أضنة", img: `${ASSET_URL}turkish_adana.png`, price: 5.00, calories: 700 },
       { id: 3, title: "لحم بعجين", img: `${ASSET_URL}turkish_lahmacun.png`, price: 3.50, calories: 400 },
@@ -330,7 +335,7 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'italian') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "بيتزا مارجريتا نابولي", img: `${ASSET_URL}italian_margherita.png`, price: 4.00, calories: 750 },
       { id: 2, title: "مكرونة بيني أرابياتا", img: `${ASSET_URL}italian_penne.png`, price: 3.50, calories: 600 },
       { id: 3, title: "لازانيا باللحم الفرش", img: `${ASSET_URL}italian_lasagna.png`, price: 5.50, calories: 850 },
@@ -338,28 +343,28 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'mexican') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "تاكوز لحم مفروم", img: `${ASSET_URL}mexican_tacos.png`, price: 4.20, calories: 550 },
       { id: 2, title: "فاهيتا دجاج", img: `${ASSET_URL}mexican_fajitas.png`, price: 5.00, calories: 600 },
       { id: 3, title: "ناتشوز بالجبن", img: `${ASSET_URL}mexican_nachos.png`, price: 3.80, calories: 800 },
       { id: 4, title: "كاساديا دجاج", img: `${ASSET_URL}mexican_quesadilla.png`, price: 4.50, calories: 650 },
     ];
   } else if (category === 'seafood') {
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "سمك دنيس مشوي", img: `/food/grilled_denis.png`, price: 12.0, calories: 350 },
       { id: 2, title: "سمك بوري سنجاري", img: `/food/singary_bouri.png`, price: 10.0, calories: 450 },
       { id: 3, title: "سمك قاروص مقلي", img: `/food/fried_bass.png`, price: 15.0, calories: 500 },
       { id: 4, title: "طويجن كالاماري", img: `/food/calamari_tagine.png`, price: 14.0, calories: 400 },
     ];
   } else if (category === 'shrimp') {
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "جمبري مشوي جامبو", img: `/food/jumbo_grilled.png`, price: 25.0, calories: 400 },
       { id: 2, title: "جمبري بترفلاي", img: `https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80`, price: 28.0, calories: 550 },
       { id: 3, title: "طاجن سي فود بالكريمة", img: `https://images.unsplash.com/photo-1534080564583-6be75777b70a?auto=format&fit=crop&w=600&q=80`, price: 20.0, calories: 650 },
       { id: 4, title: "شوربة سي فود مخلية", img: `/food/seafood_soup.png`, price: 8.0, calories: 250 },
     ];
   } else if (category === 'seafood-rice') {
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "أرز صيادية بالجمبري", img: `https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?auto=format&fit=crop&w=600&q=80`, price: 6.0, calories: 500 },
       { id: 2, title: "أرز خلطة سي فود", img: `/food/seafood_mixed_rice.png`, price: 8.0, calories: 600 },
       { id: 3, title: "مقبلات طحينة وسلطة", img: `https://images.unsplash.com/photo-1529059997568-3d847b1154f0?auto=format&fit=crop&w=600&q=80`, price: 3.0, calories: 200 },
@@ -367,7 +372,7 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'grills-category') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "مشاوي مشكلة حاتي", img: `${ASSET_URL}grills.png`, price: 8.00, calories: 950 },
       { id: 2, title: "كباب وكفتة", img: `${ASSET_URL}sausage.png`, price: 7.00, calories: 850 },
       { id: 3, title: "فراخ مشوية عالفحم", img: `${ASSET_URL}mandi.png`, price: 6.50, calories: 700 },
@@ -375,14 +380,14 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'tagines') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "طاجن بامية باللحمة", img: `${ASSET_URL}okra.png`, price: 4.50, calories: 540 },
       { id: 2, title: "ورق عنب بالكوارع", img: `${ASSET_URL}grape_leaves.png`, price: 5.00, calories: 600 },
       { id: 3, title: "محاشي مشكلة", img: `${ASSET_URL}mixed_mahshi.png`, price: 3.50, calories: 580 },
       { id: 4, title: "ملوخية طاجن", img: `${ASSET_URL}molokhia.png`, price: 2.50, calories: 310 },
     ];
   } else if (category === 'salads') {
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "باذنجان مخلل بالدقة", img: `/food/pickled_eggplant.png`, price: 0.50, calories: 120 },
       { id: 2, title: "بابا غنوج شرقي", img: `/food/babaganoush.png`, price: 0.90, calories: 120 },
       { id: 3, title: "سلطة طحينة بيتي", img: `/food/tahini.png`, price: 0.80, calories: 150 },
@@ -390,35 +395,35 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'koshary-meals') {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "كشري التحرير ميجا", img: `${ASSET_URL}koshary.png`, price: 2.00, calories: 650 },
       { id: 2, title: "طاجن مكرونة باللحمة", img: `${ASSET_URL}fatta.png`, price: 2.50, calories: 550 },
       { id: 3, title: "طاجن مكرونة بالفراخ", img: `${ASSET_URL}shawarma.png`, price: 2.20, calories: 500 },
       { id: 4, title: "كشري وسط", img: `${ASSET_URL}koshary.png`, price: 1.50, calories: 450 },
     ];
   } else if (category === 'extras') {
-    categoryMeals = [
-      { id: 1, title: "صلصة كشري زيادة", img: `https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?auto=format&fit=crop&w=600&q=80`, price: 0.30, calories: 50 },
-      { id: 2, title: "دقة وشطة نار", img: `https://images.unsplash.com/photo-1596645391264-b525db8cb9d3?auto=format&fit=crop&w=600&q=80`, price: 0.20, calories: 10 },
-      { id: 3, title: "تقلية بصل مقرمش", img: `https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80`, price: 0.40, calories: 80 },
-      { id: 4, title: "حمص مدشوش زيادة", img: `https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?auto=format&fit=crop&w=600&q=80`, price: 0.50, calories: 90 },
+    baseCategoryMeals = [
+      { id: 1, title: "صلصة كشري زيادة", img: `/food/koshary_salsa_1776728282739.png`, price: 0.30, calories: 50 },
+      { id: 2, title: "دقة وشطة نار", img: `/food/koshary_dakka_1776728296556.png`, price: 0.20, calories: 10 },
+      { id: 3, title: "تقلية بصل مقرمش", img: `/food/koshary_onions_1776728310136.png`, price: 0.40, calories: 80 },
+      { id: 4, title: "حمص مدشوش زيادة", img: `/food/koshary_hummus_1776728324264.png`, price: 0.50, calories: 90 },
     ];
   } else if (category === 'birds') {
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "حمام محشي أرز", img: `/food/true_pigeon.png`, price: 4.50, calories: 750 },
       { id: 2, title: "نصف بطة بلدي", img: `/food/food_mandi_chicken.png`, price: 8.00, calories: 950 },
       { id: 3, title: "فراخ مشوية عالفحم", img: `/food/pigeon.png`, price: 6.00, calories: 600 },
       { id: 4, title: "سمك دنيس مشوي", img: `/food/grilled_denis.png`, price: 12.00, calories: 450 },
     ];
   } else if (category === 'appetizers') {
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "طحينة مصرية أصلية", img: `/food/tahini.png`, price: 0.80, calories: 150 },
       { id: 2, title: "بابا غنوج بالرمان", img: `/food/babaganoush.png`, price: 0.90, calories: 120 },
       { id: 3, title: "بصل وثوم مقرمش", img: `/food/food_fries.png`, price: 0.50, calories: 200 },
       { id: 4, title: "سلطة بلدي خضراء", img: `/food/green_salad.png`, price: 1.00, calories: 80 },
     ];
   } else if (category === 'traditional-drinks') {
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "شاي مصري بالنعناع", img: `/food/egyptian_tea.png`, price: 0.20, calories: 10 },
       { id: 2, title: "كركديه عناب صعيدي", img: `/food/enab.png`, price: 0.40, calories: 120 },
       { id: 3, title: "سوبيا بلدي باللبن", img: `/food/sobia.png`, price: 0.60, calories: 250 },
@@ -426,7 +431,7 @@ const MenuCategoryPage = () => {
     ];
   } else {
     const ASSET_URL = '/food/';
-    categoryMeals = [
+    baseCategoryMeals = [
       { id: 1, title: "كبدة إسكندراني", img: `${ASSET_URL}kibda.png`, price: 1.50, calories: 480 },
       { id: 2, title: "حواوشي بلدي", img: `${ASSET_URL}hawawshi.png`, price: 1.50, calories: 550 },
       { id: 3, title: "سجق شرقي", img: `${ASSET_URL}sausage.png`, price: 1.40, calories: 510 },
@@ -444,6 +449,37 @@ const MenuCategoryPage = () => {
       { id: 15, title: "أكلة رنجة بالبصل والطحينة", img: `${ASSET_URL}renga.png`, price: 2.00, calories: 480 },
       { id: 16, title: "كشري أبو طارق", img: `${ASSET_URL}koshary.png`, price: 1.20, calories: 650 },
     ];
+  }
+
+  // MAGICAL UNIQUE MENU GENERATOR
+  // We use the restaurantId (or 1 if none) to manipulate the items and make EVERY restaurant perfectly unique!
+  const numId = restaurantId ? parseInt(restaurantId) : 1;
+  const categoryMeals: IMeal[] = baseCategoryMeals.map((meal, index) => {
+    // Generate unique ID
+    const uniqueId = Number(`${numId}${meal.id}${index}`);
+    
+    // Add unique pricing offset
+    const priceOffset = (numId * 0.15) + (index * 0.05);
+    const newPrice = Number((meal.price + priceOffset).toFixed(2));
+    
+    // Customize title
+    const isArabic = /[\u0600-\u06FF]/.test(meal.title);
+    let newTitle = meal.title;
+    if (restaurantName) {
+      if (isArabic) {
+        // If it already has "حاتي" or similar, just replace or append
+        newTitle = `${meal.title} (من ${restaurantName})`;
+      } else {
+        newTitle = `${restaurantName}'s ${meal.title}`;
+      }
+    }
+    
+    return { ...meal, id: uniqueId, title: newTitle, price: newPrice };
+  });
+
+  // Optional: Slice or shuffle elements if there's enough so they have different counts
+  if (categoryMeals.length > 4) {
+    categoryMeals.sort((a, b) => (numId % 2 === 0 ? a.id - b.id : b.id - a.id));
   }
 
   const handleAddToCart = (item: ICartItem) => {
@@ -475,23 +511,43 @@ const MenuCategoryPage = () => {
             Freshly prepared, authentically spiced, and ready to be delivered hot to your table. 
           </p>
         </div>
-
-        {/* Categories Bar */}
-        <div className="max-w-3xl mx-auto flex overflow-x-auto gap-3 pb-4 scrollbar-hide">
-          {['Breakfast', 'Main Dishes', 'Desserts', 'Drinks'].map(cat => (
-            <Link 
-              key={cat} 
-              to={`/restaurants/menu/${cat.toLowerCase().replace(' ', '-')}`}
-              className={`flex-shrink-0 px-6 py-3 rounded-full font-bold transition-all ${categoryTitle.toLowerCase() === cat.toLowerCase() ? 'bg-[#EB662B] text-white shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}
-            >
-              {cat}
-            </Link>
-          ))}
-        </div>
       </div>
 
-      <SectionWrapper className="py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <SectionWrapper className="py-8 bg-[#fcfaf8]">
+        <div className="max-w-6xl mx-auto mb-10 px-4">
+          <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 mb-8" dir="rtl">
+            <h2 className="text-2xl font-bold text-[#14213d] mb-8 text-center">أقسام المنيو المتوفرة</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
+              {[
+                { title: "الإفطار", id: "breakfast", icon: "☕", enTitle: "Breakfast" },
+                { title: "الأطباق الرئيسية", id: "main-dishes", icon: "🍜", enTitle: "Main Dishes" },
+                { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
+                { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" }
+              ].map((item) => (
+                <Link 
+                  to={`/restaurants/menu/${item.id}`}
+                  key={item.id} 
+                  className={`border rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 text-center block group
+                    ${category === item.id 
+                      ? 'bg-white border-[#cd4f3c] shadow-md' 
+                      : 'bg-[#fdfaf7] border-gray-100 hover:border-[#D4AF37] hover:shadow-lg'
+                    }
+                  `}
+                >
+                  <div className="w-14 h-14 mx-auto bg-white rounded-full flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition">
+                    <span className="text-2xl">{item.icon}</span>
+                  </div>
+                  <h3 className={`font-bold text-sm md:text-base ${category === item.id ? 'text-[#cd4f3c]' : 'text-gray-800'}`}>
+                    {item.title}
+                  </h3>
+                  <span className="text-xs text-gray-500 mt-1 block">{item.enTitle}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
           {categoryMeals.map(meal => (
              <InteractiveFoodCard key={meal.id} meal={meal} onSelect={setSelectedMeal} />
           ))}
@@ -514,7 +570,7 @@ const MenuCategoryPage = () => {
           </div>
           <div className="flex flex-col items-start pr-2">
             <span className="text-[10px] uppercase font-bold text-white/60 tracking-wider">Total</span>
-            <span className="font-black">${cart.reduce((sum, item) => sum + item.totalPrice, 0).toFixed(2)}</span>
+            <span className="font-black"><PriceDisplay price={Number(cart.reduce((sum, item) => sum + item.totalPrice, 0).toFixed(2))} /></span>
           </div>
         </button>
       </div>

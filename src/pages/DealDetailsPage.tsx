@@ -283,8 +283,8 @@ const DealDetailsPage = () => {
               {/* Price */}
               <div className="mb-5">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-extrabold" style={{ color: deal.color }}>${deal.price}</span>
-                  <span className="text-lg text-gray-400 line-through">${deal.originalPrice}</span>
+                  <span className="text-3xl font-extrabold" style={{ color: deal.color }}><PriceDisplay price={Number(deal.price)} /></span>
+                  <span className="text-lg text-gray-400 line-through"><PriceDisplay price={Number(deal.originalPrice)} /></span>
                   <span className="text-sm font-bold text-red-500 bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded">{discount}% OFF</span>
                 </div>
                 <p className="text-xs text-gray-400 mt-1">per person • {deal.duration}</p>
@@ -355,13 +355,13 @@ const DealDetailsPage = () => {
                 </div>
                 <div className="border-t border-gray-200 dark:border-gray-600 pt-2 mt-2">
                   <div className="flex justify-between text-gray-500">
-                    <span>${deal.price} × {guests} guest{guests > 1 ? "s" : ""}</span>
-                    <span>${deal.price * guests}</span>
+                    <span><PriceDisplay price={Number(deal.price)} /> × {guests} guest{guests > 1 ? "s" : ""}</span>
+                    <span><PriceDisplay price={Number(deal.price * guests)} /></span>
                   </div>
                 </div>
                 <div className="flex justify-between font-extrabold text-lg text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-600 pt-2">
                   <span>Total</span>
-                  <span style={{ color: deal.color }}>${deal.price * guests}</span>
+                  <span style={{ color: deal.color }}><PriceDisplay price={Number(deal.price * guests)} /></span>
                 </div>
               </div>
 
