@@ -15,23 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
 const RootLayout = () => {
   useSmoothScroll();
   const location = useLocation();
-  const progressRef = useRef<HTMLDivElement>(null);
 
-  // Scroll progress bar
-  useEffect(() => {
-    if (!progressRef.current) return;
-
-    gsap.to(progressRef.current, {
-      scaleX: 1,
-      ease: "none",
-      scrollTrigger: {
-        trigger: document.documentElement,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.3,
-      },
-    });
-  }, []);
 
   // Refresh ScrollTrigger on route change + page transition
   useEffect(() => {
@@ -53,12 +37,6 @@ const RootLayout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-[#121212] transition-colors duration-300 w-full">
-      {/* Scroll Progress Bar */}
-      <div
-        ref={progressRef}
-        className="scroll-progress-bar w-full"
-        style={{ transform: "scaleX(0)" }}
-      />
 
       <Navbar />
       <main className="flex-grow w-full">

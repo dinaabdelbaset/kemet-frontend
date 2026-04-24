@@ -291,16 +291,7 @@ html.lenis body {
 }
 
 /* --- Scroll Progress Bar --- */
-.scroll-progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #D4AF37, #EB662B, #D4AF37);
-  z-index: 9999;
-  transform-origin: left;
-  pointer-events: none;
-}
+
 
 /* --- Text Selection --- */
 ::selection {
