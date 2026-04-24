@@ -120,6 +120,7 @@ const HotelDetailsPage = () => {
            state: { 
               title: `${hotel.title} - ${room?.room_type || room?.type || 'Room'}`, 
               price: room?.price_per_night || hotel.price_starts_from, 
+              type: 'hotel',
               image: ROOM_IMAGE_MAP[room?.room_type || room?.type] ? ROOM_IMAGE_MAP[room?.room_type || room?.type] : getHotelMainImage(hotel)
            } 
         });

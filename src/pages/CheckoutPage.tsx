@@ -454,12 +454,12 @@ const CheckoutPage = () => {
                         <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">
                           {checkoutData.booking.tickets.adult}
                         </span>
-                        <span className="text-gray-600">Adult (18+) (<PriceDisplay price={checkoutData.item.price} />)</span>
+                        <span className="text-gray-600">{checkoutData.item.type === 'hotel' ? 'Nights' : 'Adult (18+)'} (<PriceDisplay price={checkoutData.item.price} />)</span>
                       </div>
                       <span className="font-semibold"><PriceDisplay price={checkoutData.booking.tickets.adult * checkoutData.item.price} /></span>
                     </div>
                   )}
-                  {checkoutData.booking.tickets.child > 0 && (
+                  {checkoutData.item.type !== 'hotel' && checkoutData.booking.tickets.child > 0 && (
                     <div className="flex justify-between items-center text-sm">
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">
@@ -470,7 +470,7 @@ const CheckoutPage = () => {
                       <span className="font-semibold"><PriceDisplay price={checkoutData.booking.tickets.child * (checkoutData.item.type === 'flight' ? Math.round(checkoutData.item.price * 0.75) : 22)} /></span>
                     </div>
                   )}
-                  {checkoutData.booking.tickets.infant > 0 && (
+                  {checkoutData.item.type !== 'hotel' && checkoutData.booking.tickets.infant > 0 && (
                     <div className="flex justify-between items-center text-sm">
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">

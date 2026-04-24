@@ -119,6 +119,37 @@ const BookingDetailsStep = ({ data, itemPrice, itemType, onChange }: Props) => {
               </div>
             )}
           </div>
+        ) : (itemType === 'hotel') ? (
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-[#05073C]">Stay Details</h3>
+            
+            <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-600 space-y-2">
+              <p className="flex items-start gap-2 before:content-['•'] before:text-gray-400">
+                Check-in is 2:00 PM, Check-out is 12:00 PM.
+              </p>
+              <p className="flex items-start gap-2 before:content-['•'] before:text-gray-400">
+                Free cancellation up to 48 hours before check-in.
+              </p>
+            </div>
+
+            <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
+              <div>
+                <h4 className="font-bold text-gray-900">Number of Nights</h4>
+                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay price={itemPrice} /> / night</div>
+              </div>
+              <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden h-10">
+                <button 
+                  className="px-3 hover:bg-gray-50 h-full text-gray-500 font-medium"
+                  onClick={() => handleTicketChange("adult", -1)}
+                >-</button>
+                <div className="w-10 text-center font-semibold text-gray-900 h-full flex items-center justify-center bg-gray-50">{data.tickets.adult}</div>
+                <button 
+                  className="px-3 hover:bg-gray-50 h-full text-gray-600 font-medium"
+                  onClick={() => handleTicketChange("adult", 1)}
+                >+</button>
+              </div>
+            </div>
+          </div>
         ) : (itemType === 'museum' || itemType === 'bazaar') ? (
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-[#05073C]">Ticket Summary</h3>
