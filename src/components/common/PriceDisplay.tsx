@@ -8,7 +8,7 @@ interface PriceDisplayProps {
   baseCurrency?: keyof typeof CURRENCY_RATES;
 }
 
-const PriceDisplay: React.FC<PriceDisplayProps> = ({ price, className = "", baseCurrency = "USD" }) => {
+const PriceDisplay: React.FC<PriceDisplayProps> = ({ price, className = "", baseCurrency = "EGP" }) => {
   const { currency } = useApp();
   
   // Convert from baseCurrency to USD, then to target currency

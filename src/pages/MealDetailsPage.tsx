@@ -260,7 +260,7 @@ const MealDetailsPage = () => {
                 </div>
                 <div className="p-5 flex flex-col justify-between h-24">
                   <h3 className="font-bold text-[#222] leading-snug">{dish.title}</h3>
-                  <span className="text-sm font-bold text-[#cd4f3c] mb-2 block"><PriceDisplay price={dish.price} baseCurrency="USD" /></span>
+                  <span className="text-sm font-bold text-[#cd4f3c] mb-2 block"><PriceDisplay price={dish.price} baseCurrency="EGP" /></span>
                 </div>
               </div>
             ))}
