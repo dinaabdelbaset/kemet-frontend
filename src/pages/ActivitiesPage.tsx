@@ -12,7 +12,7 @@ interface Adventure {
   icon: string;
   locations: string;
   rating: number;
-  price: string;
+  price: React.ReactNode;
   color: string;
 }
 

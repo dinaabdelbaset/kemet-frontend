@@ -24,8 +24,7 @@ const DealItem = ({ deal }: { deal: any }) => {
     }
   };
 
-  
-  const filteredRestaurants = restaurants.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
+
   return (
     <Link 
       to={`/restaurants/meal/${deal.id}`}
