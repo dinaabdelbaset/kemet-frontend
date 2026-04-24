@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt, FaStar, FaChevronRight } from "react-icons/fa";
@@ -33,7 +34,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&fit=crop",
     locations: "Siwa • Western Desert • Sharm El Sheikh",
     rating: 4.8,
-    price: "From $75",
+    price: <span className="flex items-center gap-1">From <PriceDisplay price={75} baseCurrency="USD" /></span>,
     color: "#E67E22",
   },
   {
@@ -53,7 +54,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&fit=crop",
     locations: "Sharm El Sheikh • Dahab • Hurghada",
     rating: 4.9,
-    price: "From $45",
+    price: <span className="flex items-center gap-1">From <PriceDisplay price={45} baseCurrency="USD" /></span>,
     color: "#3498DB",
   },
   {
@@ -73,7 +74,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&fit=crop",
     locations: "St. Catherine • Dahab • Sinai",
     rating: 4.7,
-    price: "From $60",
+    price: <span className="flex items-center gap-1">From <PriceDisplay price={60} baseCurrency="USD" /></span>,
     color: "#2ECC71",
   },
   {
@@ -93,7 +94,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=800&fit=crop",
     locations: "Luxor • Aswan • Cairo • Abu Simbel",
     rating: 4.9,
-    price: "From $90",
+    price: <span className="flex items-center gap-1">From <PriceDisplay price={90} baseCurrency="USD" /></span>,
     color: "#D4AF37",
   },
   {
@@ -113,7 +114,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1568322503145-e986d345e1a0?w=800&fit=crop",
     locations: "Cairo • Aswan • Luxor",
     rating: 4.6,
-    price: "From $25",
+    price: <span className="flex items-center gap-1">From <PriceDisplay price={25} baseCurrency="USD" /></span>,
     color: "#E74C3C",
   },
   {
@@ -133,7 +134,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&fit=crop",
     locations: "Dahab • Siwa • Aswan • Hurghada",
     rating: 4.8,
-    price: "From $40",
+    price: <span className="flex items-center gap-1">From <PriceDisplay price={40} baseCurrency="USD" /></span>,
     color: "#9B59B6",
   },
 ];

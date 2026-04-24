@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FaWifi, FaTv, FaSnowflake, FaGlassMartiniAlt, FaBed, FaRulerCombined, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaWifi, FaSnowflake, FaBed, FaBath, FaCoffee, FaTv, FaCity, FaWater, FaUtensils, FaCocktail, FaWind, FaRulerCombined, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import PriceDisplay from "../common/PriceDisplay";
 import type { IRoom } from '../../interface';
 import Button from '../Ui/Button';
 
@@ -115,7 +116,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onBookNow }) => {
                             {room.description && <p className="text-[11px] text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">{room.description}</p>}
                         </div>
                         <div className="text-right shrink-0">
-                            <span className="text-xl font-black text-[#05073C]">${room.price}</span>
+                            <span className="text-xl font-black text-[#05073C]"><PriceDisplay price={Number(room.price)} baseCurrency="EGP" /></span>
                             <span className="text-xs text-gray-400 block -mt-1 font-medium">/ night</span>
                         </div>
                     </div>
