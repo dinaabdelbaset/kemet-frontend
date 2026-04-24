@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaArrowLeft, FaStar, FaTags, FaCalendar } from "react-icons/fa6";
@@ -133,7 +134,7 @@ const ThingToDoDetailsPage = () => {
             <h2 className="text-xl font-bold text-[#05073C]">Booking Now</h2>
             
             <div className="text-3xl font-bold text-blue-600">
-              ${item.price}
+              <PriceDisplay price={Number(item.price)} baseCurrency="EGP" />
               <span className="text-base font-normal text-gray-500">
                 {" "}
                 / person

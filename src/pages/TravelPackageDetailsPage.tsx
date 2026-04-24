@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaArrowLeft, FaCheck, FaStar, FaClock, FaTag, FaHotel, FaUniversity, FaTimesCircle } from "react-icons/fa";
@@ -168,7 +169,7 @@ const TravelPackageDetailsPage = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-6 space-y-4">
             <div className="text-3xl font-bold text-blue-600">
-              ${pkg.price}
+              <PriceDisplay price={Number(pkg.price)} baseCurrency="EGP" />
               <span className="text-base font-normal text-gray-500"> / person</span>
             </div>
 

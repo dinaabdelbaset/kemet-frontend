@@ -195,10 +195,10 @@ const ShopCheckoutPage = () => {
                       />
                       <div className="flex-grow">
                         <h3 className="font-bold text-gray-800">{item.product.name}</h3>
-                        <div className="text-sm text-gray-500">Qty: {item.quantity} × ${item.product.price}</div>
+                        <div className="text-sm text-gray-500">Qty: {item.quantity} × <PriceDisplay price={Number(item.product.price)} baseCurrency="EGP" /></div>
                       </div>
                       <div className="text-lg font-bold text-[#05073C]">
-                        ${(item.quantity * item.product.price).toFixed(2)}
+                        <PriceDisplay price={Number(item.quantity * item.product.price)} baseCurrency="EGP" />
                       </div>
                       <button 
                         onClick={() => removeFromCart(item.product.id)}

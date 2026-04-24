@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
+import PriceDisplay from "../components/common/PriceDisplay";
 import {
   FaCalendarCheck,
   FaConciergeBell,
@@ -316,7 +317,7 @@ const HotelsPage = () => {
                     </p>
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-black text-[#05073C]">
-                        ${hotel.price_starts_from || hotel.price}
+                        <PriceDisplay price={Number(hotel.price_starts_from || hotel.price)} baseCurrency="EGP" />
                       </span>
                       <span className="text-sm text-gray-500 font-medium">
                         /night

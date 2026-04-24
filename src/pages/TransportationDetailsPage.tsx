@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import {
   FaCheck,
   FaClock,
@@ -250,7 +251,7 @@ const TransportationDetailsPage = () => {
 
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-black text-[#EB662B]">
-                  ${transport.price}
+                  <PriceDisplay price={Number(transport.price)} baseCurrency="EGP" />
                 </span>
                 <span className="text-gray-500 font-medium">/trip</span>
               </div>
