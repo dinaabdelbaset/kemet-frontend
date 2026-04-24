@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaWifi, FaSnowflake, FaBed, FaBath, FaCoffee, FaTv, FaCity, FaWater, FaUtensils, FaCocktail, FaWind, FaRulerCombined, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaWifi, FaTv, FaSnowflake, FaGlassMartiniAlt, FaBed, FaRulerCombined, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import PriceDisplay from "../common/PriceDisplay";
 import type { IRoom } from '../../interface';
 import Button from '../Ui/Button';
