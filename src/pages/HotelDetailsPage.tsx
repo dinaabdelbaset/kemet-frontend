@@ -214,10 +214,10 @@ const HotelDetailsPage = () => {
                                       // Force exactly 4 big Room Cards for the UX by combining real data with mock extras
                                       const real = hotelRooms || [];
                                       const mock = [
-                                        { id: 991, room_type: 'Classic Single Room', price_per_night: 425, capacity_adults: 1 },
-                                        { id: 992, room_type: 'Deluxe Double Room', price_per_night: 637.50, capacity_adults: 2 },
-                                        { id: 993, room_type: 'Executive Suite', price_per_night: 1062.50, capacity_adults: 2 },
-                                        { id: 994, room_type: 'Presidential Suite', price_per_night: 2500, capacity_adults: 4 }
+                                        { id: 991, room_type: 'Classic Single Room', price_per_night: 800, capacity_adults: 1 },
+                                        { id: 992, room_type: 'Deluxe Double Room', price_per_night: 1600, capacity_adults: 2 },
+                                        { id: 993, room_type: 'Executive Suite', price_per_night: 2400, capacity_adults: 3 },
+                                        { id: 994, room_type: 'Presidential Suite', price_per_night: 3200, capacity_adults: 4 }
                                       ];
                                       const displayRooms = [...real, ...mock].slice(0, 4);
                                       return displayRooms.map((room: any, i: number) => (
