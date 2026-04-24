@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import { useState, useEffect } from "react";
 import { FaRobot, FaCalendarAlt, FaUsers, FaMoneyBillWave, FaMapMarkedAlt, FaMagic, FaCheckCircle, FaStar, FaHotel, FaUtensils, FaLandmark, FaBus, FaShoppingBag } from "react-icons/fa";
 import Button from "../components/Ui/Button";
@@ -280,6 +281,8 @@ const generateTrip = (cityData: any, destination: string, budget: number, days: 
 // ============ COMPONENT ============
 const AITripPlannerPage = () => {
   const [hotelsData, setHotelsData] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(hotelsData.map((item: any) => item.location || item.city).filter(Boolean))];
   const [transportationData, setTransportationData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -356,19 +359,21 @@ const AITripPlannerPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  
+  const filteredHotelsData = hotelsData.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-20">
+    <div className="min-h-screen bg-gray-50 pt-[70px] pb-6 overflow-x-hidden">
       
       {/* Header Banner */}
-      <div className="bg-[#05073C] py-16 px-4 relative overflow-hidden mb-12">
+      <div className="bg-[#05073C] py-4 px-4 relative overflow-hidden mb-4">
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm border border-white/20">
              <FaRobot className="text-[#D4AF37] text-3xl" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-1">
             مخطط الرحلات الذكي <span className="text-[#D4AF37]">✨</span>
           </h1>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
             حدد وجهتك وميزانيتك ومدة الرحلة وسيقوم نظامنا الذكي ببناء رحلة كاملة من فنادق ومطاعم ومتاحف وجولات من بياناتنا الفعلية
           </p>
         </div>
@@ -376,27 +381,27 @@ const AITripPlannerPage = () => {
         <div className="absolute bottom-[-50%] right-[-10%] w-96 h-96 bg-[#EB662B]/20 blur-[120px] rounded-full point-events-none" />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Form Column */}
-        <div className="lg:col-span-4">
-          <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-gray-100 sticky top-24">
-            <h3 className="text-xl font-bold text-[#05073C] mb-6 flex items-center gap-2">
+        <div className="lg:col-span-5">
+          <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-gray-100 sticky top-24">
+            <h3 className="text-xl font-bold text-[#05073C] mb-4 flex items-center gap-2">
               <FaMagic className="text-[#D4AF37]" /> تفضيلاتك
             </h3>
             
-            <form onSubmit={handleGenerate} className="space-y-5">
+            <form onSubmit={handleGenerate} className="space-y-3">
               
               {/* Destination */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
                    <FaMapMarkedAlt className="text-gray-400" /> الوجهة
                 </label>
                 <select 
                   name="destination"
                   value={formData.destination} 
                   onChange={handleChange}
-                  className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all font-medium text-gray-700"
+                  className="w-full h-10 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all font-medium text-gray-700"
                 >
                   <option value="Cairo">القاهرة (ثقافة وتاريخ) 🏛️</option>
                   <option value="Luxor">الأقصر (آثار فرعونية) ⛏️</option>
@@ -411,15 +416,15 @@ const AITripPlannerPage = () => {
               </div>
 
               {/* Guests */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
                       <FaUsers className="text-gray-400" /> بالغين
                     </label>
                     <Input type="number" name="adults" min="1" value={formData.adults} onChange={handleChange} required />
                 </div>
                 <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">أطفال</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">أطفال</label>
                     <Input type="number" name="children" min="0" value={formData.children} onChange={handleChange} required />
                 </div>
               </div>
@@ -442,7 +447,7 @@ const AITripPlannerPage = () => {
 
               {/* Budget */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
                    <FaMoneyBillWave className="text-gray-400" /> الميزانية الإجمالية ($)
                 </label>
                 <div className="relative">
@@ -453,14 +458,14 @@ const AITripPlannerPage = () => {
 
                {/* Vibe */}
                <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
                    <FaStar className="text-gray-400" /> نوع الرحلة
                 </label>
                 <select 
                   name="vibe"
                   value={formData.vibe} 
                   onChange={handleChange}
-                  className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all font-bold text-gray-700 text-sm"
+                  className="w-full h-10 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all font-bold text-gray-700 text-sm"
                 >
                   <option>Surprise Me 🎁</option>
                   <option>استرخاء وسبا 💆‍♂️</option>
@@ -472,7 +477,7 @@ const AITripPlannerPage = () => {
 
               <Button 
                 type="submit" 
-                className="w-full py-4 mt-4 bg-[#05073C] hover:bg-[#1A365D] text-white font-black text-lg rounded-xl shadow-[0_10px_20px_rgba(5,7,60,0.2)] hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)] border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-1 transition-all duration-300"
+                className="w-full py-4 mt-2 bg-[#05073C] hover:bg-[#1A365D] text-white font-black text-lg rounded-xl shadow-[0_10px_20px_rgba(5,7,60,0.2)] hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)] border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-1 transition-all duration-300"
                 disabled={isGenerating}
               >
                 {isGenerating ? "جاري التخطيط..." : "ابدأ تخطيط الرحلة ✨"}
@@ -482,7 +487,7 @@ const AITripPlannerPage = () => {
         </div>
 
         {/* Result Column */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-7">
           
           {/* Default Empty State */}
           {!isGenerating && !result && (
@@ -490,7 +495,7 @@ const AITripPlannerPage = () => {
                <div className="w-24 h-24 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mb-6">
                  <FaRobot className="text-[#D4AF37] text-4xl opacity-50" />
                </div>
-               <h3 className="text-2xl font-bold text-gray-400 mb-2">في انتظار بياناتك</h3>
+               <h3 className="text-2xl font-bold text-gray-400 mb-1">في انتظار بياناتك</h3>
                <p className="text-gray-500 max-w-sm">
                  املأ النموذج على اليسار وسيقوم نظامنا الذكي ببناء رحلة كاملة مخصصة لك من بيانات الموقع الفعلية.
                </p>
@@ -505,7 +510,7 @@ const AITripPlannerPage = () => {
                   <div className="absolute inset-2 rounded-full border-r-4 border-[#05073C] border-opacity-30 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
                   <FaRobot className="text-5xl text-[#D4AF37] animate-bounce" />
                </div>
-               <h3 className="text-2xl font-extrabold text-[#05073C] mb-2">النظام يعمل...</h3>
+               <h3 className="text-2xl font-extrabold text-[#05073C] mb-1">النظام يعمل...</h3>
                <p className="text-[#EB662B] font-bold text-lg animate-fade-in-up transition-all duration-300 mt-4 h-8">
                  {loadingMessages[loadingStep]}
                </p>
@@ -561,7 +566,7 @@ const AITripPlannerPage = () => {
                       <Link to={`/hotels/${result.hotel.id || 1}`} className="flex flex-col sm:flex-row gap-6 bg-gray-50 rounded-2xl p-4 border border-transparent hover:border-[#D4AF37] transition-all hover:shadow-[0_10px_30px_rgba(212,175,55,0.15)] group">
                         <img src={result.hotel.image} alt={result.hotel.name} className="w-full sm:w-48 h-32 object-cover rounded-xl" />
                         <div className="flex-1 flex flex-col justify-center">
-                          <div className="flex items-center gap-1 text-yellow-500 text-xs mb-2">
+                          <div className="flex items-center gap-1 text-yellow-500 text-xs mb-1">
                              <FaStar/><FaStar/><FaStar/><FaStar/><FaStar/> <span className="text-gray-500 ml-1">({result.hotel.rating})</span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 group-hover:text-[#EB662B] transition-colors">{result.hotel.name}</h4>

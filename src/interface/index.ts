@@ -123,6 +123,7 @@ export interface IActivity {
   reviewCount: number;
   duration: string;
   price: number;
+    description?: string;
   originalPrice?: number;
   isBestSeller?: boolean;
   category: string;

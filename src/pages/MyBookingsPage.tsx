@@ -12,6 +12,8 @@ const MyBookingsPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"bookings" | "orders">("bookings");
   const [bookings, setBookings] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(bookings.map((item: any) => item.location || item.city).filter(Boolean))];
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelModal, setCancelModal] = useState<{ isOpen: boolean, bookingId: string | null }>({ isOpen: false, bookingId: null });
@@ -77,6 +79,8 @@ const MyBookingsPage = () => {
     }
   };
 
+  
+  const filteredBookings = bookings.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
     <div className="bg-[#fcfbf9] min-h-screen pt-24 pb-16">
       <SectionWrapper>

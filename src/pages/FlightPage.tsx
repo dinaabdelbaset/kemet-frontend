@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaPlane, FaClock, FaTag, FaChair, FaStar, FaShieldAlt, FaGift } from "react-icons/fa";

@@ -13,6 +13,8 @@ const TransportationPage = () => {
   const [selectedType, setSelectedType] = useState("All");
   const [sortOrder, setSortOrder] = useState("default");
   const [transportData, setTransportData] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(transportData.map((item: any) => item.location || item.city).filter(Boolean))];
   const [sidebarFilters, setSidebarFilters] = useState<{ priceRange: [number, number]; stars: number[] }>({
     priceRange: [0, 5000],
     stars: []
@@ -47,6 +49,8 @@ const TransportationPage = () => {
       return 0;
     });
 
+  
+  const filteredTransportData = transportData.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}

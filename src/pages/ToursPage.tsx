@@ -7,6 +7,8 @@ import AdvancedFilters from "../components/common/AdvancedFilters";
 
 const ToursPage = () => {
   const [tours, setTours] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(tours.map((item: any) => item.location || item.city).filter(Boolean))];
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState<{ priceRange: [number, number]; stars: number[] }>({
     priceRange: [0, 1000],
@@ -32,7 +34,8 @@ const ToursPage = () => {
   const filteredTours = tours.filter(tour => {
      const matchesPrice = tour.price <= filters.priceRange[1];
      const matchesStars = filters.stars.length === 0 || filters.stars.includes(Math.floor(tour.rating));
-     return matchesPrice && matchesStars;
+     const matchesCity = selectedCity === "All Locations" || (tour.location || tour.city) === selectedCity;
+     return matchesPrice && matchesStars && matchesCity;
   });
 
   return (
@@ -51,6 +54,17 @@ const ToursPage = () => {
           <div>
             <h1 className="text-lg font-bold text-[#05073C]">Popular Tours</h1>
             <p className="text-xs text-gray-500">{tours.length} tours available</p>
+          </div>
+          <div className="ml-auto">
+             <select 
+               className="border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-[#05073C] focus:outline-none focus:border-[#EB662B] bg-white shadow-sm cursor-pointer"
+               value={selectedCity}
+               onChange={(e) => setSelectedCity(e.target.value)}
+             >
+               {uniqueCities.map(city => (
+                  <option key={city as string} value={city as string}>{city}</option>
+               ))}
+             </select>
           </div>
         </div>
       </div>

@@ -110,8 +110,11 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onBookNow }) => {
                 <div className="flex-grow">
                     {/* Title and Price */}
                     <div className="flex justify-between items-start mb-3 border-b border-gray-100 pb-3">
-                        <h3 className="text-xl font-bold text-[#05073C] group-hover:text-[#D4AF37] transition-colors leading-tight">{room.name}</h3>
-                        <div className="text-right shrink-0 ml-2">
+                        <div className="flex-1 pr-2">
+                            <h3 className="text-xl font-bold text-[#05073C] group-hover:text-[#D4AF37] transition-colors leading-tight">{room.name}</h3>
+                            {room.description && <p className="text-[11px] text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">{room.description}</p>}
+                        </div>
+                        <div className="text-right shrink-0">
                             <span className="text-xl font-black text-[#05073C]">${room.price}</span>
                             <span className="text-xs text-gray-400 block -mt-1 font-medium">/ night</span>
                         </div>

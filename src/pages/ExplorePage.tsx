@@ -25,6 +25,8 @@ const ExplorePage = () => {
     ];
 
     const [apiHotels, setApiHotels] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(apiHotels.map((item: any) => item.location || item.city).filter(Boolean))];
     const [apiRestaurants, setApiRestaurants] = useState<any[]>([]);
     const [apiSafari, setApiSafari] = useState<any[]>([]);
     const [apiBazaars, setApiBazaars] = useState<any[]>([]);
@@ -139,6 +141,7 @@ const ExplorePage = () => {
                 rating: item.rating || 4.5,
                 reviews: item.reviews_count || item.reviews || 120,
                 location: item.location || destinationName,
+                description: item.description,
                 price: `$${item[priceKey] || item.ticket_price || item.price_range_min || item.price || 0}`
             };
         });
@@ -178,7 +181,9 @@ const ExplorePage = () => {
         </Link>
     );
 
-    return (
+    
+  const filteredApiHotels = apiHotels.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
+  return (
         <div className="min-h-screen bg-gray-50 pt-24 pb-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumb */}

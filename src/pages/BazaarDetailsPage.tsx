@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";

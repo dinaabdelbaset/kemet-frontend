@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FaStar, FaMapMarkerAlt, FaCheck, FaClock, FaUsers, FaShieldAlt, FaCalendarAlt } from "react-icons/fa";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";

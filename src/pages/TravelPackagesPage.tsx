@@ -6,6 +6,8 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 const TravelPackagesPage = () => {
   const [packages, setPackages] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(packages.map((item: any) => item.location || item.city).filter(Boolean))];
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -24,6 +26,8 @@ const TravelPackagesPage = () => {
     fetchPackages();
   }, []);
 
+  
+  const filteredPackages = packages.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -41,6 +45,17 @@ const TravelPackagesPage = () => {
             <h1 className="text-lg font-bold text-[#05073C]">All Travel Packages</h1>
             <p className="text-xs text-gray-500">{packages.length} packages available</p>
           </div>
+          <div className="ml-auto">
+             <select 
+               className="border border-gray-200 rounded-lg px-3 py-2 text-sm font-bold text-[#05073C] focus:outline-none focus:border-[#EB662B] bg-white shadow-sm cursor-pointer"
+               value={selectedCity}
+               onChange={(e) => setSelectedCity(e.target.value)}
+             >
+               {uniqueCities.map(city => (
+                  <option key={city as string} value={city as string}>{city}</option>
+               ))}
+             </select>
+          </div>
         </div>
       </div>
 
@@ -51,7 +66,7 @@ const TravelPackagesPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {packages.map((pkg) => (
+            {filteredPackages.map((pkg) => (
               <TravelBlogCard key={pkg.id} pkg={pkg} />
             ))}
           </div>

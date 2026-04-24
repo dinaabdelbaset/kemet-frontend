@@ -8,6 +8,8 @@ import AdvancedFilters from "../components/common/AdvancedFilters";
 
 const SafariPage = () => {
   const [allSafaris, setAllSafaris] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(allSafaris.map((item: any) => item.location || item.city).filter(Boolean))];
   const [filteredSafaris, setFilteredSafaris] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sidebarFilters, setSidebarFilters] = useState<{ priceRange: [number, number]; stars: number[] }>({
@@ -52,6 +54,8 @@ const SafariPage = () => {
     setFilteredSafaris(result);
   }, [allSafaris, sidebarFilters, activeCity]);
 
+  
+  const filteredAllSafaris = allSafaris.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
     <div className="bg-[#f8f9fa] min-h-screen">
       {/* Hero Section */}

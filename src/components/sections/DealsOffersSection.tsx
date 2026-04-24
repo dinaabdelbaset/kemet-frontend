@@ -131,7 +131,7 @@ const DealsOffersSection = () => {
           items: Array.isArray(deal.items) 
             ? deal.items.map((item: any) => typeof item === 'string' ? item : item.name || '')
             : [],
-          price: <PriceDisplay price={parseFloat(String(deal.price).replace(/[^0-9.]/g, '')) || 0} baseCurrency="EGP" />,
+          price: deal.price,
         }));
         setDeals(normalized);
       } catch (error) {

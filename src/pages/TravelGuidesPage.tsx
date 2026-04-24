@@ -5,6 +5,8 @@ import { getTravelGuides } from "../api/blogService";
 
 const TravelGuidesPage = () => {
   const [guides, setGuides] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(guides.map((item: any) => item.location || item.city).filter(Boolean))];
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,6 +25,8 @@ const TravelGuidesPage = () => {
     fetchGuides();
   }, []);
 
+  
+  const filteredGuides = guides.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
     <div className="bg-[#fdfaf7] min-h-screen">
       <SectionWrapper className="pt-24 pb-16">
@@ -39,7 +43,7 @@ const TravelGuidesPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
-            {guides.map(guide => (
+            {filteredGuides.map(guide => (
               <div key={guide.id} className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 group">
                  <div className="relative h-64 overflow-hidden">
                    <img src={guide.image} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt={guide.title} />

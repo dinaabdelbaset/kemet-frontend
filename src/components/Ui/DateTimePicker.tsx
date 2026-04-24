@@ -13,7 +13,7 @@ const HOURS = Array.from({ length: 12 }, (_, i) => i + 1);
 const MINUTES_OPTIONS = ["00", "15", "30", "45"];
 
 const selectClass =
-  "border border-gray-200 dark:border-gray-600 rounded-xl px-2 py-2.5 text-sm text-gray-900 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-[#D4AF37] text-center w-full cursor-pointer";
+  "border border-gray-200 dark:border-gray-600 rounded-xl px-0 py-2 text-[13px] text-gray-900 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-[#D4AF37] text-center w-full cursor-pointer";
 
 interface DateTimePickerProps {
   onDateChange?: (date: string) => void;

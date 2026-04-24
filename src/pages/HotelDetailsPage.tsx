@@ -231,8 +231,9 @@ const HotelDetailsPage = () => {
                                                 size: room.size || 40,
                                                 type: room.room_type || room.type,
                                                 amenities: room.features || room.amenities || ["Free WiFi", "AC", "Room Service"],
+                                                description: room.description,
                                                 status: room.status || (room.available_count > 0 ? 'Available' : 'Booked'),
-                                                images: ROOM_IMAGE_MAP[room.room_type || room.type] ? [ROOM_IMAGE_MAP[room.room_type || room.type]] : [getHotelMainImage(hotel)],
+                                                images: room.image ? [room.image] : ROOM_IMAGE_MAP[room.room_type || room.type] ? [ROOM_IMAGE_MAP[room.room_type || room.type]] : [getHotelMainImage(hotel)],
                                                 hasBestValueBadge: room.hasBestValueBadge || (room.available_count || 5) > 5
                                             }}
                                             onBookNow={handleBookRoom}

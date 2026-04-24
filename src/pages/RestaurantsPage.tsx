@@ -24,6 +24,8 @@ const DealItem = ({ deal }: { deal: any }) => {
     }
   };
 
+  
+  const filteredRestaurants = restaurants.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
     <Link 
       to={`/restaurants/meal/${deal.id}`}
@@ -62,6 +64,8 @@ const DealItem = ({ deal }: { deal: any }) => {
 
 const RestaurantsPage = () => {
   const [restaurants, setRestaurants] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(restaurants.map((item: any) => item.location || item.city).filter(Boolean))];
   const [isLoading, setIsLoading] = useState(true);
   const [activeCity, setActiveCity] = useState("All");
   const urlLocation = useLocation();

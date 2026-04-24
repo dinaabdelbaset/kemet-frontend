@@ -1,3 +1,4 @@
+import PriceDisplay from "../components/common/PriceDisplay";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaMoneyBillWave, FaPaypal, FaTrash, FaSpinner, FaLock } from "react-icons/fa";

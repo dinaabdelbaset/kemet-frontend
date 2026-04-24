@@ -12,6 +12,8 @@ const SearchPage = () => {
   useDocumentTitle(query ? `Search: ${query}` : "Search Results");
 
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(searchResults.map((item: any) => item.location || item.city).filter(Boolean))];
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -123,6 +125,8 @@ const SearchPage = () => {
     doSearch();
   }, [query]);
 
+  
+  const filteredSearchResults = searchResults.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
     <div className="min-h-screen bg-[#fcfbf9] pt-24 pb-16">
       <SectionWrapper className="max-w-7xl mx-auto px-4">
@@ -147,7 +151,7 @@ const SearchPage = () => {
           </div>
         ) : searchResults.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {searchResults.map((item) => (
+            {filteredSearchResults.map((item) => (
               <Link
                 key={item.id}
                 to={item.linkTo}

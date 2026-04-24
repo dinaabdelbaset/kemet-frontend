@@ -6,6 +6,8 @@ import { getAllReviews } from "@/api/reviewService";
 
 const ReviewsPage = () => {
   const [realReviews, setRealReviews] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState("All Locations");
+  const uniqueCities = ["All Locations", ...new Set(realReviews.map((item: any) => item.location || item.city).filter(Boolean))];
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,6 +70,8 @@ const ReviewsPage = () => {
 
   const allReviewsToDisplay = [...dbReviewsMapped, ...mockReviews];
 
+  
+  const filteredRealReviews = realReviews.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
     <SectionWrapper className="min-h-screen bg-gray-50 pb-16">
       <div className="max-w-4xl mx-auto px-4 pt-8">
