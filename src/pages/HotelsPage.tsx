@@ -44,7 +44,7 @@ const HotelsPage = () => {
   const [hotels, setHotels] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sidebarFilters, setSidebarFilters] = useState<{ priceRange: [number, number]; stars: number[] }>({
-    priceRange: [0, 25000],
+    priceRange: [0, 10000],
     stars: []
   });
   const [apiError, setApiError] = useState<string | null>(null);

@@ -6,7 +6,7 @@ interface AdvancedFiltersProps {
 }
 
 const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({ onFilterChange }) => {
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 25000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
   const [stars, setStars] = useState<number[]>([]);
 
   const handleStarToggle = (star: number) => {
@@ -30,7 +30,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({ onFilterChange }) => 
         <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Max Price</h4>
         <input 
           type="range" 
-          min="0" max="25000" step="500" 
+          min="0" max="10000" step="500" 
           value={priceRange[1]} 
           onChange={handlePriceChange}
           className="w-full accent-[#EB662B] mb-2" 
