@@ -123,7 +123,6 @@ export interface IActivity {
   reviewCount: number;
   duration: string;
   price: number;
-    description?: string;
   originalPrice?: number;
   isBestSeller?: boolean;
   category: string;
@@ -139,6 +138,7 @@ export interface IRoom {
   size: number;
   amenities: string[];
   status: "Available" | "Booked";
+  description?: string;
   hasBestValueBadge?: boolean;
   available_count?: number;
   ar_url?: string;
