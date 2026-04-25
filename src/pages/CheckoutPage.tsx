@@ -133,10 +133,16 @@ const CheckoutPage = () => {
       return; 
     }
 
+    if (checkoutData.item.type === 'car') {
+      setCheckoutData((prev) => ({ ...prev, totalPrice: checkoutData.item.price }));
+      return;
+    }
+
     // Basic pricing logic: Adults full price, children discounted (e.g., 22), infant 0.
-    // In a real app, these prices would be part of the item details passed.
     const adultPrice = checkoutData.item.price;
-    const childPrice = checkoutData.item.type === 'flight' ? Math.round(adultPrice * 0.75) : 22; // Derived from item type if flight
+    const childPrice = (checkoutData.item.type === 'flight' || checkoutData.item.type === 'train' || checkoutData.item.type === 'bus') 
+                       ? Math.round(adultPrice * 0.75) 
+                       : 22; 
     const infantPrice = 0;
 
     const total =
@@ -442,6 +448,18 @@ const CheckoutPage = () => {
                     </span>
                     <span className="text-gray-600 leading-snug pr-4">
                        {location.state?.breakdown || "Selected Tickets"}
+                    </span>
+                  </div>
+                  <span className="font-semibold"><PriceDisplay price={checkoutData.item.price} /></span>
+                </div>
+              ) : (checkoutData.item.type === 'car') ? (
+                <div className="flex justify-between items-center text-sm">
+                  <div className="flex items-center gap-3">
+                    <span className="w-6 h-6 shrink-0 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">
+                      1
+                    </span>
+                    <span className="text-gray-600 leading-snug pr-4">
+                       Private Vehicle
                     </span>
                   </div>
                   <span className="font-semibold"><PriceDisplay price={checkoutData.item.price} /></span>

@@ -1,5 +1,5 @@
 
-const vehicleTypes = ["All", "Bus", "Van", "Car"]
+const vehicleTypes = ["All", "Bus", "Minibus", "Car"]
 
 interface IProps {
   selectedType: string;

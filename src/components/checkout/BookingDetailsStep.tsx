@@ -150,6 +150,24 @@ const BookingDetailsStep = ({ data, itemPrice, itemType, onChange }: Props) => {
               </div>
             </div>
           </div>
+        ) : (itemType === 'car') ? (
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-[#05073C]">Trip Summary</h3>
+            <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-600 space-y-2">
+              <p className="flex items-start gap-2 before:content-['•'] before:text-gray-400">
+                Private vehicle for your journey.
+              </p>
+              <p className="flex items-start gap-2 before:content-['•'] before:text-gray-400">
+                Price is per vehicle, not per person.
+              </p>
+            </div>
+            <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
+              <div>
+                <h4 className="font-bold text-gray-900">Private Vehicle</h4>
+                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay price={itemPrice} /> / trip</div>
+              </div>
+            </div>
+          </div>
         ) : (itemType === 'museum' || itemType === 'bazaar') ? (
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-[#05073C]">Ticket Summary</h3>

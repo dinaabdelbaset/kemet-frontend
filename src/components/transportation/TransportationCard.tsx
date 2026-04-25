@@ -1,6 +1,7 @@
 import { FaStar, FaClock, FaUsers, FaRoute } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Button from "../Ui/Button";
+import PriceDisplay from "../common/PriceDisplay";
 import type { ITransportation } from "../../interface";
 
 interface IProps {
@@ -36,11 +37,11 @@ const TransportationCard = ({ transport }: IProps) => {
         <div className="flex items-center gap-5 text-sm text-gray-500 mb-6">
           <span className="flex items-center gap-1.5">
             <FaUsers className="text-[#05073C]/60" />
-            {transport.seats} seats
+            {transport.type === 'Car' ? 'Up to 4 people' : `${transport.seats} seats`}
           </span>
           <span className="flex items-center gap-1.5">
             <FaClock className="text-[#05073C]/60" />
-            {transport.departureTime}
+            {transport.type === 'Car' ? transport.duration || '48h Rental' : transport.departureTime}
           </span>
         </div>
 
@@ -51,7 +52,7 @@ const TransportationCard = ({ transport }: IProps) => {
             </p>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-black text-[#05073C]">
-                ${transport.price}
+                <PriceDisplay price={transport.price} baseCurrency="EGP" />
               </span>
               <span className="text-sm text-gray-500 font-medium">/trip</span>
             </div>

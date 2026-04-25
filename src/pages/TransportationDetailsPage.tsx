@@ -264,19 +264,21 @@ const TransportationDetailsPage = () => {
                 <div className="flex items-center gap-3 text-gray-600">
                   <FaUsers className="text-[#EB662B]" />
                   <span className="font-medium">
-                    {transport.seats} seats available
+                    {transport.type === 'Car' ? 'Up to 4 passengers' : `${transport.seats} seats available`}
                   </span>
                 </div>
+                {transport.type !== 'Car' && (
+                  <div className="flex items-center gap-3 text-gray-600">
+                    <FaClock className="text-[#EB662B]" />
+                    <span className="font-medium">
+                      Departure: {transport.departureTime}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-3 text-gray-600">
                   <FaClock className="text-[#EB662B]" />
                   <span className="font-medium">
-                    Departure: {transport.departureTime}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 text-gray-600">
-                  <FaClock className="text-[#EB662B]" />
-                  <span className="font-medium">
-                    Duration: {transport.duration}
+                    {transport.type === 'Car' ? 'Rental Period' : 'Duration'}: {transport.duration || '48h'}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-600">
@@ -286,7 +288,7 @@ const TransportationDetailsPage = () => {
               </div>
 
               <Button 
-                onClick={() => navigate('/checkout', { state: { title: `${transport.company} - ${transport.route}`, price: transport.price, image: mappedImage } })}
+                onClick={() => navigate('/checkout', { state: { type: transport.type.toLowerCase(), title: `${transport.company} - ${transport.route}`, price: transport.price, image: mappedImage, tickets: { adult: 1, child: 0, infant: 0 } } })}
                 className="w-full py-4 rounded-xl text-white font-bold text-lg hover:shadow-lg transition-all"
               >
                 Book Now
