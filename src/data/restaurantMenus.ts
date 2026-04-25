@@ -113,11 +113,11 @@ export const getSpecificRestaurantMenu = (restaurantName: string, category: stri
   }
   if (nameLc.includes("swesra") || nameLc.includes("سويسرا")) {
     return [
-      { id: 901, title: "طاسة سجق بالجبنة الشيدر والموتزاريلا", img: "/food/melted_cheese_sandwich.png", price: 6.0, calories: 950 },
-      { id: 902, title: "طاسة بسطرمة بالجبنة السايحة", img: "/food/melted_cheese_sandwich.png", price: 7.0, calories: 850 },
+      { id: 901, title: "طاسة سجق بالجبنة الشيدر والموتزاريلا", img: "/food/swesra_sogoq.png", price: 6.0, calories: 950 },
+      { id: 902, title: "طاسة بسطرمة بالجبنة السايحة", img: "/food/swesra_pastrami.png", price: 7.0, calories: 850 },
       { id: 903, title: "مكرونة وايت صوص بالجبن السويسرية", img: "/food/macaroni_bechamel.png", price: 8.0, calories: 1000 },
-      { id: 904, title: "طاسة سوسيس بصوص الكريمة", img: "/food/melted_cheese_sandwich.png", price: 6.5, calories: 900 },
-      { id: 905, title: "طاسة لحم مفروم وجبن الركفورد", img: "/food/melted_cheese_sandwich.png", price: 8.5, calories: 1100 }
+      { id: 904, title: "طاسة سوسيس بصوص الكريمة", img: "/food/swesra_hotdog.png", price: 6.5, calories: 900 },
+      { id: 905, title: "طاسة لحم مفروم وجبن الركفورد", img: "/food/swesra_minced_meat.png", price: 8.5, calories: 1100 }
     ];
   }
   if (nameLc.includes("wahab") || nameLc.includes("وهاب")) {
@@ -139,11 +139,11 @@ export const getSpecificRestaurantMenu = (restaurantName: string, category: stri
   }
   if (nameLc.includes("delices") || nameLc.includes("ديليس")) {
     return [
-      { id: 1201, title: "ملفيه ديليس الفرنسي الكلاسيكي", img: "/food/greek_bakery.png", price: 5.0, calories: 450 },
-      { id: 1202, title: "كعكة الشوكولاتة اليونانية الغنية", img: "/food/greek_bakery.png", price: 6.0, calories: 550 },
-      { id: 1203, title: "كرواسون اللوز الطازج المخبوز", img: "/food/greek_bakery.png", price: 3.5, calories: 380 },
-      { id: 1204, title: "قهوة إسبريسو إيطالية", img: "/food/turkish_coffee.png", price: 2.0, calories: 10 },
-      { id: 1205, title: "كلير شوكولاتة وكراميل", img: "/food/greek_bakery.png", price: 4.5, calories: 400 }
+      { id: 1201, title: "أومليت فرنسي بالجبنة والمشروم", img: "/food/delices_omelet.png", price: 8.0, calories: 450 },
+      { id: 1202, title: "كرواسون اللوز الطازج", img: "/food/delices_croissant.png", price: 4.0, calories: 380 },
+      { id: 1203, title: "ملفيه ديليس الفرنسي الكلاسيكي", img: "/food/delices_millefeuille.png", price: 5.0, calories: 450 },
+      { id: 1204, title: "كعكة الشوكولاتة اليونانية", img: "/food/delices_chocolate_cake.png", price: 6.0, calories: 550 },
+      { id: 1205, title: "قهوة إسبريسو إيطالية", img: "/food/delices_coffee.png", price: 2.0, calories: 10 }
     ];
   }
 

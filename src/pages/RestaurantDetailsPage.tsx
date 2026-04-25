@@ -54,7 +54,8 @@ const RestaurantDetailsPage = () => {
   // Determine meal times and categories accurately per restaurant
   const hasBreakfast = nameLc.includes("gad") || nameLc.includes("جاد") || 
                        nameLc.includes("ibis") || nameLc.includes("إيبيس") ||
-                       nameLc.includes("terrace") || nameLc.includes("تيراس");
+                       nameLc.includes("terrace") || nameLc.includes("تيراس") ||
+                       nameLc.includes("delices") || nameLc.includes("ديليس");
 
   const isCafeOnly = nameLc.includes("delices") || nameLc.includes("ديليس") || 
                      nameLc.includes("farsha") || nameLc.includes("فرشة");
