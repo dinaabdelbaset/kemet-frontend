@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { FaStar, FaArrowLeft, FaShoppingCart, FaPlus, FaTimes, FaCheck, FaFireAlt, FaMinus } from "react-icons/fa";
+import { getSpecificRestaurantMenu } from "../data/restaurantMenus";
 
 // ================= TYPES =================
 export interface IMeal {
@@ -252,7 +253,20 @@ const MenuCategoryPage = () => {
   const { category } = useParams();
   
   const location = useLocation();
-  const { restaurantId, restaurantName } = location.state || {}; // Extract injected state!
+  const { restaurantId, restaurantName, categories: rawDynamicCategories } = location.state || {}; // Extract injected state!
+
+  // Sanitize categories to fix any persistent router state issues (e.g. if the user came from an old cached page)
+  let dynamicCategories = rawDynamicCategories;
+  if (dynamicCategories && restaurantName) {
+    const nameLc = restaurantName.toLowerCase();
+    const hasBreakfast = nameLc.includes("gad") || nameLc.includes("جاد") || 
+                         nameLc.includes("ibis") || nameLc.includes("إيبيس") ||
+                         nameLc.includes("terrace") || nameLc.includes("تيراس");
+    
+    if (!hasBreakfast) {
+      dynamicCategories = dynamicCategories.filter((cat: any) => cat.id !== "breakfast");
+    }
+  }
 
   const [cart, setCart] = useState<ICartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -265,14 +279,22 @@ const MenuCategoryPage = () => {
   // Data mapping with prices
   let baseCategoryMeals: IMeal[] = [];
   
-  if (category === 'breakfast') {
+  if (restaurantName && category) {
+    const specificMenu = getSpecificRestaurantMenu(restaurantName, category);
+    if (specificMenu) {
+      baseCategoryMeals = specificMenu;
+    }
+  }
+  
+  if (baseCategoryMeals.length === 0) {
+    if (category === 'breakfast') {
     const ASSET_URL = '/food/';
     baseCategoryMeals = [
-      { id: 1, title: "طعمية ساخنة", img: `${ASSET_URL}falafel.png`, price: 0.40, calories: 450 },
-      { id: 2, title: "فول بالزيت والليمون", img: `${ASSET_URL}foul.png`, price: 0.60, calories: 350 },
+      { id: 1, title: "طعمية ساخنة", img: `/food/taameya.png`, price: 0.40, calories: 450 },
+      { id: 2, title: "فول بالزيت والليمون", img: `/food/foul_medames.png`, price: 0.60, calories: 350 },
       { id: 3, title: "بطاطس محمرة", img: `${ASSET_URL}fries.png`, price: 0.50, calories: 500 },
-      { id: 4, title: "فطير مشلتت وعسل وقشطة", img: `${ASSET_URL}feteer.png`, price: 1.50, calories: 850 },
-      { id: 5, title: "فطار مصري كامل", img: `${ASSET_URL}breakfast.png`, price: 3.00, calories: 1200 },
+      { id: 4, title: "فطير مشلتت وعسل وقشطة", img: `/food/feteer_meshaltet.png`, price: 1.50, calories: 850 },
+      { id: 5, title: "فطار مصري كامل", img: `/food/shakshouka_pastrami.png`, price: 3.00, calories: 1200 },
     ];
   } else if (category === 'drinks') {
     const ASSET_URL = '/food/';
@@ -338,7 +360,7 @@ const MenuCategoryPage = () => {
     const ASSET_URL = '/food/';
     baseCategoryMeals = [
       { id: 1, title: "بيتزا مارجريتا نابولي", img: `${ASSET_URL}italian_margherita.png`, price: 4.00, calories: 750 },
-      { id: 2, title: "مكرونة بيني أرابياتا", img: `${ASSET_URL}italian_penne.png`, price: 3.50, calories: 600 },
+      { id: 2, title: "مكرونة بيني أرابياتا", img: `/food/macaroni_bechamel.png`, price: 3.50, calories: 600 },
       { id: 3, title: "لازانيا باللحم الفرش", img: `${ASSET_URL}italian_lasagna.png`, price: 5.50, calories: 850 },
       { id: 4, title: "ريزوتو بالفراخ والمشروم", img: `${ASSET_URL}italian_risotto.png`, price: 4.80, calories: 700 },
     ];
@@ -352,55 +374,55 @@ const MenuCategoryPage = () => {
     ];
   } else if (category === 'seafood') {
     baseCategoryMeals = [
-      { id: 1, title: "سمك دنيس مشوي", img: `/food/grilled_denis.png`, price: 12.0, calories: 350 },
-      { id: 2, title: "سمك بوري سنجاري", img: `/food/singary_bouri.png`, price: 10.0, calories: 450 },
-      { id: 3, title: "سمك قاروص مقلي", img: `/food/fried_bass.png`, price: 15.0, calories: 500 },
-      { id: 4, title: "طويجن كالاماري", img: `/food/calamari_tagine.png`, price: 14.0, calories: 400 },
+      { id: 1, title: "سمك بوري مشوي", img: `/food/singary_fish.png`, price: 12.0, calories: 350 },
+      { id: 2, title: "سمك سنجاري", img: `/food/singary_bouri_new.png`, price: 10.0, calories: 450 },
+      { id: 3, title: "طاجن سي فود", img: `/food/seafood_creamy_tagine.png`, price: 15.0, calories: 500 },
+      { id: 4, title: "أرز صيادية بالجمبري", img: `/food/sayadia_shrimp_rice.png`, price: 14.0, calories: 400 },
     ];
   } else if (category === 'shrimp') {
     baseCategoryMeals = [
-      { id: 1, title: "جمبري مشوي جامبو", img: `/food/jumbo_grilled.png`, price: 25.0, calories: 400 },
-      { id: 2, title: "جمبري بترفلاي", img: `https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80`, price: 28.0, calories: 550 },
-      { id: 3, title: "طاجن سي فود بالكريمة", img: `https://images.unsplash.com/photo-1534080564583-6be75777b70a?auto=format&fit=crop&w=600&q=80`, price: 20.0, calories: 650 },
-      { id: 4, title: "شوربة سي فود مخلية", img: `/food/seafood_soup.png`, price: 8.0, calories: 250 },
+      { id: 1, title: "جمبري مشوي جامبو", img: `/food/sayadia_shrimp_rice.png`, price: 25.0, calories: 400 },
+      { id: 2, title: "جمبري بترفلاي", img: `/food/butterfly_shrimp.png`, price: 28.0, calories: 550 },
+      { id: 3, title: "طاجن سي فود بالكريمة", img: `/food/seafood_creamy_tagine.png`, price: 20.0, calories: 650 },
+      { id: 4, title: "شوربة سي فود مخلية", img: `/food/seafood_soup_new.png`, price: 8.0, calories: 250 },
     ];
   } else if (category === 'seafood-rice') {
     baseCategoryMeals = [
-      { id: 1, title: "أرز صيادية بالجمبري", img: `https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?auto=format&fit=crop&w=600&q=80`, price: 6.0, calories: 500 },
-      { id: 2, title: "أرز خلطة سي فود", img: `/food/seafood_mixed_rice.png`, price: 8.0, calories: 600 },
-      { id: 3, title: "مقبلات طحينة وسلطة", img: `https://images.unsplash.com/photo-1529059997568-3d847b1154f0?auto=format&fit=crop&w=600&q=80`, price: 3.0, calories: 200 },
+      { id: 1, title: "أرز صيادية بالجمبري", img: `/food/sayadia_shrimp_rice.png`, price: 6.0, calories: 500 },
+      { id: 2, title: "أرز خلطة سي فود", img: `/food/sayadia_shrimp_rice.png`, price: 8.0, calories: 600 },
+      { id: 3, title: "مقبلات طحينة وسلطة", img: `/food/babaganoush_new.png`, price: 3.0, calories: 200 },
       { id: 4, title: "أرز صيادية سادة", img: `/food/sayadia_rice.png`, price: 2.5, calories: 350 },
     ];
   } else if (category === 'grills-category') {
     const ASSET_URL = '/food/';
     baseCategoryMeals = [
-      { id: 1, title: "مشاوي مشكلة حاتي", img: `${ASSET_URL}grills.png`, price: 8.00, calories: 950 },
-      { id: 2, title: "كباب وكفتة", img: `${ASSET_URL}sausage.png`, price: 7.00, calories: 850 },
-      { id: 3, title: "فراخ مشوية عالفحم", img: `${ASSET_URL}mandi.png`, price: 6.50, calories: 700 },
-      { id: 4, title: "طرب بلدي ضاني", img: `${ASSET_URL}hawawshi.png`, price: 5.50, calories: 600 },
+      { id: 1, title: "مشاوي مشكلة حاتي", img: `/food/egyptian_kebab_kofta.png`, price: 8.00, calories: 950 },
+      { id: 2, title: "كباب وكفتة", img: `/food/egyptian_kebab_kofta.png`, price: 7.00, calories: 850 },
+      { id: 3, title: "ريش ضاني مشوية", img: `/food/lamb_chops_grill.png`, price: 6.50, calories: 700 },
+      { id: 4, title: "حواوشي إسكندراني", img: `/food/hawawshi_meat.png`, price: 5.50, calories: 600 },
     ];
   } else if (category === 'tagines') {
     const ASSET_URL = '/food/';
     baseCategoryMeals = [
-      { id: 1, title: "طاجن بامية باللحمة", img: `${ASSET_URL}okra.png`, price: 4.50, calories: 540 },
-      { id: 2, title: "ورق عنب بالكوارع", img: `${ASSET_URL}grape_leaves.png`, price: 5.00, calories: 600 },
-      { id: 3, title: "محاشي مشكلة", img: `${ASSET_URL}mixed_mahshi.png`, price: 3.50, calories: 580 },
-      { id: 4, title: "ملوخية طاجن", img: `${ASSET_URL}molokhia.png`, price: 2.50, calories: 310 },
+      { id: 1, title: "طاجن بامية باللحمة", img: `/food/okra_lamb_tagine.png`, price: 4.50, calories: 540 },
+      { id: 2, title: "ورق عنب بالكوارع", img: `/food/grape_leaves_knuckles.png`, price: 5.00, calories: 600 },
+      { id: 3, title: "محاشي مشكلة", img: `/food/mixed_mahshi_new.png`, price: 3.50, calories: 580 },
+      { id: 4, title: "ملوخية طاجن", img: `/food/molokhia_new.png`, price: 2.50, calories: 310 },
     ];
   } else if (category === 'salads') {
     baseCategoryMeals = [
       { id: 1, title: "باذنجان مخلل بالدقة", img: `/food/pickled_eggplant.png`, price: 0.50, calories: 120 },
-      { id: 2, title: "بابا غنوج شرقي", img: `/food/babaganoush.png`, price: 0.90, calories: 120 },
+      { id: 2, title: "بابا غنوج شرقي", img: `/food/babaganoush_new.png`, price: 0.90, calories: 120 },
       { id: 3, title: "سلطة طحينة بيتي", img: `/food/tahini.png`, price: 0.80, calories: 150 },
       { id: 4, title: "سلطة بلدي خضراء", img: `/food/green_salad.png`, price: 1.00, calories: 100 },
     ];
   } else if (category === 'koshary-meals') {
     const ASSET_URL = '/food/';
     baseCategoryMeals = [
-      { id: 1, title: "كشري التحرير ميجا", img: `${ASSET_URL}koshary.png`, price: 2.00, calories: 650 },
-      { id: 2, title: "طاجن مكرونة باللحمة", img: `${ASSET_URL}fatta.png`, price: 2.50, calories: 550 },
-      { id: 3, title: "طاجن مكرونة بالفراخ", img: `${ASSET_URL}shawarma.png`, price: 2.20, calories: 500 },
-      { id: 4, title: "كشري وسط", img: `${ASSET_URL}koshary.png`, price: 1.50, calories: 450 },
+      { id: 1, title: "كشري التحرير ميجا", img: `/food/koshary_authentic.png`, price: 2.00, calories: 650 },
+      { id: 2, title: "طاجن مكرونة باللحمة", img: `/food/fatta_new.png`, price: 2.50, calories: 550 },
+      { id: 3, title: "طاجن مكرونة بالفراخ", img: `/food/hawawshi_meat.png`, price: 2.20, calories: 500 },
+      { id: 4, title: "كشري وسط", img: `/food/koshary_authentic.png`, price: 1.50, calories: 450 },
     ];
   } else if (category === 'extras') {
     baseCategoryMeals = [
@@ -419,7 +441,7 @@ const MenuCategoryPage = () => {
   } else if (category === 'appetizers') {
     baseCategoryMeals = [
       { id: 1, title: "طحينة مصرية أصلية", img: `/food/tahini.png`, price: 0.80, calories: 150 },
-      { id: 2, title: "بابا غنوج بالرمان", img: `/food/babaganoush.png`, price: 0.90, calories: 120 },
+      { id: 2, title: "بابا غنوج بالرمان", img: `/food/babaganoush_new.png`, price: 0.90, calories: 120 },
       { id: 3, title: "بصل وثوم مقرمش", img: `/food/food_fries.png`, price: 0.50, calories: 200 },
       { id: 4, title: "سلطة بلدي خضراء", img: `/food/green_salad.png`, price: 1.00, calories: 80 },
     ];
@@ -433,29 +455,42 @@ const MenuCategoryPage = () => {
   } else {
     const ASSET_URL = '/food/';
     baseCategoryMeals = [
-      { id: 1, title: "كبدة إسكندراني", img: `${ASSET_URL}kibda.png`, price: 1.50, calories: 480 },
-      { id: 2, title: "حواوشي بلدي", img: `${ASSET_URL}hawawshi.png`, price: 1.50, calories: 550 },
-      { id: 3, title: "سجق شرقي", img: `${ASSET_URL}sausage.png`, price: 1.40, calories: 510 },
-      { id: 4, title: "فتة مصري باللحمة", img: `${ASSET_URL}fatta.png`, price: 3.00, calories: 850 },
-      { id: 5, title: "شاورما مصري", img: `${ASSET_URL}shawarma.png`, price: 1.50, calories: 600 },
-      { id: 6, title: "ملوخية طاجن", img: `${ASSET_URL}molokhia.png`, price: 1.80, calories: 310 },
+      { id: 1, title: "كبدة إسكندراني", img: `/food/kibda_new.png`, price: 1.50, calories: 480 },
+      { id: 2, title: "حواوشي بلدي", img: `/food/hawawshi_meat.png`, price: 1.50, calories: 550 },
+      { id: 3, title: "سجق شرقي", img: `/food/egyptian_kebab_kofta.png`, price: 1.40, calories: 510 },
+      { id: 4, title: "فتة مصري باللحمة", img: `/food/fatta_new.png`, price: 3.00, calories: 850 },
+      { id: 5, title: "حواوشي إسكندراني", img: `/food/hawawshi_meat.png`, price: 1.50, calories: 600 },
+      { id: 6, title: "ملوخية طاجن", img: `/food/molokhia_new.png`, price: 1.80, calories: 310 },
       { id: 7, title: "حمام محشي", img: `${ASSET_URL}true_pigeon.png`, price: 4.50, calories: 750 },
-      { id: 8, title: "ورق عنب بالكوارع", img: `${ASSET_URL}grape_leaves.png`, price: 3.50, calories: 600 },
-      { id: 9, title: "طاجن بامية باللحمة", img: `${ASSET_URL}okra.png`, price: 3.00, calories: 540 },
-      { id: 10, title: "مشاوي مشكلة", img: `${ASSET_URL}grills.png`, price: 8.00, calories: 950 },
-      { id: 11, title: "فراخ مندي روعة", img: `${ASSET_URL}mandi.png`, price: 6.00, calories: 700 },
-      { id: 12, title: "كشك صعيدي بالفراخ", img: `${ASSET_URL}kishk.png`, price: 1.00, calories: 350 },
-      { id: 13, title: "رز مصري بالشعرية", img: `${ASSET_URL}vermicelli_rice.png`, price: 0.50, calories: 250 },
-      { id: 14, title: "محاشي مشكلة", img: `${ASSET_URL}mixed_mahshi.png`, price: 2.50, calories: 580 },
+      { id: 8, title: "ورق عنب بالكوارع", img: `/food/grape_leaves_knuckles.png`, price: 3.50, calories: 600 },
+      { id: 9, title: "طاجن بامية باللحمة", img: `/food/okra_lamb_tagine.png`, price: 3.00, calories: 540 },
+      { id: 10, title: "مشاوي مشكلة", img: `/food/egyptian_kebab_kofta.png`, price: 8.00, calories: 950 },
+      { id: 11, title: "ريش ضاني مشوية", img: `/food/lamb_chops_grill.png`, price: 6.00, calories: 700 },
+      { id: 12, title: "كشك صعيدي بالفراخ", img: `/food/kishk_new.png`, price: 1.00, calories: 350 },
+      { id: 13, title: "رز مصري بالشعرية", img: `/food/vermicelli_rice_new.png`, price: 0.50, calories: 250 },
+      { id: 14, title: "محاشي مشكلة", img: `/food/mixed_mahshi_new.png`, price: 2.50, calories: 580 },
       { id: 15, title: "أكلة رنجة بالبصل والطحينة", img: `${ASSET_URL}renga.png`, price: 2.00, calories: 480 },
-      { id: 16, title: "كشري أبو طارق", img: `${ASSET_URL}koshary.png`, price: 1.20, calories: 650 },
+      { id: 16, title: "كشري أبو طارق", img: `/food/koshary_authentic.png`, price: 1.20, calories: 650 },
     ];
+  }
   }
 
   // MAGICAL UNIQUE MENU GENERATOR
   // We use the restaurantId (or 1 if none) to manipulate the items and make EVERY restaurant perfectly unique!
   const numId = restaurantId ? parseInt(restaurantId) : 1;
-  const categoryMeals: IMeal[] = baseCategoryMeals.map((meal, index) => {
+  
+  // Create a unique subset of meals for this specific restaurant
+  // If the base array has enough items, we only take a portion of them so no two restaurants look the same
+  let uniqueSubset = baseCategoryMeals;
+  if (baseCategoryMeals.length > 4) {
+    // Deterministic pseudo-random shuffle based on numId
+    uniqueSubset = [...baseCategoryMeals].sort((a, b) => ((a.id * numId) % 7) - ((b.id * numId) % 7));
+    // Pick 4 to 6 items
+    const itemCount = 4 + (numId % 3);
+    uniqueSubset = uniqueSubset.slice(0, itemCount);
+  }
+
+  const categoryMeals: IMeal[] = uniqueSubset.map((meal, index) => {
     // Generate unique ID
     const uniqueId = Number(`${numId}${meal.id}${index}`);
     
@@ -468,7 +503,6 @@ const MenuCategoryPage = () => {
     let newTitle = meal.title;
     if (restaurantName) {
       if (isArabic) {
-        // If it already has "حاتي" or similar, just replace or append
         newTitle = `${meal.title} (من ${restaurantName})`;
       } else {
         newTitle = `${restaurantName}'s ${meal.title}`;
@@ -478,10 +512,11 @@ const MenuCategoryPage = () => {
     return { ...meal, id: uniqueId, title: newTitle, price: newPrice };
   });
 
-  // Optional: Slice or shuffle elements if there's enough so they have different counts
-  if (categoryMeals.length > 4) {
-    categoryMeals.sort((a, b) => (numId % 2 === 0 ? a.id - b.id : b.id - a.id));
-  }
+  // If we already used a specific menu, we don't need to append the restaurant name or offset price again, 
+  // since the specific menu is exactly crafted for this restaurant!
+  const finalMeals = getSpecificRestaurantMenu(restaurantName || "", category || "") 
+    ? baseCategoryMeals 
+    : categoryMeals;
 
   const handleAddToCart = (item: ICartItem) => {
     setCart(prev => [...prev, item]);
@@ -519,14 +554,15 @@ const MenuCategoryPage = () => {
           <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 mb-8" dir="rtl">
             <h2 className="text-2xl font-bold text-[#14213d] mb-8 text-center">أقسام المنيو المتوفرة</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
-              {[
+              {(dynamicCategories || [
                 { title: "الإفطار", id: "breakfast", icon: "☕", enTitle: "Breakfast" },
                 { title: "الأطباق الرئيسية", id: "main-dishes", icon: "🍜", enTitle: "Main Dishes" },
                 { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
                 { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" }
-              ].map((item) => (
+              ]).map((item: any) => (
                 <Link 
                   to={`/restaurants/menu/${item.id}`}
+                  state={{ restaurantId, restaurantName, categories: dynamicCategories }}
                   key={item.id} 
                   className={`border rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 text-center block group
                     ${category === item.id 
@@ -549,7 +585,7 @@ const MenuCategoryPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
-          {categoryMeals.map(meal => (
+          {finalMeals.map(meal => (
              <InteractiveFoodCard key={meal.id} meal={meal} onSelect={setSelectedMeal} />
           ))}
         </div>

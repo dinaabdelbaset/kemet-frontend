@@ -12,7 +12,7 @@ interface Adventure {
   icon: string;
   locations: string;
   rating: number;
-  price: React.ReactNode;
+  price: number;
   color: string;
 }
 
@@ -34,7 +34,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&fit=crop",
     locations: "Siwa • Western Desert • Sharm El Sheikh",
     rating: 4.8,
-    price: <span className="flex items-center gap-1">From <PriceDisplay price={75} baseCurrency="USD" /></span>,
+    price: 75,
     color: "#E67E22",
   },
   {
@@ -54,7 +54,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&fit=crop",
     locations: "Sharm El Sheikh • Dahab • Hurghada",
     rating: 4.9,
-    price: <span className="flex items-center gap-1">From <PriceDisplay price={45} baseCurrency="USD" /></span>,
+    price: 45,
     color: "#3498DB",
   },
   {
@@ -74,7 +74,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&fit=crop",
     locations: "St. Catherine • Dahab • Sinai",
     rating: 4.7,
-    price: <span className="flex items-center gap-1">From <PriceDisplay price={60} baseCurrency="USD" /></span>,
+    price: 60,
     color: "#2ECC71",
   },
   {
@@ -94,7 +94,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=800&fit=crop",
     locations: "Luxor • Aswan • Cairo • Abu Simbel",
     rating: 4.9,
-    price: <span className="flex items-center gap-1">From <PriceDisplay price={90} baseCurrency="USD" /></span>,
+    price: 90,
     color: "#D4AF37",
   },
   {
@@ -114,7 +114,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1568322503145-e986d345e1a0?w=800&fit=crop",
     locations: "Cairo • Aswan • Luxor",
     rating: 4.6,
-    price: <span className="flex items-center gap-1">From <PriceDisplay price={25} baseCurrency="USD" /></span>,
+    price: 25,
     color: "#E74C3C",
   },
   {
@@ -134,7 +134,7 @@ const ADVENTURES: Adventure[] = [
     image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&fit=crop",
     locations: "Dahab • Siwa • Aswan • Hurghada",
     rating: 4.8,
-    price: <span className="flex items-center gap-1">From <PriceDisplay price={40} baseCurrency="USD" /></span>,
+    price: 40,
     color: "#9B59B6",
   },
 ];
@@ -147,7 +147,7 @@ const AdventureCard = ({ adventure }: { adventure: Adventure }) => {
     navigate("/checkout", {
       state: {
         title: adventure.title,
-        price: parseInt(adventure.price.replace(/[^0-9]/g, "")),
+        price: adventure.price,
         image: adventure.image,
       }
     });
@@ -179,7 +179,7 @@ const AdventureCard = ({ adventure }: { adventure: Adventure }) => {
         {/* Price Badge */}
         <div className="absolute top-4 right-4">
           <div className="bg-white/95 backdrop-blur-sm text-gray-900 font-bold text-sm px-4 py-2 rounded-full shadow-lg">
-            {adventure.price}
+            <span className="flex items-center gap-1">From <PriceDisplay price={adventure.price} baseCurrency="USD" /></span>
           </div>
         </div>
 
@@ -226,7 +226,7 @@ const AdventureCard = ({ adventure }: { adventure: Adventure }) => {
             className="flex-1 block text-center py-3 rounded-xl font-bold text-white text-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
             style={{ backgroundColor: adventure.color }}
           >
-            Book Now — {adventure.price}
+            Book Now — <PriceDisplay price={adventure.price} baseCurrency="USD" />
           </button>
           <div className="flex items-center gap-1 text-sm">
             <FaStar className="text-yellow-400" />

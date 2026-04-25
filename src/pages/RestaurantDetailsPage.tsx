@@ -39,124 +39,56 @@ const RestaurantDetailsPage = () => {
     );
   }
 
-  let categories = [
-    { title: "الإفطار", id: "breakfast", icon: "☕", enTitle: "Breakfast" },
-    { title: "الأطباق الرئيسية", id: "main-dishes", icon: "🍜", enTitle: "Main Dishes" },
-    { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
-  ];
-
   const cuisineLc = (restaurant.cuisine || "").toLowerCase();
   const nameLc = (restaurant.name || "").toLowerCase();
 
-  const isSeafood = cuisineLc.includes("seafood") && !cuisineLc.includes("grills");
-  const isGrills = (cuisineLc.includes("grills") && !cuisineLc.includes("seafood")) || nameLc.includes("مشويات") || nameLc.includes("prince") || nameLc.includes("kababgy") || nameLc.includes("shakra");
-  const isGrillsAndSeafood = cuisineLc.includes("grills") && cuisineLc.includes("seafood");
-  const isKoshary = cuisineLc.includes("koshary") || cuisineLc.includes("fast food") || nameLc.includes("كشري") || nameLc.includes("tariq");
-  const isSofra = nameLc.includes("sofra") || nameLc.includes("سفرة") || nameLc.includes("صوفرا");
-  const isStreetFood = nameLc.includes("felfela") || nameLc.includes("gad") || cuisineLc.includes("street") || nameLc.includes("فلفلة");
-  const isTraditional = cuisineLc.includes("egyptian") || cuisineLc.includes("traditional") || cuisineLc.includes("authentic") || nameLc.includes("abou el sid") || nameLc.includes("dar darak");
-  const isBedouin = cuisineLc.includes("bedouin") || cuisineLc.includes("fayoumi") || nameLc.includes("tunis") || nameLc.includes("rayan");
-
-  const isChinese = cuisineLc.includes("chinese") || cuisineLc.includes("asian");
+  const isSeafood = cuisineLc.includes("seafood") || nameLc.includes("kadoura") || nameLc.includes("fares");
+  const isGrills = cuisineLc.includes("grills") || nameLc.includes("masrien") || nameLc.includes("prince");
+  const isKoshary = cuisineLc.includes("koshary") || nameLc.includes("tariq");
+  const isItalian = cuisineLc.includes("italian") || cuisineLc.includes("pizza");
+  const isChinese = cuisineLc.includes("chinese");
   const isIndian = cuisineLc.includes("indian");
-  const isKorean = cuisineLc.includes("korean");
-  const isTurkish = cuisineLc.includes("turkish");
-  const isItalian = cuisineLc.includes("italian") || cuisineLc.includes("pizza") || cuisineLc.includes("pasta");
-  const isMexican = cuisineLc.includes("mexican") || cuisineLc.includes("latin");
+  const isMexican = cuisineLc.includes("mexican");
+  const isStreetFood = nameLc.includes("felfela") || nameLc.includes("gad") || cuisineLc.includes("street");
 
-  if (isSeafood || nameLc.includes("kadoura") || nameLc.includes("قدورة") || nameLc.includes("fares")) {
-    categories = [
-      { title: "أسماك طازجة", id: "seafood", icon: "🐟", enTitle: "Fresh Fish" },
-      { title: "جمبري وسي فود", id: "shrimp", icon: "🦐", enTitle: "Shrimp & Seafood" },
-      { title: "أرز ومقبلات", id: "seafood-rice", icon: "🍚", enTitle: "Rice & Apps" },
-      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isGrills || nameLc.includes("masrien") || nameLc.includes("المصريين")) {
-    categories = [
-      { title: "مشويات على الفحم", id: "grills-category", icon: "🥩", enTitle: "Charcoal Grills" },
-      { title: "طواجن شرقية", id: "tagines", icon: "🥘", enTitle: "Oriental Tagines" },
-      { title: "مقبلات وسلطات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
-      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isGrillsAndSeafood || nameLc.includes("balbaa") || nameLc.includes("بلبع")) {
-    categories = [
-      { title: "سلطات ومقبلات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
-      { title: "مشويات على الفحم", id: "grills-category", icon: "🥩", enTitle: "Charcoal Grills" },
-      { title: "أسماك طازجة", id: "seafood", icon: "🐟", enTitle: "Fresh Fish" },
-      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isKoshary) {
-    categories = [
-      { title: "كشري وطواجن", id: "koshary-meals", icon: "🍲", enTitle: "Main Koshary" },
-      { title: "إضافات مكملة", id: "extras", icon: "🌶️", enTitle: "Extras & Sides" },
-      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
-      { title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isSofra || isTraditional) {
-    categories = [
-      { title: "محاشي وممبار", id: "stuffed", icon: "🫔", enTitle: "Stuffed Veggies" },
-      { title: "طواجن شرقية", id: "tagines", icon: "🥘", enTitle: "Oriental Tagines" },
-      { title: "حمام وبط", id: "birds", icon: "🦆", enTitle: "Local Birds" },
-      { title: "مشروبات تراثية", id: "traditional-drinks", icon: "☕", enTitle: "Local Drinks" },
-    ];
-  } else if (isStreetFood) {
-    categories = [
-      { title: "فطار مصري", id: "breakfast", icon: "🧆", enTitle: "Local Breakfast" },
-      { title: "ساندوتشات", id: "sandwiches", icon: "🥙", enTitle: "Sandwiches" },
-      { title: "أطباق شرقية", id: "main-dishes", icon: "🍲", enTitle: "Oriental Plates" },
-      { title: "عصائر فريش", id: "drinks", icon: "🍹", enTitle: "Fresh Juices" },
-    ];
-  } else if (isBedouin) {
-    categories = [
-      { title: "مندي ولحم ضأن", id: "mandi", icon: "🍖", enTitle: "Mandi & Lamb" },
-      { title: "دجاج زرب", id: "zarb", icon: "🍗", enTitle: "Buried Chicken" },
-      { title: "مقبلات بدوي", id: "bedouin-bread", icon: "🫓", enTitle: "Bedouin Apps" },
-      { title: "شاي وقهوة", id: "bedouin-tea", icon: "🫖", enTitle: "Bedouin Tea" },
-    ];
-  } else if (isItalian) {
-    categories = [
-      { title: "أطباق إيطالية", id: "italian", icon: "🍕", enTitle: "Italian Dishes" },
-      { title: "أطباق رئيسية", id: "main-dishes", icon: "🍲", enTitle: "Main Dishes" },
-      { title: "مقبلات وسلطات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
-      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isChinese) {
-    categories = [
-      { title: "أطباق صينية", id: "chinese", icon: "🍜", enTitle: "Chinese Dishes" },
-      { title: "أطباق رئيسية", id: "main-dishes", icon: "🍲", enTitle: "Main Dishes" },
-      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
-      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isIndian) {
-    categories = [
-      { title: "أطباق هندية", id: "indian", icon: "🍛", enTitle: "Indian Dishes" },
-      { title: "أطباق رئيسية", id: "main-dishes", icon: "🍲", enTitle: "Main Dishes" },
-      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
-      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isKorean) {
-    categories = [
-      { title: "أطباق كورية", id: "korean", icon: "🥢", enTitle: "Korean Dishes" },
-      { title: "مقبلات وسلطات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
-      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
-      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isTurkish) {
-    categories = [
-      { title: "أطباق تركية", id: "turkish", icon: "🥙", enTitle: "Turkish Dishes" },
-      { title: "مشويات", id: "grills-category", icon: "🥩", enTitle: "Grills" },
-      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
-      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
-  } else if (isMexican) {
-    categories = [
-      { title: "أطباق مكسيكية", id: "mexican", icon: "🌮", enTitle: "Mexican Dishes" },
-      { title: "مقبلات وسلطات", id: "salads", icon: "🥗", enTitle: "Salads & Apps" },
-      { title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" },
-      { title: "مشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" },
-    ];
+  // Determine meal times and categories accurately per restaurant
+  const hasBreakfast = nameLc.includes("gad") || nameLc.includes("جاد") || 
+                       nameLc.includes("ibis") || nameLc.includes("إيبيس") ||
+                       nameLc.includes("terrace") || nameLc.includes("تيراس");
+
+  const isCafeOnly = nameLc.includes("delices") || nameLc.includes("ديليس") || 
+                     nameLc.includes("farsha") || nameLc.includes("فرشة");
+
+  let categories = [];
+
+  if (hasBreakfast) {
+    categories.push({ title: "منيو الإفطار", id: "breakfast", icon: "☕", enTitle: "Breakfast Menu" });
   }
+
+  if (!isCafeOnly) {
+    let mainId = "main-dishes";
+    let mainTitle = "أطباق الغداء والعشاء";
+    let mainIcon = "🍽️";
+
+    if (isSeafood) { mainId = "seafood"; mainTitle = "أسماك وسي فود"; mainIcon = "🐟"; }
+    else if (isGrills) { mainId = "grills-category"; mainTitle = "مشويات وطواجن"; mainIcon = "🥩"; }
+    else if (isKoshary) { mainId = "koshary-meals"; mainTitle = "كشري وإضافات"; mainIcon = "🍲"; }
+    else if (isItalian) { mainId = "italian"; mainTitle = "أطباق إيطالية"; mainIcon = "🍕"; }
+    else if (isChinese) { mainId = "chinese"; mainTitle = "أطباق صينية"; mainIcon = "🍜"; }
+    else if (isIndian) { mainId = "indian"; mainTitle = "أطباق هندية"; mainIcon = "🍛"; }
+    else if (isMexican) { mainId = "mexican"; mainTitle = "أطباق مكسيكية"; mainIcon = "🌮"; }
+    else if (isStreetFood) { mainId = "street-food"; mainTitle = "أطباق شعبية"; mainIcon = "🧆"; }
+    
+    categories.push({ title: mainTitle, id: mainId, icon: mainIcon, enTitle: "Main Course" });
+  }
+
+  categories.push({ title: "الحلويات", id: "desserts", icon: "🍰", enTitle: "Desserts" });
+  categories.push({ title: "المشروبات", id: "drinks", icon: "🍹", enTitle: "Drinks" });
+
+  let servingText = "غداء، عشاء";
+  if (hasBreakfast && !isCafeOnly) servingText = "فطار، غداء، عشاء";
+  else if (hasBreakfast) servingText = "فطار، وحلويات";
+  else if (isCafeOnly) servingText = "مشروبات وحلويات";
 
   return (
     <div className="bg-[#FAFAFA] pb-20">
@@ -169,9 +101,14 @@ const RestaurantDetailsPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end pb-12 px-4">
           <div className="container mx-auto max-w-6xl text-right text-white">
-            <span className="inline-block bg-[#cd4f3c] text-white text-sm font-bold px-3 py-1 rounded-full mb-4">
-              {restaurant.cuisine}
-            </span>
+            <div className="flex gap-2 justify-end mb-4">
+              <span className="inline-block bg-[#D4AF37] text-white text-sm font-bold px-3 py-1 rounded-full">
+                يُقدم: {servingText}
+              </span>
+              <span className="inline-block bg-[#cd4f3c] text-white text-sm font-bold px-3 py-1 rounded-full">
+                {restaurant.cuisine}
+              </span>
+            </div>
             <h1 className="text-5xl font-extrabold mb-4">{restaurant.name}</h1>
             <div className="flex flex-wrap items-center justify-end gap-6 text-sm font-medium opacity-90">
               <div className="flex items-center gap-2">
@@ -209,7 +146,7 @@ const RestaurantDetailsPage = () => {
               {categories.map((item) => (
                 <Link 
                   to={`/restaurants/menu/${item.id}`}
-                  state={{ restaurantId: restaurant.id, restaurantName: restaurant.name }}
+                  state={{ restaurantId: restaurant.id, restaurantName: restaurant.name, categories: categories }}
                   key={item.id} 
                   className="border border-gray-100 hover:border-[#D4AF37] rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center bg-[#fdfaf7] block group"
                 >
