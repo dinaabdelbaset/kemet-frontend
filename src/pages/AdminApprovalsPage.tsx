@@ -12,7 +12,7 @@ export default function AdminApprovalsPage() {
     setIsLoading(true);
     try {
       const res = await axiosClient.get("/admin/approvals/pending");
-      setPendingItems(res.data.hotels || []);
+      setPendingItems(res.data.items || []);
     } catch (err) {
       console.error(err);
       showToast("Failed to fetch pending items", true);
@@ -25,7 +25,7 @@ export default function AdminApprovalsPage() {
     fetchPendingItems();
   }, []);
 
-  const handleModerate = async (id: number, action: "approve" | "reject") => {
+  const handleModerate = async (id: number, type: string, action: "approve" | "reject") => {
     let reason = "";
     if (action === "reject") {
       reason = window.prompt("برجاء كتابة سبب الرفض:") || "";
@@ -33,9 +33,9 @@ export default function AdminApprovalsPage() {
     }
 
     try {
-      await axiosClient.post(`/admin/approvals/hotels/${id}`, { action, reason });
+      await axiosClient.post(`/admin/approvals/${type}/${id}`, { action, reason });
       showToast(`تم ${action === 'approve' ? 'القبول' : 'الرفض'} بنجاح`);
-      setPendingItems((prev) => prev.filter((item) => item.id !== id));
+      setPendingItems((prev) => prev.filter((item) => item.id !== id || item.type !== type));
     } catch (err) {
       console.error(err);
       showToast("Operation failed", true);
@@ -73,8 +73,8 @@ export default function AdminApprovalsPage() {
                 <div className={`absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-full shadow ${item.action_type === 'delete' ? 'bg-red-500' : item.action_type === 'update' ? 'bg-blue-500' : 'bg-yellow-500'}`}>
                   {item.action_type === 'delete' ? 'طلب حذف' : item.action_type === 'update' ? 'طلب تعديل' : 'طلب إضافة'}
                 </div>
-                <div className="absolute top-4 right-4 bg-white/90 text-[#05073C] text-xs font-bold px-3 py-1 rounded-full shadow flex items-center gap-1">
-                  <FaBuilding /> فندق
+                <div className="absolute top-4 right-4 bg-white/90 text-[#05073C] text-xs font-bold px-3 py-1 rounded-full shadow flex items-center gap-1 uppercase">
+                  <FaBuilding /> {item.type}
                 </div>
               </div>
               
@@ -85,18 +85,18 @@ export default function AdminApprovalsPage() {
                 </p>
                 <div className="flex items-center justify-between font-bold text-[#05073C] mb-6">
                   <span>السعر:</span>
-                  <span>${item.price_starts_from} / الليلة</span>
+                  <span>${item.price || 0}</span>
                 </div>
                 
                 <div className="flex gap-3">
                   <button 
-                    onClick={() => handleModerate(item.id, 'approve')}
+                    onClick={() => handleModerate(item.id, item.type, 'approve')}
                     className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl font-bold transition flex justify-center items-center gap-2"
                   >
                     <FaCheck /> قبول
                   </button>
                   <button 
-                    onClick={() => handleModerate(item.id, 'reject')}
+                    onClick={() => handleModerate(item.id, item.type, 'reject')}
                     className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 py-2 rounded-xl font-bold transition flex justify-center items-center gap-2"
                   >
                     <FaTimes /> رفض
