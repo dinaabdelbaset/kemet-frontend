@@ -212,10 +212,10 @@ export const fetchChatHistory = async (sessionToken: string): Promise<{ messages
     };
     if (token) fetchHeaders["Authorization"] = `Bearer ${token}`;
 
-    const response = await fetch(`${API_BASE}/chat/history`, {
-      method: "POST",
+    const response = await fetch(`${API_BASE}/chat/history?session_token=${sessionToken}&t=${Date.now()}`, {
+      method: "GET",
       headers: fetchHeaders,
-      body: JSON.stringify({ session_token: sessionToken })
+      cache: "no-store"
     });
 
     if (response.ok) {
