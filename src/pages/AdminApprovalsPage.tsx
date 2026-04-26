@@ -26,9 +26,15 @@ export default function AdminApprovalsPage() {
   }, []);
 
   const handleModerate = async (id: number, action: "approve" | "reject") => {
+    let reason = "";
+    if (action === "reject") {
+      reason = window.prompt("برجاء كتابة سبب الرفض:") || "";
+      if (!reason) return; // cancel
+    }
+
     try {
-      await axiosClient.post(`/admin/approvals/hotels/${id}`, { action });
-      showToast(`Item ${action}d successfully`);
+      await axiosClient.post(`/admin/approvals/hotels/${id}`, { action, reason });
+      showToast(`تم ${action === 'approve' ? 'القبول' : 'الرفض'} بنجاح`);
       setPendingItems((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
       console.error(err);
@@ -64,8 +70,8 @@ export default function AdminApprovalsPage() {
             <div key={item.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
               <div className="relative h-48">
                 <img src={item.image || "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=600"} alt={item.title} className="w-full h-full object-cover" />
-                <div className="absolute top-4 left-4 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
-                  قيد المراجعة
+                <div className={`absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-full shadow ${item.action_type === 'delete' ? 'bg-red-500' : item.action_type === 'update' ? 'bg-blue-500' : 'bg-yellow-500'}`}>
+                  {item.action_type === 'delete' ? 'طلب حذف' : item.action_type === 'update' ? 'طلب تعديل' : 'طلب إضافة'}
                 </div>
                 <div className="absolute top-4 right-4 bg-white/90 text-[#05073C] text-xs font-bold px-3 py-1 rounded-full shadow flex items-center gap-1">
                   <FaBuilding /> فندق
