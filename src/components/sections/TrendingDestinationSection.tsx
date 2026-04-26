@@ -61,6 +61,44 @@ const TrendingDestinationSection = () => {
 
   }, [loading]);
 
+  // Auto-scroll logic
+  useEffect(() => {
+    if (loading || !gridRef.current) return;
+    let intervalId: any;
+    let isPaused = false;
+
+    const startAutoScroll = () => {
+      intervalId = setInterval(() => {
+        if (!isPaused && gridRef.current) {
+          gridRef.current.scrollLeft += 1; // Smooth slow scroll
+          // If it reaches the end, reset to start smoothly
+          if (gridRef.current.scrollLeft >= gridRef.current.scrollWidth - gridRef.current.clientWidth - 1) {
+            gridRef.current.scrollLeft = 0;
+          }
+        }
+      }, 30); // Speed of auto-scroll
+    };
+
+    startAutoScroll();
+
+    const handleMouseEnter = () => isPaused = true;
+    const handleMouseLeave = () => isPaused = false;
+    
+    const grid = gridRef.current;
+    grid.addEventListener("mouseenter", handleMouseEnter);
+    grid.addEventListener("mouseleave", handleMouseLeave);
+    grid.addEventListener("touchstart", handleMouseEnter);
+    grid.addEventListener("touchend", handleMouseLeave);
+
+    return () => {
+      clearInterval(intervalId);
+      grid.removeEventListener("mouseenter", handleMouseEnter);
+      grid.removeEventListener("mouseleave", handleMouseLeave);
+      grid.removeEventListener("touchstart", handleMouseEnter);
+      grid.removeEventListener("touchend", handleMouseLeave);
+    };
+  }, [loading]);
+
   const scrollLeft = () => {
     if (gridRef.current) {
       gridRef.current.scrollBy({ left: -300, behavior: "smooth" });
