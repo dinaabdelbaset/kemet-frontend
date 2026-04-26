@@ -25,3 +25,23 @@ axiosClient.interceptors.response.use(
 );
 
 export default axiosClient;
+
+// Global GET Cache to prevent redundant "Loading..." states on navigation
+const getCache = new Map();
+const originalGet = axiosClient.get;
+
+axiosClient.get = async (url: string, config?: any) => {
+  const cacheKey = url + JSON.stringify(config || {});
+  
+  if (getCache.has(cacheKey)) {
+    return Promise.resolve(getCache.get(cacheKey));
+  }
+  
+  const response = await originalGet(url, config);
+  getCache.set(cacheKey, response);
+  
+  // Clear cache for this URL after 2 minutes so fresh data can be loaded eventually
+  setTimeout(() => getCache.delete(cacheKey), 2 * 60 * 1000);
+  
+  return response;
+};
