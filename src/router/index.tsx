@@ -76,6 +76,8 @@ const SearchPage             = lazy(() => import("../pages/SearchPage"));
 const AttractionPage         = lazy(() => import("../pages/AttractionPage"));
 const FlightPage             = lazy(() => import("../pages/FlightPage"));
 const DashboardPage          = lazy(() => import("../pages/DashboardPage"));
+const AdminApprovalsPage     = lazy(() => import("../pages/AdminApprovalsPage"));
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -118,6 +120,9 @@ const router = createBrowserRouter(
         <Route path="bookings" element={<ProtectedRoute>{withSuspense(MyBookingsPage)}</ProtectedRoute>} />
         <Route path="profile" element={<ProtectedRoute>{withSuspense(ProfileSettingsPage)}</ProtectedRoute>} />
         <Route path="dashboard" element={<ProtectedRoute>{withSuspense(DashboardPage)}</ProtectedRoute>} />
+
+        {/* Admin Routes */}
+        <Route path="admin/approvals" element={<ProtectedRoute>{withSuspense(AdminApprovalsPage)}</ProtectedRoute>} />
         <Route path="admin/livechat" element={withSuspense(AdminLiveChatPage)} />
         {/* Footer Pages */}
         <Route path="about" element={withSuspense(AboutPage)} />
