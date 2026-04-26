@@ -2,7 +2,7 @@ import SectionWrapper from "@/components/sections/SectionWrapper";
 import { useApp } from "@/context/AppContext";
 import { useCart } from "@/context/CartContext";
 import { Link } from "react-router-dom";
-import { FaUserEdit, FaEnvelope, FaPhoneAlt, FaCalendarAlt, FaHeart, FaShoppingBag, FaHistory } from "react-icons/fa";
+import { FaUserEdit, FaEnvelope, FaPhoneAlt, FaCalendarAlt, FaHeart, FaShoppingBag, FaHistory, FaExclamationTriangle } from "react-icons/fa";
 
 import { useState, useEffect } from "react";
 import { getUserBookings } from "@/api/bookingService";
@@ -116,6 +116,17 @@ const DashboardPage = () => {
                          <p className="text-3xl font-black text-[#14213d]">{totalItems}</p>
                          <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mt-1">In Cart</p>
                       </div>
+                   </Link>
+                </div>
+
+                {/* Admin Tools */}
+                <div className="mb-8">
+                   <Link to="/admin/approvals" className="bg-gradient-to-r from-[#EB662B] to-[#d55822] p-6 rounded-3xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group flex items-center justify-between">
+                      <div>
+                         <p className="text-2xl font-black text-white">طلبات الشركات (Pending Approvals)</p>
+                         <p className="text-sm text-white/80 font-bold mt-1">Review and approve company requests</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><FaExclamationTriangle /></div>
                    </Link>
                 </div>
 
