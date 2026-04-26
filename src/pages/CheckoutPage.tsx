@@ -213,12 +213,15 @@ const CheckoutPage = () => {
 
     if (currentStep < 3) {
          if (currentStep === 2) {
-             // Simulate OTP sending success without a backend endpoint for now
              setIsSubmitting(true);
-             setTimeout(() => {
-                 setIsSubmitting(false);
-                 setShowOtpModal(true);
-             }, 800);
+             try {
+                await axiosClient.post("/checkout/send-otp", { email: checkoutData.details.email });
+                setShowOtpModal(true);
+             } catch (e: any) {
+                setErrors([e.response?.data?.message || "Failed to send OTP to your email. Please try again."]);
+             } finally {
+                setIsSubmitting(false);
+             }
              return;
          }
        setCurrentStep((prev) => prev + 1);
@@ -302,13 +305,17 @@ const CheckoutPage = () => {
     if (otpValues.join('').length === 4) {
       setOtpError("");
       try {
-        // Simulate OTP verification
-        await new Promise(resolve => setTimeout(resolve, 800));
+        // Call the real backend API
+        await axiosClient.post("/checkout/verify-otp", { 
+           email: checkoutData.details.email, 
+           otp: otpValues.join('') 
+        });
+        
         setShowOtpModal(false);
         setCurrentStep(3);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (e: any) {
-         setOtpError("رمز غير صحيح.");
+         setOtpError(e.response?.data?.message || "رمز غير صحيح.");
       }
     } else {
       showToast("Please enter the complete 4-digit code first.", true);
