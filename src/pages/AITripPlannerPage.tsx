@@ -9,274 +9,8 @@ import { getTours } from "../api/tourService";
 import { getTransportationList } from "../api/transportationService";
 import { Link } from "react-router-dom";
 
-const buildCityData = (hotelsData: any[], transportationData: any[]) => {
-const cityData: Record<string, {
-  hotels: typeof hotelsData;
-  tours: { name: string; price: number; time: string; type: string; link: string; image: string }[];
-  restaurants: { name: string; price: number; time: string; type: string; image: string }[];
-  museums: { name: string; price: number; time: string; link: string; image: string }[];
-  bazaars: { name: string; time: string; link: string; image: string }[];
-  transport: { name: string; price: number; route: string; link: string }[];
-}> = {
-  Cairo: {
-    hotels: hotelsData.filter(h => h.city === "Cairo"),
-    tours: [
-      { name: "Private Giza Pyramids & Sphinx Tour", price: 120, time: "9:00 AM - 1:00 PM", type: "Culture", link: "/tours/1", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400" },
-      { name: "Islamic Cairo Walking Tour", price: 45, time: "2:00 PM - 5:00 PM", type: "History", link: "/tours/2", image: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=400" },
-      { name: "Sunset Nile Felucca Ride", price: 25, time: "5:30 PM - 7:00 PM", type: "Relaxation", link: "/tours/3", image: "https://images.unsplash.com/photo-1568322503122-d524cfa340ae?w=400" },
-      { name: "Sound & Light Show at the Pyramids", price: 40, time: "7:30 PM - 9:00 PM", type: "Entertainment", link: "/events/1", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400" },
-    ],
-    restaurants: [
-      { name: "Abou El Sid (Authentic Egyptian)", price: 35, time: "1:00 PM - Lunch", type: "Egyptian Cuisine", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-      { name: "Sequoia on the Nile", price: 55, time: "8:00 PM - Dinner", type: "International", image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400" },
-      { name: "Naguib Mahfouz Cafe", price: 20, time: "4:00 PM - Snack", type: "Traditional Cafe", image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400" },
-    ],
-    museums: [
-      { name: "The Egyptian Museum", price: 20, time: "10:00 AM - 12:00 PM", link: "/museums/1", image: "https://images.unsplash.com/photo-1542036136-23133de5057b?w=400" },
-      { name: "Grand Egyptian Museum (GEM)", price: 30, time: "9:00 AM - 1:00 PM", link: "/museums/2", image: "https://images.unsplash.com/photo-1541355415714-c8172905cc75?w=400" },
-      { name: "Museum of Islamic Art", price: 15, time: "2:00 PM - 4:00 PM", link: "/museums/3", image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?w=400" },
-    ],
-    bazaars: [
-      { name: "Khan El Khalili Bazaar", time: "6:00 PM - 9:00 PM", link: "/bazaars/1", image: "https://images.unsplash.com/photo-1553524789-251f2868bf06?w=400" },
-    ],
-    transport: transportationData.filter(t => t.route.includes("Cairo")).map(t => ({ name: `${t.company} (${t.type})`, price: t.price, route: t.route, link: `/transportation/${t.id}` })),
-  },
-  Luxor: {
-    hotels: hotelsData.filter(h => h.city === "Luxor"),
-    tours: [
-      { name: "Valley of the Kings & Queens", price: 85, time: "6:00 AM - 12:00 PM", type: "History", link: "/tours/1", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400" },
-      { name: "Karnak & Luxor Temple Tour", price: 60, time: "3:00 PM - 6:00 PM", type: "Culture", link: "/tours/2", image: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=400" },
-      { name: "Hot Air Balloon at Sunrise", price: 110, time: "5:00 AM - 7:00 AM", type: "Adventure", link: "/tours/3", image: "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?w=400" },
-      { name: "Nile Cruise Dinner (Luxor → Aswan)", price: 299, time: "7:00 PM - 10:00 PM", type: "Luxury", link: "/tours/4", image: "https://images.unsplash.com/photo-1568322503122-d524cfa340ae?w=400" },
-    ],
-    restaurants: [
-      { name: "Sofra Restaurant", price: 25, time: "1:00 PM - Lunch", type: "Traditional Egyptian", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-      { name: "Al Sahaby Lane Restaurant", price: 40, time: "8:00 PM - Dinner", type: "Nile View Dining", image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400" },
-    ],
-    museums: [
-      { name: "Luxor Museum", price: 15, time: "10:00 AM - 12:00 PM", link: "/museums/1", image: "https://images.unsplash.com/photo-1541355415714-c8172905cc75?w=400" },
-      { name: "Mummification Museum", price: 10, time: "2:00 PM - 3:30 PM", link: "/museums/2", image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?w=400" },
-    ],
-    bazaars: [
-      { name: "Luxor Souk", time: "5:00 PM - 8:00 PM", link: "/bazaars/3", image: "/images/luxor-souk.png" },
-    ],
-    transport: transportationData.filter(t => t.route.includes("Luxor")).map(t => ({ name: `${t.company} (${t.type})`, price: t.price, route: t.route, link: `/transportation/${t.id}` })),
-  },
-  Aswan: {
-    hotels: hotelsData.filter(h => h.city === "Aswan" || h.city === "Luxor"),
-    tours: [
-      { name: "Philae Temple & High Dam Tour", price: 70, time: "8:00 AM - 1:00 PM", type: "History", link: "/tours/1", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400" },
-      { name: "Abu Simbel Day Trip", price: 150, time: "4:00 AM - 3:00 PM", type: "Must-See", link: "/tours/2", image: "https://images.unsplash.com/photo-1568322503122-d524cfa340ae?w=400" },
-      { name: "Nubian Village Boat Trip", price: 40, time: "2:00 PM - 5:00 PM", type: "Culture", link: "/tours/3", image: "/images/aswan-nubian-market.png" },
-      { name: "Felucca Sunset around Elephantine Island", price: 20, time: "5:00 PM - 7:00 PM", type: "Relaxation", link: "/tours/4", image: "https://images.unsplash.com/photo-1568322503122-d524cfa340ae?w=400" },
-    ],
-    restaurants: [
-      { name: "1902 Restaurant (Old Cataract)", price: 65, time: "8:00 PM - Dinner", type: "Fine Dining", image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400" },
-      { name: "Makka Restaurant (Nubian)", price: 15, time: "1:00 PM - Lunch", type: "Nubian Cuisine", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-    ],
-    museums: [
-      { name: "Nubia Museum", price: 10, time: "9:00 AM - 11:00 AM", link: "/museums/1", image: "https://images.unsplash.com/photo-1541355415714-c8172905cc75?w=400" },
-    ],
-    bazaars: [
-      { name: "Aswan Nubian Market", time: "5:00 PM - 9:00 PM", link: "/bazaars/2", image: "/images/aswan-nubian-market.png" },
-    ],
-    transport: transportationData.filter(t => t.route.includes("Aswan") || t.route.includes("Luxor")).map(t => ({ name: `${t.company} (${t.type})`, price: t.price, route: t.route, link: `/transportation/${t.id}` })),
-  },
-  Sharm: {
-    hotels: hotelsData.filter(h => h.city === "Sharm El Sheikh"),
-    tours: [
-      { name: "Ras Mohammed Snorkeling Trip", price: 65, time: "8:00 AM - 3:00 PM", type: "Water Sports", link: "/tours/1", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
-      { name: "Blue Hole Diving Experience", price: 90, time: "7:00 AM - 2:00 PM", type: "Adventure", link: "/tours/2", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
-      { name: "Quad Biking Desert Safari", price: 50, time: "4:00 PM - 6:00 PM", type: "Adventure", link: "/tours/3", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400" },
-      { name: "Glass Bottom Boat Tour", price: 35, time: "10:00 AM - 12:00 PM", type: "Family", link: "/tours/4", image: "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=400" },
-    ],
-    restaurants: [
-      { name: "Farsha Cafe (Cliffside)", price: 30, time: "7:00 PM - Dinner", type: "Mediterranean", image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400" },
-      { name: "El Masrien Restaurant", price: 20, time: "1:00 PM - Lunch", type: "Egyptian Seafood", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-    ],
-    museums: [],
-    bazaars: [
-      { name: "Sharm Old Market", time: "6:00 PM - 10:00 PM", link: "/bazaars/1", image: "https://images.unsplash.com/photo-1553524789-251f2868bf06?w=400" },
-    ],
-    transport: transportationData.filter(t => t.route.includes("Sharm")).map(t => ({ name: `${t.company} (${t.type})`, price: t.price, route: t.route, link: `/transportation/${t.id}` })),
-  },
-  Hurghada: {
-    hotels: hotelsData.filter(h => h.city === "Hurghada"),
-    tours: [
-      { name: "Giftun Island Snorkeling", price: 45, time: "8:00 AM - 4:00 PM", type: "Beach", link: "/tours/1", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
-      { name: "Orange Bay Beach Trip", price: 55, time: "9:00 AM - 5:00 PM", type: "Relaxation", link: "/tours/2", image: "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=400" },
-      { name: "Desert Stargazing Safari", price: 60, time: "5:00 PM - 10:00 PM", type: "Adventure", link: "/tours/3", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400" },
-      { name: "Submarine Trip (Semi-Sub)", price: 40, time: "11:00 AM - 1:00 PM", type: "Family", link: "/tours/4", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
-    ],
-    restaurants: [
-      { name: "The Lodge Restaurant", price: 35, time: "8:00 PM - Dinner", type: "International", image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400" },
-      { name: "Moby Dick Seafood", price: 25, time: "1:00 PM - Lunch", type: "Seafood", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-    ],
-    museums: [
-      { name: "Hurghada Marine Museum", price: 10, time: "10:00 AM - 12:00 PM", link: "/museums/1", image: "https://images.unsplash.com/photo-1541355415714-c8172905cc75?w=400" },
-    ],
-    bazaars: [
-      { name: "El Dahar Bazaar", time: "5:00 PM - 9:00 PM", link: "/bazaars/1", image: "https://images.unsplash.com/photo-1553524789-251f2868bf06?w=400" },
-    ],
-    transport: transportationData.filter(t => t.route.includes("Hurghada")).map(t => ({ name: `${t.company} (${t.type})`, price: t.price, route: t.route, link: `/transportation/${t.id}` })),
-  },
-  Alexandria: {
-    hotels: hotelsData.filter(h => h.city === "Alexandria"),
-    tours: [
-      { name: "Bibliotheca Alexandrina & Citadel Tour", price: 50, time: "9:00 AM - 1:00 PM", type: "Culture", link: "/tours/1", image: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=400" },
-      { name: "Catacombs of Kom El Shoqafa", price: 30, time: "2:00 PM - 4:00 PM", type: "History", link: "/tours/2", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400" },
-      { name: "Corniche Walking & Sunset Tour", price: 15, time: "5:00 PM - 7:30 PM", type: "Relaxation", link: "/tours/3", image: "https://images.unsplash.com/photo-1568322503122-d524cfa340ae?w=400" },
-      { name: "Montazah Palace Gardens Visit", price: 10, time: "10:00 AM - 12:00 PM", type: "Nature", link: "/tours/4", image: "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=400" },
-    ],
-    restaurants: [
-      { name: "Balbaa Village (Seafood)", price: 30, time: "1:00 PM - Lunch", type: "Seafood", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-      { name: "Fish Market Restaurant", price: 40, time: "8:00 PM - Dinner", type: "Fine Seafood", image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400" },
-      { name: "Greek Club Cafe", price: 15, time: "4:00 PM - Snack", type: "Cafe", image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400" },
-    ],
-    museums: [
-      { name: "Alexandria National Museum", price: 10, time: "9:00 AM - 11:00 AM", link: "/museums/1", image: "https://images.unsplash.com/photo-1541355415714-c8172905cc75?w=400" },
-      { name: "Royal Jewelry Museum", price: 15, time: "1:00 PM - 3:00 PM", link: "/museums/2", image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?w=400" },
-    ],
-    bazaars: [
-      { name: "Attarine Antique Market", time: "5:00 PM - 8:00 PM", link: "/bazaars/1", image: "https://images.unsplash.com/photo-1553524789-251f2868bf06?w=400" },
-    ],
-    transport: transportationData.filter(t => t.route.includes("Alexandria")).map(t => ({ name: `${t.company} (${t.type})`, price: t.price, route: t.route, link: `/transportation/${t.id}` })),
-  },
-  Dahab: {
-    hotels: [],
-    tours: [
-      { name: "Blue Hole Freediving & Snorkeling", price: 40, time: "8:00 AM - 1:00 PM", type: "Water Sports", link: "/tours/1", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
-      { name: "Colored Canyon Hiking", price: 55, time: "7:00 AM - 2:00 PM", type: "Adventure", link: "/tours/2", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400" },
-      { name: "Bedouin Desert Safari & Stargazing", price: 45, time: "4:00 PM - 11:00 PM", type: "Experience", link: "/tours/3", image: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=400" },
-      { name: "Lagoon Windsurf & Kitesurf Session", price: 70, time: "10:00 AM - 2:00 PM", type: "Sports", link: "/tours/4", image: "https://images.unsplash.com/photo-1500514966906-fe245eea9344?w=400" },
-    ],
-    restaurants: [
-      { name: "Everyday Restaurant", price: 12, time: "1:00 PM - Lunch", type: "Backpacker Favorite", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-      { name: "Ali Baba Restaurant (Seafront)", price: 20, time: "7:00 PM - Dinner", type: "Seafood & Egyptian", image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400" },
-    ],
-    museums: [],
-    bazaars: [
-      { name: "Dahab Promenade Market", time: "6:00 PM - 10:00 PM", link: "/bazaars/1", image: "https://images.unsplash.com/photo-1553524789-251f2868bf06?w=400" },
-    ],
-    transport: [],
-  },
-  MarsaAlam: {
-    hotels: [],
-    tours: [
-      { name: "Dolphin House Reef Snorkeling", price: 50, time: "8:00 AM - 3:00 PM", type: "Marine Life", link: "/tours/1", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
-      { name: "Wadi El Gemal National Park", price: 65, time: "7:00 AM - 4:00 PM", type: "Nature", link: "/tours/2", image: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=400" },
-      { name: "Diving with Dugongs", price: 90, time: "8:00 AM - 1:00 PM", type: "Diving", link: "/tours/3", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
-      { name: "Desert Quad Bike & Camel Ride", price: 40, time: "4:00 PM - 7:00 PM", type: "Adventure", link: "/tours/4", image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400" },
-    ],
-    restaurants: [
-      { name: "Red Sea Grill", price: 30, time: "8:00 PM - Dinner", type: "Seafood", image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400" },
-      { name: "Beach House Cafe", price: 18, time: "1:00 PM - Lunch", type: "Casual Dining", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-    ],
-    museums: [],
-    bazaars: [],
-    transport: [],
-  },
-  Siwa: {
-    hotels: [],
-    tours: [
-      { name: "Siwa Oasis Safari & Camping", price: 150, time: "Full Day", type: "Adventure", link: "/tours/1", image: "/images/siwa-safari.png" },
-      { name: "Cleopatra's Spring & Salt Lakes", price: 40, time: "10:00 AM - 2:00 PM", type: "Nature", link: "/tours/2", image: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=400" },
-      { name: "Mountain of the Dead Exploration", price: 30, time: "3:00 PM - 5:00 PM", type: "History", link: "/tours/3", image: "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400" },
-      { name: "Bedouin Campfire Night Under Stars", price: 60, time: "8:00 PM - 12:00 AM", type: "Experience", link: "/tours/4", image: "/images/siwa-safari.png" },
-    ],
-    restaurants: [
-      { name: "Abdo's Restaurant (Local Siwan)", price: 15, time: "1:00 PM - Lunch", type: "Siwan Cuisine", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" },
-    ],
-    museums: [
-      { name: "Siwa House Museum", price: 5, time: "10:00 AM - 11:30 AM", link: "/museums/1", image: "https://images.unsplash.com/photo-1541355415714-c8172905cc75?w=400" },
-    ],
-    bazaars: [],
-    transport: [],
-  },
-};
-return cityData;
-};
-
-// ============ SMART TRIP GENERATOR ============
-const generateTrip = (cityData: any, destination: string, budget: number, days: number, vibe: string) => {
-  const city = cityData[destination] || cityData["Cairo"];
-  
-  // Pick hotel
-  const hotel = city.hotels.length > 0 
-    ? city.hotels.sort((a: any, b: any) => b.rating - a.rating)[0]
-    : { name: "Boutique Desert Lodge", city: destination, price: 120, rating: 4.5, image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400" };
-
-  // Build daily itinerary from actual data
-  const itinerary: any[] = [];
-  let totalCost = (hotel as any).price * days;
-  
-  for (let day = 1; day <= days; day++) {
-    const dayPlan: any = { day, activities: [] };
-    
-    // Morning: Tour or Museum
-    if (day <= city.tours.length) {
-      const tour = city.tours[day - 1];
-      dayPlan.activities.push({ ...tour, category: "🗺️ جولة" });
-      totalCost += tour.price;
-    } else if (city.museums.length > 0) {
-      const museum = city.museums[(day - 1) % city.museums.length];
-      dayPlan.activities.push({ ...museum, name: museum.name, price: museum.price, category: "🏛️ متحف", type: "Museum Visit" });
-      totalCost += museum.price;
-    }
-    
-    // Lunch
-    if (city.restaurants.length > 0) {
-      const lunchRestaurant = city.restaurants.find((r: any) => r.time.includes("Lunch")) || city.restaurants[0];
-      dayPlan.activities.push({ ...lunchRestaurant, category: "🍽️ مطعم" });
-      totalCost += lunchRestaurant.price;
-    }
-    
-    // Afternoon: Museum or Bazaar
-    if (day <= city.museums.length && city.tours.length >= day) {
-      const museum = city.museums[(day - 1) % city.museums.length];
-      dayPlan.activities.push({ ...museum, category: "🏛️ متحف", type: "Museum Visit" });
-      totalCost += museum.price;
-    }
-    
-    // Evening: Bazaar (on specific days) or Dinner
-    if (city.bazaars.length > 0 && day === 1) {
-      const bazaar = city.bazaars[0];
-      dayPlan.activities.push({ name: bazaar.name, price: 0, time: bazaar.time, type: "Shopping", category: "🛍️ بازار", link: bazaar.link, image: bazaar.image });
-    }
-    
-    // Dinner
-    if (city.restaurants.length > 0) {
-      const dinnerRestaurant = city.restaurants.find((r: any) => r.time.includes("Dinner")) || city.restaurants[city.restaurants.length - 1];
-      dayPlan.activities.push({ ...dinnerRestaurant, category: "🍽️ عشاء" });
-      totalCost += dinnerRestaurant.price;
-    }
-    
-    itinerary.push(dayPlan);
-  }
-
-  // Transport recommendation
-  const transport = city.transport.length > 0 ? city.transport[0] : null;
-  if (transport) totalCost += transport.price;
-
-  return {
-    title: destination === "Cairo" ? "رحلة القاهرة الساحرة ✨" 
-         : destination === "Luxor" ? "مغامرة الأقصر التاريخية 🏛️"
-         : destination === "Aswan" ? "رحلة أسوان النوبية الساحرة 🌊"
-         : destination === "Sharm" ? "عطلة شرم الشيخ الاستوائية 🏖️"
-         : destination === "Hurghada" ? "إجازة الغردقة البحرية 🐠"
-         : destination === "Alexandria" ? "رحلة الإسكندرية المتوسطية 🌅"
-         : destination === "Dahab" ? "مغامرة دهب الحرة 🏄‍♂️"
-         : destination === "MarsaAlam" ? "رحلة مرسى علم البحرية 🐬"
-         : destination === "Siwa" ? "مغامرة واحة سيوا الصحراوية 🏜️"
-         : "رحلة مصر الشاملة 🇪🇬",
-    hotel,
-    itinerary,
-    transport,
-    totalCost: Math.min(totalCost, budget),
-    days,
-    destination,
-  };
-};
+import axiosClient from "../api/axiosClient";
+import { useApp } from "../context/AppContext";
 
 // ============ COMPONENT ============
 const AITripPlannerPage = () => {
@@ -320,7 +54,9 @@ const AITripPlannerPage = () => {
     "إعداد خطة رحلتك الشاملة...",
   ];
 
-  const handleGenerate = (e: React.FormEvent) => {
+  const { showToast } = useApp();
+
+  const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGenerating(true);
     setResult(null);
@@ -332,11 +68,9 @@ const AITripPlannerPage = () => {
         clearInterval(interval);
         return prev;
       });
-    }, 400);
+    }, 1500);
 
-    setTimeout(() => {
-      setIsGenerating(false);
-      
+    try {
       // Calculate days
       let days = 3;
       if (formData.startDate && formData.endDate) {
@@ -344,15 +78,23 @@ const AITripPlannerPage = () => {
         if (diff > 0) days = Math.min(diff, 7);
       }
 
-      const trip = generateTrip(
-        buildCityData(hotelsData, transportationData),
-        formData.destination,
-        Number(formData.budget) || 2000,
-        days,
-        formData.vibe
-      );
-      setResult(trip);
-    }, 1500);
+      const res = await axiosClient.post('/trip-planner/generate', {
+         destination: formData.destination,
+         budget: Number(formData.budget) || 2000,
+         days: days,
+         adults: Number(formData.adults) || 1,
+         children: Number(formData.children) || 0,
+         vibe: formData.vibe
+      });
+      
+      setResult(res.data);
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.response?.data?.error || "حدث خطأ أثناء بناء الرحلة بالذكاء الاصطناعي. الرجاء المحاولة مرة أخرى.", true);
+    } finally {
+       clearInterval(interval);
+       setIsGenerating(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
