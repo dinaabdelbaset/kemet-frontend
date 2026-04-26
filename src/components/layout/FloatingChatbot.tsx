@@ -106,10 +106,19 @@ const renderMessageContent = (text: string, isBot: boolean, langCode: string) =>
 };
 
 const FloatingChatbot = () => {
+  const [sessionToken] = useState(() => {
+    let token = localStorage.getItem("kemet_chat_session");
+    if (!token) {
+      token = "sess_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+      localStorage.setItem("kemet_chat_session", token);
+    }
+    return token;
+  });
   const [isOpen, setIsOpen] = useState(() => {
     return sessionStorage.getItem("kemet_chatbot_isOpen") === "true";
   });
   const [lang, setLang] = useState<keyof typeof chatbotTranslations>('en');
+  const [isHumanMode, setIsHumanMode] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
     const saved = sessionStorage.getItem("kemet_chatbot_messages");
     if (saved) {
@@ -122,36 +131,55 @@ const FloatingChatbot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize chat history from backend or session storage
-  useEffect(() => {
-    const initChat = async () => {
-      const history = await fetchChatHistory();
-      if (history && history.length > 0) {
-        const historyMessages: Message[] = history.map((msg, idx) => ({
-          id: Date.now() + idx,
-          text: msg.text,
-          sender: msg.sender as "bot" | "user"
-        }));
-        setMessages(historyMessages);
-      } else {
-        const saved = sessionStorage.getItem("kemet_chatbot_messages");
-        let hasSessionData = false;
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              setMessages(parsed);
-              hasSessionData = true;
-            }
-          } catch (e) {}
-        }
-        if (!hasSessionData) {
-          const t = chatbotTranslations[lang] || chatbotTranslations['en'];
-          setMessages([{ id: 1, text: t.greeting, sender: "bot" }]);
-        }
+  const loadHistory = async () => {
+    const data = await fetchChatHistory(sessionToken);
+    
+    if (data && data.is_human_mode) {
+      setIsHumanMode(true);
+    } else {
+      setIsHumanMode(false);
+    }
+
+    if (data && data.messages && data.messages.length > 0) {
+      const historyMessages: Message[] = data.messages.map((msg, idx) => ({
+        id: Date.now() + idx,
+        text: msg.text,
+        sender: (msg.sender === "admin" || msg.sender === "bot") ? "bot" : "user"
+      }));
+      setMessages(historyMessages);
+    } else {
+      const saved = sessionStorage.getItem("kemet_chatbot_messages");
+      let hasSessionData = false;
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setMessages(parsed);
+            hasSessionData = true;
+          }
+        } catch (e) {}
       }
-    };
-    initChat();
+      if (!hasSessionData) {
+        const t = chatbotTranslations[lang] || chatbotTranslations['en'];
+        setMessages([{ id: 1, text: t.greeting, sender: "bot" }]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadHistory();
   }, []);
+
+  // Live Chat Polling if Open
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const interval = setInterval(() => {
+      loadHistory();
+    }, 4000); // Poll every 4 seconds
+    
+    return () => clearInterval(interval);
+  }, [isOpen, sessionToken]);
 
   // Save state to session storage when things change
   useEffect(() => {
@@ -235,9 +263,16 @@ const FloatingChatbot = () => {
     setIsLoading(true);
 
     try {
-      const reply = await askChatbot(currentHistory);
-      const replyMessage: Message = { id: Date.now() + 1, text: reply, sender: "bot" };
-      setMessages((prev) => [...prev, replyMessage]);
+      const replyData = await askChatbot(currentHistory, sessionToken);
+      
+      if (replyData.is_human_mode) {
+        setIsHumanMode(true);
+      }
+      
+      if (replyData.answer && replyData.answer.trim() !== "") {
+        const replyMessage: Message = { id: Date.now() + 1, text: replyData.answer, sender: "bot" };
+        setMessages((prev) => [...prev, replyMessage]);
+      }
     } catch (error) {
       console.error("Chatbot error:", error);
       const errorMsg = lang === 'ar' 
@@ -264,13 +299,18 @@ const FloatingChatbot = () => {
                 <FaRobot />
               </div>
               <div className="flex flex-col">
-                <h3 className="font-bold leading-none">
+                <h3 className="font-bold leading-none flex items-center gap-2">
                   {t.title}
-                  <span className="ml-2 text-[10px] bg-[#EB662B] px-2 py-0.5 rounded-full uppercase tracking-wider">AI</span>
+                  {!isHumanMode && (
+                    <span className="text-[10px] bg-[#EB662B] px-2 py-0.5 rounded-full uppercase tracking-wider">AI</span>
+                  )}
+                  {isHumanMode && (
+                    <span className="text-[10px] bg-blue-500 px-2 py-0.5 rounded-full uppercase tracking-wider">Support</span>
+                  )}
                 </h3>
                 <span className="text-xs text-white/70 flex items-center gap-1 mt-0.5">
                   <span className="w-2 h-2 rounded-full bg-green-400 inline-block animate-pulse"></span>
-                  {t.status}
+                  {isHumanMode ? "Live Agent" : t.status}
                 </span>
               </div>
             </div>

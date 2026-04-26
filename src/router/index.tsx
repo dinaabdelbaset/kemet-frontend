@@ -58,6 +58,7 @@ const TravelGuidesPage       = lazy(() => import("../pages/TravelGuidesPage"));
 const DataPolicyPage         = lazy(() => import("../pages/DataPolicyPage"));
 const CookiePolicyPage       = lazy(() => import("../pages/CookiePolicyPage"));
 const LegalPage              = lazy(() => import("../pages/LegalPage"));
+const AdminLiveChatPage      = lazy(() => import("../pages/AdminLiveChatPage"));
 const SitemapPage            = lazy(() => import("../pages/SitemapPage"));
 const HelpCenterPage         = lazy(() => import("../pages/HelpCenterPage"));
 const HowItWorksPage         = lazy(() => import("../pages/HowItWorksPage"));
@@ -117,7 +118,7 @@ const router = createBrowserRouter(
         <Route path="bookings" element={<ProtectedRoute>{withSuspense(MyBookingsPage)}</ProtectedRoute>} />
         <Route path="profile" element={<ProtectedRoute>{withSuspense(ProfileSettingsPage)}</ProtectedRoute>} />
         <Route path="dashboard" element={<ProtectedRoute>{withSuspense(DashboardPage)}</ProtectedRoute>} />
-
+        <Route path="admin/livechat" element={withSuspense(AdminLiveChatPage)} />
         {/* Footer Pages */}
         <Route path="about" element={withSuspense(AboutPage)} />
         <Route path="contact" element={withSuspense(ContactPage)} />

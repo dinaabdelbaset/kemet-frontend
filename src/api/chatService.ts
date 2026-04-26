@@ -140,10 +140,10 @@ let conversationHistory: ChatMessage[] = [];
  * Accepts either a string (single message) or the full chat history array.
  */
 export const askChatbot = async (
-  input: string | { sender: string; text: string }[]
-): Promise<string> => {
+  input: string | { sender: string; text: string }[],
+  sessionToken: string
+): Promise<{ answer: string; is_human_mode: boolean }> => {
   try {
-    // Extract the user message and compute chat history
     let userMessage: string;
     let history: {role: string, content: string}[] = [];
 
@@ -153,8 +153,6 @@ export const askChatbot = async (
       const lastUserMsg = [...input].reverse().find((m) => m.sender === "user");
       userMessage = lastUserMsg?.text || "";
 
-      // Convert prior messages to standard AI format
-      // filter out the last user message so it's not duplicated
       const previousMessages = input.slice(0, input.length - 1);
       history = previousMessages.map(m => ({
         role: m.sender === "user" ? "user" : "assistant",
@@ -163,7 +161,7 @@ export const askChatbot = async (
     }
 
     if (!userMessage.trim()) {
-      return "لم أفهم رسالتك، ممكن تعيد تاني؟ 😊";
+      return { answer: "لم أفهم رسالتك، ممكن تعيد تاني؟ 😊", is_human_mode: false };
     }
 
     const token = localStorage.getItem("token");
@@ -172,7 +170,6 @@ export const askChatbot = async (
       "Accept": "application/json"
     };
 
-    // Attach token if user is logged in so backend can save to their account
     if (token) {
       fetchHeaders["Authorization"] = `Bearer ${token}`;
     }
@@ -182,56 +179,56 @@ export const askChatbot = async (
       headers: fetchHeaders,
       body: JSON.stringify({
         message: userMessage,
-        history: history
+        history: history,
+        session_token: sessionToken
       }),
     });
 
     if (response.ok) {
       const data = await response.json();
-      console.log("AI Output:", data); 
-      
-      if (data && data.answer) {
-        return data.answer;
-      }
-      
-      return `عذراً، مقدرتش أرد دلوقتي. الرد اللي رجع: ${JSON.stringify(data)}`;
+      return {
+        answer: data.answer || "",
+        is_human_mode: data.is_human_mode || false
+      };
     }
 
-    return "حصل خطأ في الاتصال بالسيرفر، جرب تاني 🔄";
+    return { answer: "حصل خطأ في الاتصال بالسيرفر، جرب تاني 🔄", is_human_mode: false };
   } catch (error: any) {
-    if (error.name === "AbortError") {
-      return "تم إلغاء الاتصال. حاول مرة تانية ❌";
-    }
     console.error("Error asking Chatbot :", error);
-    return "حصل مشكلة في الاتصال، تأكد من الإنترنت وجرب تاني 🔄";
+    return { answer: "حصل مشكلة في الاتصال، تأكد من الإنترنت وجرب تاني 🔄", is_human_mode: false };
   }
 };
 
 /**
- * Fetch prior chat history securely from database for the logged-in user.
+ * Fetch prior chat history securely from database for the logged-in user or session.
  */
-export const fetchChatHistory = async (): Promise<{sender: string, text: string}[]> => {
+export const fetchChatHistory = async (sessionToken: string): Promise<{ messages: {sender: string, text: string}[], is_human_mode: boolean }> => {
   const token = localStorage.getItem("token");
-  if (!token) return [];
-
+  
   try {
+    const fetchHeaders: HeadersInit = {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    if (token) fetchHeaders["Authorization"] = `Bearer ${token}`;
+
     const response = await fetch(`${API_BASE}/chat/history`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
+      method: "POST",
+      headers: fetchHeaders,
+      body: JSON.stringify({ session_token: sessionToken })
     });
 
     if (response.ok) {
       const data = await response.json();
-      return Array.isArray(data) ? data : [];
+      return {
+        messages: Array.isArray(data.messages) ? data.messages : [],
+        is_human_mode: data.is_human_mode || false
+      };
     }
   } catch (e) {
     console.error("Failed to load chat history:", e);
   }
-  return [];
+  return { messages: [], is_human_mode: false };
 };
 
 /** Reset conversation history and clear cached context */
