@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaArrowLeft, FaCheck, FaStar, FaClock, FaTag, FaHotel, FaUniversity, FaTimesCircle } from "react-icons/fa";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
-import axiosClient from "../api/axiosClient";
+import { getDealById } from "../api/dealService";
 
 const TravelPackageDetailsPage = () => {
   const { packageId } = useParams<{ packageId: string }>();
@@ -15,8 +15,8 @@ const TravelPackageDetailsPage = () => {
     const fetchPackage = async () => {
       try {
         setIsLoading(true);
-        const response = await axiosClient.get(`/deals/${packageId}`);
-        setPkg(response.data);
+        const data = await getDealById(packageId!);
+        setPkg(data);
       } catch (error) {
         console.error("Error fetching package:", error);
         setPkg(null);

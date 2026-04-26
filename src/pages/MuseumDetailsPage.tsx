@@ -6,7 +6,7 @@ import SocialShare from "@/components/common/SocialShare";
 import ReviewSection from "@/components/common/ReviewSection";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
 import { useEffect, useState } from "react";
-import axiosClient from "../api/axiosClient";
+import { getMuseumById } from "../api/museumService";
 import PriceDisplay from "@/components/common/PriceDisplay";
 
 const MuseumDetailsPage = () => {
@@ -21,8 +21,8 @@ const MuseumDetailsPage = () => {
   useEffect(() => {
     const fetchMuseum = async () => {
       try {
-        const res = await axiosClient.get(`/museums/${id}`);
-        setMuseum(res.data?.data || res.data);
+        const data = await getMuseumById(id!);
+        setMuseum(data);
       } catch (err) {
         console.error("Error loading museum details", err);
       } finally {

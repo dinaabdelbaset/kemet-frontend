@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Heading from "../Ui/Heading";
 import SectionWrapper from "./SectionWrapper";
 import { FaMapMarkerAlt, FaShoppingBag } from "react-icons/fa";
-import axiosClient from "../../api/axiosClient";
+import { getBazaars } from "../../api/bazaarService";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,8 +17,8 @@ const BazaarsSection = () => {
   useEffect(() => {
     const fetchBazaars = async () => {
       try {
-        const response = await axiosClient.get("/bazaars");
-        const productsList = response.data.data ? response.data.data : (Array.isArray(response.data) ? response.data : []);
+        const data = await getBazaars();
+        const productsList = data.data ? data.data : (Array.isArray(data) ? data : []);
         setBazaars(productsList.slice(0, 3));
       } catch (error) {
         console.error("Error fetching bazaars:", error);

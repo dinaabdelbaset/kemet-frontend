@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt } from "react-icons/fa";
 import InteractiveMap from "@/components/common/InteractiveMap";
 import SocialShare from "@/components/common/SocialShare";
-import axiosClient from "../api/axiosClient";
+import { getEventById } from "../api/eventService";
 
 const EventDetailsPage = () => {
   const { id } = useParams();
@@ -17,8 +17,8 @@ const EventDetailsPage = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axiosClient.get(`/events/${id}`);
-        setEvent(res.data?.data || res.data);
+        const data = await getEventById(id!);
+        setEvent(data?.data || data);
       } catch (err) {
         console.error("Error loading event details", err);
       } finally {

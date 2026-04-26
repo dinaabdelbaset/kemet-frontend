@@ -8,7 +8,7 @@ import SocialShare from "@/components/common/SocialShare";
 import ReviewSection from "@/components/common/ReviewSection";
 
 import { useEffect, useState } from "react";
-import axiosClient from "../api/axiosClient";
+import { getSafariById } from "../api/safariService";
 
 const SafariDetailsPage = () => {
   const { id } = useParams();
@@ -19,8 +19,8 @@ const SafariDetailsPage = () => {
   useEffect(() => {
     const fetchSafari = async () => {
       try {
-        const res = await axiosClient.get(`/safaris/${id}`);
-        setSafari(res.data?.data || res.data);
+        const data = await getSafariById(id!);
+        setSafari(data);
       } catch (err) {
         console.error("Failed to load safari details", err);
       } finally {

@@ -6,7 +6,7 @@ import DateTimePicker from "@/components/Ui/DateTimePicker";
 import { FaMapMarkerAlt, FaShoppingBag, FaCamera, FaCoffee } from "react-icons/fa";
 import InteractiveMap from "@/components/common/InteractiveMap";
 import SocialShare from "@/components/common/SocialShare";
-import axiosClient from "../api/axiosClient";
+import { getBazaarById } from "../api/bazaarService";
 
 const BazaarDetailsPage = () => {
   const { id } = useParams();
@@ -22,8 +22,8 @@ const BazaarDetailsPage = () => {
   useEffect(() => {
     const fetchBazaar = async () => {
       try {
-        const res = await axiosClient.get(`/bazaars/${id}`);
-        setBazaar(res.data?.data || res.data);
+        const data = await getBazaarById(id!);
+        setBazaar(data?.data || data);
       } catch (err) {
         console.error("Error loading bazaar details", err);
       } finally {

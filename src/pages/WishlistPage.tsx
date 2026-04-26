@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useApp } from "../context/AppContext";
-import axiosClient from "../api/axiosClient";
+import { getTours } from "../api/tourService";
+import { getActivities } from "../api/activityService";
 import TourCard from "../components/card/TourCard";
 import ActivityCard from "../components/card/ActivityCard";
 
@@ -15,13 +16,13 @@ const WishlistPage = () => {
       try {
         setIsLoading(true);
         // Fetch tours and activities from API
-        const [toursRes, activitiesRes] = await Promise.all([
-          axiosClient.get("/tours"),
-          axiosClient.get("/activities"),
+        const [toursData, activitiesData] = await Promise.all([
+          getTours(),
+          getActivities(),
         ]);
         
-        const allTours = Array.isArray(toursRes.data) ? toursRes.data : [];
-        const allActivities = Array.isArray(activitiesRes.data) ? activitiesRes.data : [];
+        const allTours = Array.isArray(toursData) ? toursData : [];
+        const allActivities = Array.isArray(activitiesData) ? activitiesData : [];
 
         // Filter to only wishlist items
         const savedTours = allTours.filter((t: any) => wishlist.includes(`tour-${t.id}`));

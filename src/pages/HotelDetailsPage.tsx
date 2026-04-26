@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axiosClient from "../api/axiosClient";
+import { getHotelById } from "../api/hotelService";
 import { FaCheck, FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import ActivityCard from "../components/card/ActivityCard";
@@ -64,16 +64,16 @@ const HotelDetailsPage = () => {
         const fetchHotel = async () => {
             try {
                 setIsLoading(true);
-                const response = await axiosClient.get(`/hotels/${hotelId}`);
+                const data = await getHotelById(hotelId!);
                 
-                if (response.data && response.data.id) {
-            setHotel(response.data);
+                if (data && data.id) {
+                    setHotel(data);
                     addRecentlyViewed({
-                        id: response.data.id,
-                        title: response.data.title || response.data.name,
-                        image: getHotelMainImage(response.data),
+                        id: data.id,
+                        title: data.title || data.name || "",
+                        image: getHotelMainImage(data),
                         type: "hotel",
-                        link: `/hotels/${response.data.id}`
+                        link: `/hotels/${data.id}`
                     });
                 } else {
                     throw new Error("Invalid backend data");

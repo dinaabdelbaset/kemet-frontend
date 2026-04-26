@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FaChevronRight, FaCar, FaMapMarkerAlt } from "react-icons/fa";
-import axiosClient from "../api/axiosClient";
+import { getAllExploreData } from "../api/exploreService";
 import FilterSidebar from "../components/sections/FilterSidebar";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
@@ -41,8 +41,11 @@ const ExplorePage = () => {
                     { id: 4, title: `Premium Spice Bazaar`, image: "https://dinaabdelbaset-kemet.hf.space/api/kamet-images/baz_luxor", category: "Shopping", rating: 4.9, reviews_count: 620, location: destinationName, ticket_price: 25 },
                 ];
 
-                const res = await axiosClient.get("/all-data").catch(() => ({ data: {} }));
-                const allData = res.data?.data || res.data || {};
+                let allData: any = {};
+                try {
+                    const data = await getAllExploreData();
+                    allData = data?.data || data || {};
+                } catch(err) {}
                 
                 if (allData.restaurants) {
                     allData.restaurants = allData.restaurants.map((r: any) => {

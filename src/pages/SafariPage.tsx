@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import PriceDisplay from "../components/common/PriceDisplay";
-import axiosClient from "../api/axiosClient";
+import { getSafaris } from "../api/safariService";
 import AdvancedFilters from "../components/common/AdvancedFilters";
 
 const SafariPage = () => {
@@ -30,9 +30,9 @@ const SafariPage = () => {
   const citiesList = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum"];
 
   useEffect(() => {
-    axiosClient.get('/safaris')
-      .then(res => {
-        setAllSafaris(res.data);
+    getSafaris()
+      .then(data => {
+        setAllSafaris(data);
         setIsLoading(false);
       })
       .catch(err => {

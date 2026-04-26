@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axiosClient from "../api/axiosClient";
+import { getHotels } from "../api/hotelService";
 import PriceDisplay from "../components/common/PriceDisplay";
 import {
   FaCalendarCheck,
@@ -70,15 +70,8 @@ const HotelsPage = () => {
       try {
         setIsLoading(true);
         setApiError(null);
-        // Use axiosClient so it points to the correct deployed URL
-        const response = await axiosClient.get("/hotels");
-        if (Array.isArray(response.data) && response.data.length > 0) {
-            setHotels(response.data);
-        } else if (response.data.data && Array.isArray(response.data.data) && response.data.data.length > 0) {
-            setHotels(response.data.data);
-        } else {
-            setHotels([]);
-        }
+        const data = await getHotels();
+        setHotels(data);
       } catch (error: any) {
         console.error("Error fetching hotels:", error.message);
         setHotels([]);
