@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
@@ -13,12 +13,14 @@ const eras = [
     era: "حضارة الفراعنة",
     eraEn: "Pharaonic Egypt",
     title: "أرض الآلهة والأسرار",
+    titleEn: "Land of Gods and Secrets",
     desc: "حين بنى الفراعنة الأهرامات بدقة تعجز عنها التكنولوجيا الحديثة، ونقشوا الهيروغليفية لتحمل رسائلهم عبر الأزمان.",
+    descEn: "When the pharaohs built pyramids with precision that defies modern technology, and carved hieroglyphs to carry their messages through time.",
     image: "/images/era-pharaonic.png",
     places: [
-      { name: "أهرامات الجيزة", link: "/attraction/giza" },
-      { name: "أبو سمبل", link: "/attraction/abu-simbel" },
-      { name: "وادي الملوك", link: "/attraction/valley-of-kings" },
+      { name: "أهرامات الجيزة", nameEn: "Giza Pyramids", link: "/attraction/giza" },
+      { name: "أبو سمبل", nameEn: "Abu Simbel", link: "/attraction/abu-simbel" },
+      { name: "وادي الملوك", nameEn: "Valley of the Kings", link: "/attraction/valley-of-kings" },
     ],
     palette: {
       bg: "#ffffff",
@@ -38,12 +40,14 @@ const eras = [
     era: "الحقبة اليونانية الرومانية",
     eraEn: "Greco-Roman Era",
     title: "إسكندرية العظيمة",
+    titleEn: "Alexandria the Great",
     desc: "جاء الإسكندر الأكبر وأسّس إسكندرية التي أصبحت عاصمة العالم القديم، حيث قامت أعظم مكتبة في التاريخ.",
+    descEn: "Alexander the Great arrived and founded Alexandria, which became the capital of the ancient world and home to the greatest library in history.",
     image: "/images/era-greco-roman.png",
     places: [
-      { name: "الإسكندرية", link: "/attraction/alexandria" },
-      { name: "مسرح كوم الدكة", link: "/attraction/kom-el-dikka" },
-      { name: "متحف الغوص", link: "/museums" },
+      { name: "الإسكندرية", nameEn: "Alexandria", link: "/attraction/alexandria" },
+      { name: "مسرح كوم الدكة", nameEn: "Roman Amphitheatre", link: "/attraction/kom-el-dikka" },
+      { name: "متحف الغوص", nameEn: "Sunken Museum", link: "/museums" },
     ],
     palette: {
       bg: "#f9fafb",
@@ -63,12 +67,14 @@ const eras = [
     era: "مصر المسيحية القبطية",
     eraEn: "Coptic Egypt",
     title: "أرض المسيح الأولى",
+    titleEn: "The First Land of Christ",
     desc: "هربت العائلة المقدسة إلى مصر، ولجأ القديس مرقس ليؤسس الكنيسة المصرية — واحدة من أقدم الكنائس في العالم.",
+    descEn: "The Holy Family fled to Egypt, and Saint Mark took refuge to found the Egyptian Church — one of the oldest in the world.",
     image: "/images/era-coptic.png",
     places: [
-      { name: "الحي القبطي", link: "/attraction/coptic-cairo" },
-      { name: "دير سانت كاترين", link: "/attraction/saint-catherine" },
-      { name: "كنيسة المعلقة", link: "/attraction/hanging-church" },
+      { name: "الحي القبطي", nameEn: "Coptic Cairo", link: "/attraction/coptic-cairo" },
+      { name: "دير سانت كاترين", nameEn: "St. Catherine Monastery", link: "/attraction/saint-catherine" },
+      { name: "كنيسة المعلقة", nameEn: "The Hanging Church", link: "/attraction/hanging-church" },
     ],
     palette: {
       bg: "#ffffff",
@@ -88,12 +94,14 @@ const eras = [
     era: "مصر الإسلامية",
     eraEn: "Islamic Egypt",
     title: "القاهرة المعزية",
+    titleEn: "Al-Mu'izz Cairo",
     desc: "بنى الفاطميون القاهرة لتكون عاصمة الخلافة، وتعالت مآذنها في السماء لتشهد على أعظم حضارة إسلامية في التاريخ.",
+    descEn: "The Fatimids built Cairo as the capital of the Caliphate, its minarets reaching the sky to witness the greatest Islamic civilization.",
     image: "/images/era-islamic.png",
     places: [
-      { name: "الجامع الأزهر", link: "/attraction/al-azhar" },
-      { name: "قلعة صلاح الدين", link: "/attraction/cairo-citadel" },
-      { name: "خان الخليلي", link: "/bazaars" },
+      { name: "الجامع الأزهر", nameEn: "Al-Azhar Mosque", link: "/attraction/al-azhar" },
+      { name: "قلعة صلاح الدين", nameEn: "Saladin Citadel", link: "/attraction/cairo-citadel" },
+      { name: "خان الخليلي", nameEn: "Khan el-Khalili", link: "/bazaars" },
     ],
     palette: {
       bg: "#f9fafb",
@@ -113,12 +121,14 @@ const eras = [
     era: "مصر الحديثة",
     eraEn: "Modern Egypt",
     title: "البلد الذي لا ينام",
+    titleEn: "The City That Never Sleeps",
     desc: "من ناطحات سحاب العاصمة الإدارية الجديدة إلى الغوص في البحر الأحمر — مصر اليوم تجمع بين الأصالة والحداثة.",
+    descEn: "From the skyscrapers of the New Capital to diving in the Red Sea — modern Egypt brings together heritage and the future.",
     image: "/images/era-modern.png",
     places: [
-      { name: "العاصمة الإدارية", link: "/attraction/new-capital" },
-      { name: "البحر الأحمر", link: "/attraction/red-sea" },
-      { name: "الساحل الشمالي", link: "/attraction/north-coast" },
+      { name: "العاصمة الإدارية", nameEn: "New Capital", link: "/attraction/new-capital" },
+      { name: "البحر الأحمر", nameEn: "Red Sea", link: "/attraction/red-sea" },
+      { name: "الساحل الشمالي", nameEn: "North Coast", link: "/attraction/north-coast" },
     ],
     palette: {
       bg: "#ffffff",
@@ -135,9 +145,22 @@ const eras = [
 
 
 
+
 const TextRevealSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const timelineBarRef = useRef<HTMLDivElement>(null);
+  const [isArabic, setIsArabic] = useState(true);
+
+  // Read current language from DOM on mount and observe changes
+  useEffect(() => {
+    const checkLang = () => setIsArabic(document.documentElement.lang !== 'en' && document.documentElement.lang !== 'fr' && document.documentElement.lang !== 'de' && document.documentElement.lang !== 'es' && document.documentElement.lang !== 'it');
+    checkLang();
+    
+    // Optional: Mutation observer if lang changes without reload
+    const observer = new MutationObserver(checkLang);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -214,13 +237,13 @@ const TextRevealSection = () => {
           <span className="h-px w-12 bg-gradient-to-l from-transparent to-[#D4AF37]" />
         </div>
         <h2 className="text-4xl md:text-7xl font-black text-[#05073C] leading-tight">
-          مصر عبر{" "}
+          {isArabic ? "مصر عبر" : "Egypt Through"}{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#EB662B] to-[#D4AF37]">
-            الزمن
+            {isArabic ? "الزمن" : "Time"}
           </span>
         </h2>
         <p className="text-gray-500 mt-4 text-sm md:text-base max-w-lg mx-auto font-medium">
-          رحلة ٥٠٠٠ سنة — من الفراعنة إلى اليوم
+          {isArabic ? "رحلة ٥٠٠٠ سنة — من الفراعنة إلى اليوم" : "A 5000-Year Journey — From Pharaohs to Today"}
         </p>
 
         {/* Scroll hint */}
@@ -314,7 +337,7 @@ const TextRevealSection = () => {
                   }}
                 >
                   <span className="text-base">{era.symbol}</span>
-                  {era.yearEn} · {era.year}
+                  {isArabic ? `${era.yearEn} · ${era.year}` : era.yearEn}
                 </div>
 
                 {/* Era label */}
@@ -322,23 +345,23 @@ const TextRevealSection = () => {
                   className="text-[11px] font-black uppercase tracking-[0.3em] mb-3 opacity-60"
                   style={{ color: era.palette.accent }}
                 >
-                  {era.eraEn}
+                  {isArabic ? era.era : era.eraEn}
                 </p>
 
                 {/* Title */}
                 <h3 className="text-3xl md:text-5xl font-black leading-tight mb-4" style={{ color: era.palette.text }}>
-                  {era.title}
+                  {isArabic ? era.title : era.titleEn}
                 </h3>
 
                 {/* Description */}
                 <p className="text-sm md:text-base leading-relaxed mb-8 opacity-60" style={{ color: era.palette.text }}>
-                  {era.desc}
+                  {isArabic ? era.desc : era.descEn}
                 </p>
 
                 {/* Places to visit now */}
                 <div className="mb-8">
                   <p className="text-[10px] uppercase tracking-[0.3em] opacity-40 mb-3" style={{ color: era.palette.text }}>
-                    اكتشفها اليوم
+                    {isArabic ? "اكتشفها اليوم" : "Discover it Today"}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {era.places.map((place, pi) => (
@@ -353,7 +376,7 @@ const TextRevealSection = () => {
                           boxShadow: `0 4px 12px ${era.palette.glow}`,
                         }}
                       >
-                        {place.name}
+                        {isArabic ? place.name : place.nameEn}
                       </Link>
                     ))}
                   </div>
@@ -389,9 +412,9 @@ const TextRevealSection = () => {
                   {/* Era name on image */}
                   <div className="absolute bottom-4 left-4 right-4 z-10">
                     <p className="text-[10px] uppercase tracking-[0.3em] font-black opacity-90" style={{ color: era.palette.accent }}>
-                      {era.era}
+                      {isArabic ? era.era : era.eraEn}
                     </p>
-                    <p className="text-white font-bold text-sm">{era.yearEn}</p>
+                    <p className="text-white font-bold text-sm">{isArabic ? era.year : era.yearEn}</p>
                   </div>
                 </div>
 
