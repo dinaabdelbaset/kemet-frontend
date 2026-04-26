@@ -42,8 +42,14 @@ const ChatbotWidget = () => {
     setIsLoading(true);
 
     try {
-      const reply = await askChatbot(userText);
-      const newBotMsg: Message = { id: (Date.now() + 1).toString(), sender: "bot", text: reply };
+      let sessionToken = localStorage.getItem('kemet_chat_session');
+      if (!sessionToken) {
+        sessionToken = Math.random().toString(36).substring(7);
+        localStorage.setItem('kemet_chat_session', sessionToken);
+      }
+      
+      const replyObj = await askChatbot(userText, sessionToken);
+      const newBotMsg: Message = { id: (Date.now() + 1).toString(), sender: "bot", text: replyObj.answer };
       setMessages((prev) => [...prev, newBotMsg]);
     } catch (error) {
       console.error(error);

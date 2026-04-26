@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axiosClient from "../api/axios";
+import axiosClient from "../api/axiosClient";
 import { FaCheck, FaTimes, FaBuilding, FaExclamationTriangle } from "react-icons/fa";
 import { useApp } from "../context/AppContext";
 
