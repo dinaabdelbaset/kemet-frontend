@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import DestinationCard from "../card/DestinationCard";
 import Heading from "../Ui/Heading";
 import SectionWrapper from "./SectionWrapper";
+import { Marquee } from "../Ui/marquee";
 
 import { getDestinations } from "../../api/destinationService";
 
@@ -62,7 +63,7 @@ const TrendingDestinationSection = () => {
   }, [loading]);
 
   const content = destinations.slice(0, 12).map((item) => (
-    <Link to={`/explore/${item.title}`} key={item.id} data-dest-card className="flex-shrink-0 snap-center min-w-[100px] sm:min-w-[120px]">
+    <Link to={`/explore/${item.title}`} key={item.id} data-dest-card className="flex-shrink-0 min-w-[100px] sm:min-w-[120px] mx-4">
       <DestinationCard 
         id={item.id}
         src={item.src || '/placeholder.png'} 
@@ -75,25 +76,23 @@ const TrendingDestinationSection = () => {
   return (
     <div id="trending-destinations">
       <SectionWrapper>
-        <div className="flex items-center justify-between mb-6" ref={headingRef}>
+        <div className="flex items-center justify-between mb-8" ref={headingRef}>
           <Heading title="trending destination" />
         </div>
-      <div 
-        ref={gridRef} 
-        className="flex overflow-x-auto gap-4 sm:gap-6 md:gap-8 pb-8 px-4 snap-x hide-scrollbars justify-start" 
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        <style dangerouslySetInnerHTML={{__html: `
-          .hide-scrollbars::-webkit-scrollbar {
-            display: none;
-          }
-        `}} />
+        
         {loading ? (
-          <div className="col-span-full py-10 text-center text-gray-500">جاري تحميل الوجهات...</div>
+          <div className="py-10 text-center text-gray-500">جاري تحميل الوجهات...</div>
         ) : (
-          content
+          <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+            {/* Fade gradients on edges */}
+            <div className="pointer-events-none absolute left-0 top-0 h-full w-12 sm:w-24 bg-linear-to-r from-white dark:from-[#121212] to-transparent z-10" />
+            <div className="pointer-events-none absolute right-0 top-0 h-full w-12 sm:w-24 bg-linear-to-l from-white dark:from-[#121212] to-transparent z-10" />
+            
+            <Marquee className="[--duration:30s] py-4">
+              {content}
+            </Marquee>
+          </div>
         )}
-      </div>
       </SectionWrapper>
     </div>
   );
