@@ -80,8 +80,8 @@ const TrendingDestinationSection = () => {
         </div>
       <div 
         ref={gridRef} 
-        className="flex overflow-x-auto gap-6 sm:gap-10 pb-8 px-2 snap-x hide-scrollbars 2xl:justify-center" 
-        style={{ perspective: "1000px", scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="flex overflow-x-auto gap-4 sm:gap-6 md:gap-8 pb-8 px-4 snap-x hide-scrollbars justify-start" 
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <style dangerouslySetInnerHTML={{__html: `
           .hide-scrollbars::-webkit-scrollbar {
