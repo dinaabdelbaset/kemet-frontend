@@ -390,7 +390,17 @@ const AITripPlannerPage = () => {
                           price: result.totalCost, 
                           image: result.hotel?.image || "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400",
                           breakdown: `AI Planned Trip: ${result.days} Days in ${result.destination}`,
-                          tickets: { adult: 1, child: 0, infant: 0 } 
+                          tickets: { adult: 1, child: 0, infant: 0 },
+                          items: [
+                            { id: 'hotel', name: `Hotel: ${result.hotel?.name || 'Accommodation'}`, price: 0, quantity: 1 },
+                            ...result.itinerary.flatMap((day: any) => day.activities.map((act: any, i: number) => ({
+                              id: `day-${day.day}-act-${i}`,
+                              name: `Day ${day.day}: ${act.name}`,
+                              price: act.price || 0,
+                              quantity: 1
+                            }))),
+                            ...(result.transport ? [{ id: 'transport', name: `Transport: ${result.transport.name}`, price: result.transport.price, quantity: 1 }] : [])
+                          ]
                         }}
                         className="flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg bg-[#EB662B] text-white hover:bg-[#d55822] transition text-center"
                       >

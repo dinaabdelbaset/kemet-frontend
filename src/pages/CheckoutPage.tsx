@@ -447,7 +447,25 @@ const CheckoutPage = () => {
                     </>
                   )}
                 </>
-              ) : (checkoutData.item.type === 'museum' || checkoutData.item.type === 'bazaar' || checkoutData.item.type === 'ai_trip') ? (
+              ) : checkoutData.item.type === 'ai_trip' ? (
+                <>
+                  {checkoutData.item.items?.map((act: any) => (
+                    <div key={act.id} className="flex justify-between items-start text-sm pb-2 border-b border-gray-50 last:border-0 last:pb-0">
+                      <div className="flex items-start gap-3">
+                        <span className="w-5 h-5 shrink-0 rounded-full bg-blue-50 flex items-center justify-center font-bold text-[10px] text-[#EB662B]">
+                          ✓
+                        </span>
+                        <div className="text-gray-700 pr-2 font-medium">
+                          <p className="line-clamp-2">{act.name}</p>
+                        </div>
+                      </div>
+                      <span className="font-semibold text-xs text-gray-400 shrink-0">
+                        {act.price > 0 ? <PriceDisplay price={act.price} /> : 'Free'}
+                      </span>
+                    </div>
+                  ))}
+                </>
+              ) : (checkoutData.item.type === 'museum' || checkoutData.item.type === 'bazaar') ? (
                 <div className="flex justify-between items-center text-sm">
                   <div className="flex items-center gap-3">
                     <span className="w-6 h-6 shrink-0 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">
