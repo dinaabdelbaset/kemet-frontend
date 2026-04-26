@@ -99,10 +99,10 @@ const CheckoutPage = () => {
       expirationDate: "",
       cvc: "",
     },
-    totalPrice: (location.state?.type === 'food_cart' || location.state?.type === 'museum' || location.state?.type === 'bazaar') ? location.state?.price : 0,
+    totalPrice: (location.state?.type === 'food_cart' || location.state?.type === 'museum' || location.state?.type === 'bazaar' || location.state?.type === 'ai_trip') ? location.state?.price : 0,
   });
 
-  const [currentStep, setCurrentStep] = useState(() => ((location.state?.type === "flight" || location.state?.type === "museum" || location.state?.type === "bazaar") ? 2 : 1));
+  const [currentStep, setCurrentStep] = useState(() => ((location.state?.type === "flight" || location.state?.type === "museum" || location.state?.type === "bazaar" || location.state?.type === "ai_trip") ? 2 : 1));
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
@@ -121,8 +121,8 @@ const CheckoutPage = () => {
 
   // Recalculate total price when tickets change
   useEffect(() => {
-    if (checkoutData.item.type === 'museum' || checkoutData.item.type === 'bazaar') {
-      // Museum/Bazaar ticket quantities and prices are fully pre-calculated on the Details page
+    if (checkoutData.item.type === 'museum' || checkoutData.item.type === 'bazaar' || checkoutData.item.type === 'ai_trip') {
+      // Museum/Bazaar/AI Trip ticket quantities and prices are fully pre-calculated on the Details page
       return;
     }
 
@@ -447,7 +447,7 @@ const CheckoutPage = () => {
                     </>
                   )}
                 </>
-              ) : (checkoutData.item.type === 'museum' || checkoutData.item.type === 'bazaar') ? (
+              ) : (checkoutData.item.type === 'museum' || checkoutData.item.type === 'bazaar' || checkoutData.item.type === 'ai_trip') ? (
                 <div className="flex justify-between items-center text-sm">
                   <div className="flex items-center gap-3">
                     <span className="w-6 h-6 shrink-0 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">

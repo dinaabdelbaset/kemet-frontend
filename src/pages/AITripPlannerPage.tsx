@@ -369,7 +369,19 @@ const AITripPlannerPage = () => {
 
                    {/* Action Buttons */}
                    <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-8 border-t border-gray-100">
-                     <Link to="/checkout" className="flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg bg-[#EB662B] text-white hover:bg-[#d55822] transition text-center">
+                      <Link 
+                        to="/checkout" 
+                        state={{ 
+                          id: result.hotel?.id || Math.floor(Math.random() * 1000), 
+                          type: "ai_trip", 
+                          title: result.title, 
+                          price: result.totalCost, 
+                          image: result.hotel?.image || "https://images.unsplash.com/photo-1539650116574-8efeb43e2b00?w=400",
+                          breakdown: `AI Planned Trip: ${result.days} Days in ${result.destination}`,
+                          tickets: { adult: 1, child: 0, infant: 0 } 
+                        }}
+                        className="flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg bg-[#EB662B] text-white hover:bg-[#d55822] transition text-center"
+                      >
                        <FaCheckCircle /> احجز الرحلة كاملة
                      </Link>
                      <button onClick={() => setResult(null)} className="flex-1 py-4 rounded-xl font-bold text-[#05073C] border border-gray-200 hover:bg-gray-50 flex items-center justify-center transition">
