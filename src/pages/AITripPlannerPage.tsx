@@ -34,11 +34,12 @@ const AITripPlannerPage = () => {
   }, []);
 
   const [formData, setFormData] = useState({
-    adults: "2",
+    adults: "3",
     children: "0",
     startDate: "",
     endDate: "",
     budget: "",
+    currency: "USD",
     vibe: "Surprise Me 🎁",
     destination: "Cairo",
   });
@@ -81,6 +82,7 @@ const AITripPlannerPage = () => {
       const res = await axiosClient.post('/trip-planner/generate', {
          destination: formData.destination,
          budget: Number(formData.budget) || 2000,
+         currency: formData.currency,
          days: days,
          adults: Number(formData.adults) || 1,
          children: Number(formData.children) || 0,
@@ -190,11 +192,21 @@ const AITripPlannerPage = () => {
               {/* Budget */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
-                   <FaMoneyBillWave className="text-gray-400" /> الميزانية الإجمالية ($)
+                   <FaMoneyBillWave className="text-gray-400" /> الميزانية الإجمالية
                 </label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">$</span>
-                  <Input type="number" name="budget" placeholder="مثال: 2500" className="pl-8" value={formData.budget} onChange={handleChange} required />
+                <div className="flex gap-2">
+                  <select 
+                    name="currency" 
+                    value={formData.currency} 
+                    onChange={handleChange} 
+                    className="w-24 border border-gray-300 rounded-xl px-2 font-bold bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#EB662B]"
+                  >
+                    <option value="USD">USD $</option>
+                    <option value="EGP">EGP ج.م</option>
+                    <option value="EUR">EUR €</option>
+                    <option value="GBP">GBP £</option>
+                  </select>
+                  <Input type="number" name="budget" placeholder="مثال: 2500" className="flex-1" value={formData.budget} onChange={handleChange} required />
                 </div>
               </div>
 
