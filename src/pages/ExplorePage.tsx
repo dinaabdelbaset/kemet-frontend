@@ -149,27 +149,32 @@ const ExplorePage = () => {
         // STRICT MODE: Try to get up to 2 real items that match
         let valid = destItems.slice(0, 2);
         
-        // Pad to exactly 2 items if needed
-        if (valid.length < 2 && items.length > 0) {
+        // Pad to exactly 2 items using GENERIC synthetic items if DB is missing data
+        if (valid.length < 2) {
             const needed = 2 - valid.length;
-            const fallbackItems = items.filter((i: any) => !valid.find(v => v.id === i.id)).slice(0, needed);
+            const genericTitles: Record<string, string[]> = {
+                "Hotels": ["Premium Resort", "City Center Hotel"],
+                "Museums": ["National Museum", "Heritage Center"],
+                "Restaurants": ["Authentic Cuisine", "Seafood & Grill"],
+                "Safari": ["Desert Adventure", "Oasis Exploration"],
+                "Bazaars": ["Traditional Souk", "Local Market"],
+                "Events": ["Cultural Festival", "Live Performance"]
+            };
             
-            fallbackItems.forEach((item: any) => {
+            for (let i = 0; i < needed; i++) {
+                const titleSuffix = genericTitles[categoryName] ? genericTitles[categoryName][i] : "Experience";
+                const synthId = 9000 + i + (valid.length * 10);
                 valid.push({
-                    ...item,
-                    location: isEgypt ? item.location : destinationName
+                    id: synthId,
+                    title: `${isEgypt ? 'Egypt' : destinationName} ${titleSuffix}`,
+                    image: getCitySpecificImage(destinationName, categoryName, synthId),
+                    location: isEgypt ? "Egypt" : destinationName,
+                    category: categoryName,
+                    rating: 4.6 + (i * 0.2),
+                    reviews_count: 150 + (i * 50),
+                    [priceKey]: 250 + (i * 150)
                 });
-            });
-        }
-        
-        // If we STILL don't have 2 items (e.g. only 1 item exists globally), duplicate the first one
-        if (valid.length === 1) {
-            valid.push({
-                ...valid[0],
-                id: valid[0].id + 1000,
-                title: valid[0].title + " - Premium",
-                // Do not override the image, keep the original
-            });
+            }
         }
 
         // Ensure the two items have DIFFERENT prices
