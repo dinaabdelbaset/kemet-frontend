@@ -154,11 +154,10 @@ const ExplorePage = () => {
             const needed = 2 - valid.length;
             const fallbackItems = items.filter((i: any) => !valid.find(v => v.id === i.id)).slice(0, needed);
             
-            fallbackItems.forEach((item: any, idx: number) => {
+            fallbackItems.forEach((item: any) => {
                 valid.push({
                     ...item,
-                    location: isEgypt ? item.location : destinationName,
-                    image: getCitySpecificImage(destinationName, categoryName, idx + 20)
+                    location: isEgypt ? item.location : destinationName
                 });
             });
         }
@@ -169,7 +168,7 @@ const ExplorePage = () => {
                 ...valid[0],
                 id: valid[0].id + 1000,
                 title: valid[0].title + " - Premium",
-                image: getCitySpecificImage(destinationName, categoryName, 99)
+                // Do not override the image, keep the original
             });
         }
 
