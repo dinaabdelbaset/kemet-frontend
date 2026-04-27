@@ -149,32 +149,23 @@ const ExplorePage = () => {
         // STRICT MODE: Try to get up to 2 real items that match
         let valid = destItems.slice(0, 2);
         
-        // Pad to exactly 2 items using GENERIC synthetic items if DB is missing data
-        if (valid.length < 2) {
+        // Pad to exactly 2 items using REAL database items from anywhere if this destination is missing data
+        if (valid.length < 2 && items.length > 0) {
             const needed = 2 - valid.length;
-            const genericTitles: Record<string, string[]> = {
-                "Hotels": ["Premium Resort", "City Center Hotel"],
-                "Museums": ["National Museum", "Heritage Center"],
-                "Restaurants": ["Authentic Cuisine", "Seafood & Grill"],
-                "Safari": ["Desert Adventure", "Oasis Exploration"],
-                "Bazaars": ["Traditional Souk", "Local Market"],
-                "Events": ["Cultural Festival", "Live Performance"]
-            };
+            const fallbackItems = items.filter((i: any) => !valid.find(v => v.id === i.id)).slice(0, needed);
             
-            for (let i = 0; i < needed; i++) {
-                const titleSuffix = genericTitles[categoryName] ? genericTitles[categoryName][i] : "Experience";
-                const synthId = 9000 + i + (valid.length * 10);
-                valid.push({
-                    id: synthId,
-                    title: `${isEgypt ? 'Egypt' : destinationName} ${titleSuffix}`,
-                    image: getCitySpecificImage(destinationName, categoryName, synthId),
-                    location: isEgypt ? "Egypt" : destinationName,
-                    category: categoryName,
-                    rating: 4.6 + (i * 0.2),
-                    reviews_count: 150 + (i * 50),
-                    [priceKey]: 250 + (i * 150)
-                });
-            }
+            fallbackItems.forEach((item: any) => {
+                valid.push(item); // Keep the real original item exactly as it is (real title, image, and location)
+            });
+        }
+        
+        // Extreme fallback if there's literally only 1 item in the entire database for this category
+        if (valid.length === 1) {
+            valid.push({
+                ...valid[0],
+                id: valid[0].id + 1000,
+                [priceKey]: Number(valid[0][priceKey] || valid[0].ticket_price || 0) + 150
+            });
         }
 
         // Ensure the two items have DIFFERENT prices
