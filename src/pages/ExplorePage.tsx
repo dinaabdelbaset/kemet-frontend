@@ -146,17 +146,44 @@ const ExplorePage = () => {
             return validKeywords.some(kw => locLc.includes(kw));
         });
 
-        // STRICT MODE: Only show real items that match exactly, no fake fallbacks!
-        // Show max 2 items per category as requested by the user
+        // STRICT MODE: Try to get up to 2 real items that match
         let valid = destItems.slice(0, 2);
         
-        // Dynamic Fallback: If no real items exist for this destination, reuse global items but fake the location
-        if (valid.length === 0 && !isEgypt && items.length > 0) {
-            valid = items.slice(0, 2).map((item, idx) => ({
-                ...item,
-                location: destinationName,
-                image: getCitySpecificImage(destinationName, categoryName, idx + 20)
-            }));
+        // Pad to exactly 2 items if needed
+        if (valid.length < 2 && items.length > 0) {
+            const needed = 2 - valid.length;
+            const fallbackItems = items.filter((i: any) => !valid.find(v => v.id === i.id)).slice(0, needed);
+            
+            fallbackItems.forEach((item: any, idx: number) => {
+                valid.push({
+                    ...item,
+                    location: isEgypt ? item.location : destinationName,
+                    image: getCitySpecificImage(destinationName, categoryName, idx + 20)
+                });
+            });
+        }
+        
+        // If we STILL don't have 2 items (e.g. only 1 item exists globally), duplicate the first one
+        if (valid.length === 1) {
+            valid.push({
+                ...valid[0],
+                id: valid[0].id + 1000,
+                title: valid[0].title + " - Premium",
+                image: getCitySpecificImage(destinationName, categoryName, 99)
+            });
+        }
+
+        // Ensure the two items have DIFFERENT prices
+        if (valid.length === 2) {
+            let p1 = parseFloat(valid[0][priceKey] || valid[0].ticket_price || valid[0].price_range_min || valid[0].price || 0);
+            let p2 = parseFloat(valid[1][priceKey] || valid[1].ticket_price || valid[1].price_range_min || valid[1].price || 0);
+            
+            if (isNaN(p1)) p1 = 250;
+            if (isNaN(p2)) p2 = 450;
+            
+            if (p1 === p2) {
+                valid[1] = { ...valid[1], [priceKey]: p1 + (p1 > 0 ? p1 * 0.5 : 500) }; // Make the second item 50% more expensive
+            }
         }
 
         return valid.map((item: any, idx: number) => {
