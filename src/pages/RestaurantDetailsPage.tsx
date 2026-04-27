@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import { FaStar, FaMapMarkerAlt, FaClock, FaMoneyBillWave } from "react-icons/fa";
 import { getRestaurants } from "@/api/restaurantService";
@@ -10,12 +10,14 @@ const RestaurantDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+  const location = useLocation();
+
   const handleTableBooking = () => {
     navigate('/checkout', {
       state: {
         id: restaurant?.id || Math.floor(Math.random() * 1000),
         type: 'food_cart',
-        title: `حجز طاولة - ${restaurant?.name || 'المطعم'}`,
+        title: `حجز طاولة - ${restaurant?.name || restaurant?.title || 'المطعم'}`,
         image: restaurant?.image || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
         price: 0, // Table reservation is usually free to book
       }
@@ -23,6 +25,18 @@ const RestaurantDetailsPage = () => {
   };
 
   useEffect(() => {
+    const syntheticData = location.state?.syntheticData;
+    if (syntheticData && Number(id) >= 9000) {
+        setRestaurant({
+            ...syntheticData,
+            name: syntheticData.title,
+            price_range_min: syntheticData.rawPrice,
+            description: syntheticData.description || "Enjoy delicious cuisine at our exclusive restaurant."
+        });
+        setIsLoading(false);
+        return;
+    }
+
     // Ideally we fetch a single restaurant, but we'll fetch all and find it
     getRestaurants().then((res) => {
       const restaurantsArray = Array.isArray(res) ? res : (res?.data || []);

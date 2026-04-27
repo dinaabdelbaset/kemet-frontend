@@ -1,6 +1,6 @@
 import PriceDisplay from "../components/common/PriceDisplay";
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
 import { FaCheckCircle, FaStar, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import InteractiveMap from "@/components/common/InteractiveMap";
@@ -13,11 +13,26 @@ import { getSafariById } from "../api/safariService";
 const SafariDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [safari, setSafari] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSafari = async () => {
+      const syntheticData = location.state?.syntheticData;
+      if (syntheticData && Number(id) >= 9000) {
+          setSafari({
+              ...syntheticData,
+              price: syntheticData.rawPrice || syntheticData.price,
+              description: syntheticData.description || "Enjoy an incredible adventure across the magnificent landscapes of Egypt.",
+              duration: "2-3 hours",
+              rating: syntheticData.rating || 4.8,
+              reviews_count: syntheticData.reviews || 320
+          });
+          setLoading(false);
+          return;
+      }
+
       try {
         const data = await getSafariById(id!);
         setSafari(data);
@@ -28,7 +43,7 @@ const SafariDetailsPage = () => {
       }
     };
     fetchSafari();
-  }, [id]);
+  }, [id, location.state]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center p-20 text-xl font-bold">Loading Safari Details...</div>;

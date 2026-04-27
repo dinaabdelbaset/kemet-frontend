@@ -1,7 +1,7 @@
 import PriceDisplay from "../components/common/PriceDisplay";
 import { useState, useEffect } from "react";
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt } from "react-icons/fa";
 import InteractiveMap from "@/components/common/InteractiveMap";
 import SocialShare from "@/components/common/SocialShare";
@@ -10,12 +10,25 @@ import { getEventById } from "../api/eventService";
 const EventDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEvent = async () => {
+      const syntheticData = location.state?.syntheticData;
+      if (syntheticData && Number(id) >= 9000) {
+        setEvent({
+            ...syntheticData,
+            name: syntheticData.title,
+            price: syntheticData.rawPrice || syntheticData.price,
+            description: syntheticData.description || "Join us for this exciting event.",
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
         const data = await getEventById(id!);
         setEvent(data?.data || data);

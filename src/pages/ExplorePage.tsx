@@ -297,7 +297,7 @@ const ExplorePage = () => {
     const localMuseums = filterAndMap(apiMuseums, isEgypt, "History", "Museums", "ticket_price");
 
     const GenericCard = ({ item, linkTo }: { item: any; linkTo: string }) => (
-        <Link to={linkTo} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_12px_30px_rgba(212,175,55,0.25)] transition-all duration-500 group flex flex-col border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-2 block">
+        <Link to={linkTo} state={{ syntheticData: item }} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_12px_30px_rgba(212,175,55,0.25)] transition-all duration-500 group flex flex-col border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-2 block">
             <div className="relative h-56 overflow-hidden bg-gray-100">
                 <img src={item.image} alt={item.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 <div className="absolute top-4 right-4 bg-white/90 px-2 py-1 rounded-lg text-sm font-bold shadow-sm text-[#05073C]">

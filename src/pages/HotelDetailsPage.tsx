@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getHotelById } from "../api/hotelService";
 import { FaCheck, FaMapMarkerAlt, FaStar } from "react-icons/fa";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import ActivityCard from "../components/card/ActivityCard";
 import HotelGallerySlider from "../components/hotel/HotelGallerySlider";
 import RoomCard from "../components/hotel/RoomCard";
@@ -52,6 +52,7 @@ const getHotelGallery = (hotel: any) => {
 const HotelDetailsPage = () => {
     const { hotelId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { addRecentlyViewed } = useApp();
 
     const [hotel, setHotel] = useState<any>(null);
@@ -62,6 +63,21 @@ const HotelDetailsPage = () => {
 
     useEffect(() => {
         const fetchHotel = async () => {
+            const syntheticData = location.state?.syntheticData;
+            if (syntheticData && Number(hotelId) >= 9000) {
+                setHotel({
+                    ...syntheticData,
+                    id: Number(hotelId),
+                    price_starts_from: syntheticData.rawPrice || syntheticData.price,
+                    description: syntheticData.description || "Enjoy a luxurious stay at our premium hotel.",
+                    rating: syntheticData.rating || 4.8,
+                    reviews_count: syntheticData.reviews || 320,
+                    gallery: [syntheticData.image]
+                });
+                setIsLoading(false);
+                return;
+            }
+
             try {
                 setIsLoading(true);
                 const data = await getHotelById(hotelId!);

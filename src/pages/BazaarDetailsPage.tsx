@@ -1,6 +1,6 @@
 import PriceDisplay from "../components/common/PriceDisplay";
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
 import { FaMapMarkerAlt, FaShoppingBag, FaCamera, FaCoffee } from "react-icons/fa";
@@ -11,6 +11,7 @@ import { getBazaarById } from "../api/bazaarService";
 const BazaarDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [bazaar, setBazaar] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -21,6 +22,18 @@ const BazaarDetailsPage = () => {
 
   useEffect(() => {
     const fetchBazaar = async () => {
+      const syntheticData = location.state?.syntheticData;
+      if (syntheticData && Number(id) >= 9000) {
+        setBazaar({
+            ...syntheticData,
+            name: syntheticData.title,
+            price: syntheticData.rawPrice || syntheticData.price,
+            description: syntheticData.description || "A wonderful traditional market with history and rich culture.",
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
         const data = await getBazaarById(id!);
         setBazaar(data?.data || data);

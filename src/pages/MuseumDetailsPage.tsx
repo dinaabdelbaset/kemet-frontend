@@ -1,5 +1,5 @@
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { FaClock, FaTicketAlt, FaInfoCircle, FaMinus, FaPlus } from "react-icons/fa";
 import InteractiveMap from "@/components/common/InteractiveMap";
 import SocialShare from "@/components/common/SocialShare";
@@ -12,6 +12,7 @@ import PriceDisplay from "@/components/common/PriceDisplay";
 const MuseumDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [museum, setMuseum] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,18 @@ const MuseumDetailsPage = () => {
 
   useEffect(() => {
     const fetchMuseum = async () => {
+      const syntheticData = location.state?.syntheticData;
+      if (syntheticData && Number(id) >= 9000) {
+        setMuseum({
+            ...syntheticData,
+            name: syntheticData.title,
+            ticket_price: syntheticData.rawPrice || syntheticData.price,
+            description: syntheticData.description || "A wonderful museum to explore the rich history of Egypt.",
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
         const data = await getMuseumById(id!);
         setMuseum(data);
