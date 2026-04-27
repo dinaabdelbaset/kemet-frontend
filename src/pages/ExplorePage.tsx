@@ -151,7 +151,7 @@ const ExplorePage = () => {
         let valid = destItems.slice(0, 2);
 
         // Special rule requested by user: For Cairo Safaris, exclusively display Pyramids Buggy and Bicycle tours
-        if (categoryName === "Safari" && (destinationName.toLowerCase() === "cairo" || destinationName === "القاهرة")) {
+        if (fallbackKey === "Safari" && (destinationName.toLowerCase() === "cairo" || destinationName === "القاهرة")) {
             valid = [];
         }
 
@@ -173,12 +173,14 @@ const ExplorePage = () => {
             for (let i = 0; i < needed; i++) {
                 // If we already have 1 item, pick the second generic title to contrast with it
                 const titleIndex = valid.length === 1 ? 1 : i;
-                const titleSuffix = genericTitles[categoryName] ? genericTitles[categoryName][titleIndex] : (titleIndex === 0 ? "Premium Experience" : "Standard Tour");
+                const titleSuffix = genericTitles[fallbackKey] ? genericTitles[fallbackKey][titleIndex] : (titleIndex === 0 ? "Premium Experience" : "Standard Tour");
                 const synthId = 9000 + i + (valid.length * 10);
                 
                 // Ensure the price strongly contrasts with the existing item if there is one
                 let synthPrice = 0;
-                if (valid.length === 1) {
+                if (fallbackKey === "Safari" && (destinationName.toLowerCase() === "cairo" || destinationName === "القاهرة")) {
+                    synthPrice = titleIndex === 0 ? 1500 : 600; // Beach Buggy = 1500, Bicycle = 600
+                } else if (valid.length === 1) {
                     const existingPrice = parseFloat(String(valid[0][priceKey] || valid[0].ticket_price || valid[0].price_range_min || valid[0].price || 0).replace(/[^\d.]/g, '')) || 500;
                     synthPrice = existingPrice > 1000 ? Math.floor(existingPrice * 0.4) : Math.floor(existingPrice * 2.5); // Make it opposite (cheap if expensive, expensive if cheap)
                 } else {
@@ -236,6 +238,7 @@ const ExplorePage = () => {
                 else if (t.includes("siwa") || t.includes("سيوة")) rawImage = "/images/safaris2/siwa_oasis.png";
                 else if (t.includes("rayan") || t.includes("degla") || t.includes("دجلة")) rawImage = "/images/safaris2/wadi_rayan.png";
                 else if (t.includes("atv") || t.includes("quad") || t.includes("buggy") || t.includes("hurghada") || t.includes("غردقة") || t.includes("باجي")) rawImage = "/images/safaris2/hurghada_atv.png";
+                else if (t.includes("bicycle") || t.includes("bike") || t.includes("عجل")) rawImage = "/images/safaris2/hurghada_atv.png"; // Fallback bicycle to ATV image if we don't have a specific bike one
                 
                 // Bazaars
                 else if (t.includes("khalili") || (t.includes("cairo") && cn.includes("bazaar"))) rawImage = "/images/bazaars2/khan_khalili.png";
