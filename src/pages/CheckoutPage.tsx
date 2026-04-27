@@ -168,7 +168,8 @@ const CheckoutPage = () => {
           if (!checkoutData.booking.guests || checkoutData.booking.guests < 1) newErrors.push("Please select the number of guests.");
         }
       } else {
-        if (checkoutData.item.type !== 'flight' && !checkoutData.booking.date) {
+        const needsDate = !['flight', 'hotel', 'ai_trip', 'event', 'car', 'museum', 'bazaar'].includes(checkoutData.item.type);
+        if (needsDate && !checkoutData.booking.date) {
           newErrors.push("Please select a date for your booking.");
         }
         if (checkoutData.booking.tickets.adult === 0 && checkoutData.booking.tickets.child === 0) {
@@ -375,6 +376,7 @@ const CheckoutPage = () => {
           {currentStep === 3 && (
             <PaymentStep 
                data={checkoutData.payment}
+               itemType={checkoutData.item.type}
                onChange={(payment: any) => setCheckoutData(prev => ({ ...prev, payment }))}
             />
           )}
@@ -497,12 +499,12 @@ const CheckoutPage = () => {
                         <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">
                           {checkoutData.booking.tickets.adult}
                         </span>
-                        <span className="text-gray-600">{checkoutData.item.type === 'hotel' ? 'Nights' : 'Adult (18+)'} (<PriceDisplay price={checkoutData.item.price} />)</span>
+                        <span className="text-gray-600">{checkoutData.item.type === 'hotel' ? 'Nights' : checkoutData.item.type === 'bus' ? 'Seats' : checkoutData.item.type === 'event' ? 'Tickets' : 'Adult (18+)'} (<PriceDisplay price={checkoutData.item.price} />)</span>
                       </div>
                       <span className="font-semibold"><PriceDisplay price={checkoutData.booking.tickets.adult * checkoutData.item.price} /></span>
                     </div>
                   )}
-                  {checkoutData.item.type !== 'hotel' && checkoutData.booking.tickets.child > 0 && (
+                  {checkoutData.item.type !== 'hotel' && checkoutData.item.type !== 'bus' && checkoutData.item.type !== 'event' && checkoutData.booking.tickets.child > 0 && (
                     <div className="flex justify-between items-center text-sm">
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">
@@ -513,7 +515,7 @@ const CheckoutPage = () => {
                       <span className="font-semibold"><PriceDisplay price={checkoutData.booking.tickets.child * (checkoutData.item.type === 'flight' ? Math.round(checkoutData.item.price * 0.75) : 22)} /></span>
                     </div>
                   )}
-                  {checkoutData.item.type !== 'hotel' && checkoutData.booking.tickets.infant > 0 && (
+                  {checkoutData.item.type !== 'hotel' && checkoutData.item.type !== 'bus' && checkoutData.item.type !== 'event' && checkoutData.booking.tickets.infant > 0 && (
                     <div className="flex justify-between items-center text-sm">
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">

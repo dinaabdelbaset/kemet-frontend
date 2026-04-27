@@ -38,7 +38,7 @@ const BookingDetailsStep = ({ data, itemPrice, itemType, onChange }: Props) => {
   return (
     <div className="space-y-8 animate-in fade-in zoom-in-95 duration-300">
       {/* Date and Time Selection for Standard Bookings */}
-      {itemType !== "flight" && itemType !== 'food_cart' && (
+      {itemType !== "flight" && itemType !== 'food_cart' && itemType !== 'hotel' && itemType !== 'ai_trip' && itemType !== 'event' && (
         <div className="space-y-3 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
           <h3 className="text-xl font-bold text-[#05073C]">When will you visit?</h3>
           <DateTimePicker 
@@ -174,6 +174,32 @@ const BookingDetailsStep = ({ data, itemPrice, itemType, onChange }: Props) => {
             <div className="bg-[#14213d] text-white rounded-2xl p-6 text-center shadow-lg">
                <p className="text-gray-300 font-medium mb-2">Tickets and quantities are finalized.</p>
                <p className="text-sm text-gray-400">Please proceed to Step 2 to enter your details.</p>
+            </div>
+          </div>
+        ) : (itemType === 'bus' || itemType === 'event') ? (
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-[#05073C]">{itemType === 'bus' ? 'Select Number of Seats' : 'Select Number of Tickets'}</h3>
+            <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-600 space-y-2">
+              <p className="flex items-start gap-2 before:content-['•'] before:text-gray-400">
+                {itemType === 'bus' ? 'You are reserving a seat on the bus. Price is per seat.' : 'Unified ticket price for all attendees.'}
+              </p>
+            </div>
+            <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
+              <div>
+                <h4 className="font-bold text-gray-900">{itemType === 'bus' ? 'Number of Seats' : 'Number of Tickets'}</h4>
+                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay price={itemPrice} /> / {itemType === 'bus' ? 'seat' : 'ticket'}</div>
+              </div>
+              <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden h-10">
+                <button 
+                  className="px-3 hover:bg-gray-50 h-full text-gray-500 font-medium"
+                  onClick={() => handleTicketChange("adult", -1)}
+                >-</button>
+                <div className="w-10 text-center font-semibold text-gray-900 h-full flex items-center justify-center bg-gray-50">{data.tickets.adult}</div>
+                <button 
+                  className="px-3 hover:bg-gray-50 h-full text-gray-600 font-medium"
+                  onClick={() => handleTicketChange("adult", 1)}
+                >+</button>
+              </div>
             </div>
           </div>
         ) : (

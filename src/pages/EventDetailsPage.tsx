@@ -66,10 +66,10 @@ const EventDetailsPage = () => {
   const isFilm = eventTitle.includes("السينمائي") || eventTitle.includes("فيلم");
 
   let galleryImages = [
-    "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
-    "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&q=80",
-    "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80",
-    "https://images.unsplash.com/photo-1533174000273-df0aca0d65b1?w=800&q=80"
+    "/events/real_cairo_opera_aida.jpg",
+    "/events/real_giza_sound_light.jpg",
+    "/events/real_sharm_edm.jpg",
+    "/events/real_luxor_opet.jpg"
   ];
 
   if (isLuxorFilm) {

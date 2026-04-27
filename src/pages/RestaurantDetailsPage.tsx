@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import SectionWrapper from "@/components/sections/SectionWrapper";
 import { FaStar, FaMapMarkerAlt, FaClock, FaMoneyBillWave } from "react-icons/fa";
 import { getRestaurants } from "@/api/restaurantService";
@@ -8,6 +8,19 @@ const RestaurantDetailsPage = () => {
   const { id } = useParams();
   const [restaurant, setRestaurant] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const handleTableBooking = () => {
+    navigate('/checkout', {
+      state: {
+        id: restaurant?.id || Math.floor(Math.random() * 1000),
+        type: 'food_cart',
+        title: `حجز طاولة - ${restaurant?.name || 'المطعم'}`,
+        image: restaurant?.image || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
+        price: 0, // Table reservation is usually free to book
+      }
+    });
+  };
 
   useEffect(() => {
     // Ideally we fetch a single restaurant, but we'll fetch all and find it
@@ -183,7 +196,7 @@ const RestaurantDetailsPage = () => {
                 </div>
               </li>
             </ul>
-            <button className="w-full bg-[#14213d] hover:bg-[#D4AF37] text-white py-3.5 rounded-xl font-bold transition-colors shadow-md">
+            <button onClick={handleTableBooking} className="w-full bg-[#14213d] hover:bg-[#D4AF37] text-white py-3.5 rounded-xl font-bold transition-colors shadow-md">
               احجز طاولة الآن
             </button>
             <div className="mt-4 pt-4 border-t border-gray-100 text-center">

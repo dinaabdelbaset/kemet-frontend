@@ -94,7 +94,7 @@ const SearchPage = () => {
         }
         if (data.museums && Array.isArray(data.museums)) {
           data.museums.forEach((m: any) => results.push({
-            id: `museum-${m.id}`, title: m.title, image: m.image,
+            id: `museum-${m.id}`, title: m.title || m.name, image: m.image,
             category: "Museum", categoryAr: "متحف", rating: m.rating || 4.8, reviews: 0,
             location: m.location, price: m.ticket_price ? <PriceDisplay price={m.ticket_price} baseCurrency="EGP" /> : "Free", linkTo: `/museums/${m.id}`
           }));

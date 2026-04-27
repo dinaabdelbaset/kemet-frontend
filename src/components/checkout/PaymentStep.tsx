@@ -9,10 +9,11 @@ interface PaymentData {
 
 interface Props {
   data: PaymentData;
+  itemType?: string;
   onChange: (data: PaymentData) => void;
 }
 
-const PaymentStep = ({ data, onChange }: Props) => {
+const PaymentStep = ({ data, itemType, onChange }: Props) => {
   const handleCardNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
     if (value.length > 16) value = value.substring(0, 16);
@@ -39,27 +40,33 @@ const PaymentStep = ({ data, onChange }: Props) => {
     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
       <h3 className="text-xl font-bold text-[#05073C]">Select a payment method</h3>
 
-      {/* Cash Option */}
-      <div 
-        className={`border rounded-2xl p-4 cursor-pointer transition-colors ${
-          data.method === "cash" ? "border-[#EB662B] bg-orange-50/30" : "border-gray-200 hover:border-gray-300"
-        }`}
-        onClick={() => onChange({ ...data, method: "cash" })}
-      >
-        <div className="flex items-center gap-4">
-          <div className="text-[#EB662B] text-xl">
-            {data.method === "cash" ? <FaCheckCircle /> : <FaRegCircle className="text-gray-300" />}
+      {/* Cash / Pay at Hotel Option */}
+      {(itemType === 'food_cart' || itemType === 'hotel' || itemType === 'car') && (
+        <div 
+          className={`border rounded-2xl p-4 cursor-pointer transition-colors ${
+            data.method === "cash" ? "border-[#EB662B] bg-orange-50/30" : "border-gray-200 hover:border-gray-300"
+          }`}
+          onClick={() => onChange({ ...data, method: "cash" })}
+        >
+          <div className="flex items-center gap-4">
+            <div className="text-[#EB662B] text-xl">
+              {data.method === "cash" ? <FaCheckCircle /> : <FaRegCircle className="text-gray-300" />}
+            </div>
+            <span className="font-bold flex-1 text-gray-800">
+              {itemType === 'hotel' ? 'Pay at Hotel 🏨' : 'Cash on Delivery / Arrival 💵'}
+            </span>
+            <FaMoneyBillWave className="text-green-600 text-2xl" />
           </div>
-          <span className="font-bold flex-1 text-gray-800">Cash on Delivery / Arrival 💵</span>
-          <FaMoneyBillWave className="text-green-600 text-2xl" />
+          
+          {data.method === "cash" && (
+            <div className="ml-9 mt-2 text-sm text-gray-500">
+              {itemType === 'hotel' 
+                ? 'You will pay at the hotel reception upon arrival.' 
+                : 'You will pay in cash to the delivery agent or at the location when you arrive.'}
+            </div>
+          )}
         </div>
-        
-        {data.method === "cash" && (
-          <div className="ml-9 mt-2 text-sm text-gray-500">
-            You will pay in cash to the delivery agent or at the restaurant when you arrive.
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Apple Pay Option */}
       <div 
