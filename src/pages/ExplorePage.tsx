@@ -150,6 +150,11 @@ const ExplorePage = () => {
         // STRICT MODE: First try to get items that actually belong to this specific destination
         let valid = destItems.slice(0, 2);
 
+        // Special rule requested by user: For Cairo Safaris, exclusively display Pyramids Buggy and Bicycle tours
+        if (categoryName === "Safari" && (destinationName.toLowerCase() === "cairo" || destinationName === "القاهرة")) {
+            valid = [];
+        }
+
         // User explicitly requested EXACTLY 2 items in every list, and they MUST NOT be duplicates of each other.
         // They must have different prices, names, and images.
         if (valid.length < 2) {
@@ -158,7 +163,9 @@ const ExplorePage = () => {
                 "Hotels": ["Luxury Resort & Spa", "City Center Budget Hotel"],
                 "Museums": ["National Heritage Museum", "Modern Arts Center"],
                 "Restaurants": ["Premium Seafood & Grill", "Traditional Local Cuisine"],
-                "Safari": ["Exclusive Desert Safari", "Standard Oasis Camp"],
+                "Safari": (destinationName.toLowerCase() === "cairo" || destinationName === "القاهرة") 
+                          ? ["Pyramids Beach Buggy Tour", "Pyramids Bicycle Tour"] 
+                          : ["Exclusive Desert Safari", "Standard Oasis Camp"],
                 "Bazaars": ["Grand Historic Souk", "Local Artisan Market"],
                 "Events": ["VIP Cultural Festival", "Public Live Performance"]
             };
@@ -228,7 +235,7 @@ const ExplorePage = () => {
                 else if (t.includes("white") || t.includes("بيضاء")) rawImage = "/images/safaris2/white_desert.png";
                 else if (t.includes("siwa") || t.includes("سيوة")) rawImage = "/images/safaris2/siwa_oasis.png";
                 else if (t.includes("rayan") || t.includes("degla") || t.includes("دجلة")) rawImage = "/images/safaris2/wadi_rayan.png";
-                else if (t.includes("atv") || t.includes("quad") || t.includes("hurghada") || t.includes("غردقة")) rawImage = "/images/safaris2/hurghada_atv.png";
+                else if (t.includes("atv") || t.includes("quad") || t.includes("buggy") || t.includes("hurghada") || t.includes("غردقة") || t.includes("باجي")) rawImage = "/images/safaris2/hurghada_atv.png";
                 
                 // Bazaars
                 else if (t.includes("khalili") || (t.includes("cairo") && cn.includes("bazaar"))) rawImage = "/images/bazaars2/khan_khalili.png";
