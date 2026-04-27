@@ -120,10 +120,44 @@ const ExplorePage = () => {
     const filterAndMap = (items: any[], isEgypt: boolean, categoryName: string, fallbackKey: string, priceKey: string = "price") => {
         if (!items || items.length === 0) return [];
         const normalizedDest = destination.toLowerCase() === "sharm el.s" ? "sharm" : destination.toLowerCase();
-        const destItems = items.filter(h => isEgypt || (h.location && h.location.toLowerCase().includes(normalizedDest)));
+        
+        const locationMap: Record<string, string[]> = {
+            "cairo": ["cairo", "القاهرة"],
+            "giza": ["giza", "الجيزة"],
+            "luxor": ["luxor", "الأقصر"],
+            "aswan": ["aswan", "أسوان"],
+            "alexandria": ["alexandria", "الإسكندرية", "alex"],
+            "sharm": ["sharm", "شرم الشيخ", "شرم"],
+            "hurghada": ["hurghada", "الغردقة"],
+            "fayoum": ["fayoum", "الفيوم"],
+            "marsa alam": ["marsa", "مرسى"],
+            "siwa": ["siwa", "سيوة"],
+            "dahab": ["dahab", "دهب"],
+            "matrouh": ["matrouh", "مطروح"]
+        };
+        
+        const validKeywords = locationMap[normalizedDest] || [normalizedDest];
+
+        const destItems = items.filter(h => {
+            if (isEgypt) return true;
+            const locStr = h.location || h.city || "";
+            if (!locStr) return false;
+            const locLc = locStr.toLowerCase();
+            return validKeywords.some(kw => locLc.includes(kw));
+        });
+
         // STRICT MODE: Only show real items that match exactly, no fake fallbacks!
         // Show max 2 items per category as requested by the user
-        const valid = destItems.slice(0, 2);
+        let valid = destItems.slice(0, 2);
+        
+        // Dynamic Fallback: If no real items exist for this destination, reuse global items but fake the location
+        if (valid.length === 0 && !isEgypt && items.length > 0) {
+            valid = items.slice(0, 2).map((item, idx) => ({
+                ...item,
+                location: destinationName,
+                image: getCitySpecificImage(destinationName, categoryName, idx + 20)
+            }));
+        }
 
         return valid.map((item: any, idx: number) => {
             const rawImage = item.image || item.image_url || '/placeholder.png';
