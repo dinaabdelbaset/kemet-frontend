@@ -258,7 +258,7 @@ const ExplorePage = () => {
                     <div className="lg:w-3/4 flex-grow space-y-12">
                         
                         {/* 1. Hotels */}
-                        {(category === "all" || category === "hotels") && (localHotels.length > 0 || category === "hotels") && (
+                        {(category === "all" || category === "hotels") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Hotels (فنادق)</h2>
@@ -276,7 +276,7 @@ const ExplorePage = () => {
                         )}
 
                         {/* 2. Museums */}
-                        {(category === "all" || category === "museums") && (localMuseums.length > 0 || category === "museums") && (
+                        {(category === "all" || category === "museums") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Museums (متاحف)</h2>
@@ -294,7 +294,7 @@ const ExplorePage = () => {
                         )}
 
                         {/* 3. Restaurants */}
-                        {(category === "all" || category === "restaurants") && (localRestaurants.length > 0 || category === "restaurants") && (
+                        {(category === "all" || category === "restaurants") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Restaurants (مطاعم)</h2>
@@ -312,7 +312,7 @@ const ExplorePage = () => {
                         )}
 
                         {/* 4. Safari */}
-                        {(category === "all" || category === "safari") && (localSafari.length > 0 || category === "safari") && (
+                        {(category === "all" || category === "safari") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Safari (سفاري)</h2>
@@ -330,7 +330,7 @@ const ExplorePage = () => {
                         )}
 
                         {/* 5. Bazaars */}
-                        {(category === "all" || category === "bazaars") && (localBazaars.length > 0 || category === "bazaars") && (
+                        {(category === "all" || category === "bazaars") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Bazaars (بازارات)</h2>
@@ -348,7 +348,7 @@ const ExplorePage = () => {
                         )}
 
                         {/* 6. Events */}
-                        {(category === "all" || category === "events") && (localEvents.length > 0 || category === "events") && (
+                        {(category === "all" || category === "events") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
                                     <h2 className="text-2xl font-bold text-[#05073C]">Events (فعاليات)</h2>
