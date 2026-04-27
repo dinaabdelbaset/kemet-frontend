@@ -250,17 +250,29 @@ const ExplorePage = () => {
 
             const finalImage = rawImage;
             
-            return {
-                id: item.id,
-                title: item.title || item.name || 'Egypt Destination',
-                image: finalImage,
-                category: item.category || categoryName,
-                rating: item.rating || 4.5,
-                reviews: item.reviews_count || item.reviews || 120,
-                location: item.location || destinationName,
-                description: item.description,
-                rawPrice: parseFloat(String(item[priceKey] || item.ticket_price || item.price_range_min || item.price || 0).replace(/[^\d.]/g, '')) || 1500
-            };
+                const priceString = String(item[priceKey] || item.ticket_price || item.price_range_min || item.price || "0");
+                const parsedNum = parseFloat(priceString.replace(/[^\d.]/g, ''));
+                const rawPrice = isNaN(parsedNum) ? 0 : parsedNum;
+                
+                let baseCurrency = "EGP";
+                if (priceString.includes("دولار") || priceString.toUpperCase().includes("USD") || priceString.includes("$")) {
+                    baseCurrency = "USD";
+                } else if (priceString.includes("يورو") || priceString.toUpperCase().includes("EUR") || priceString.includes("€")) {
+                    baseCurrency = "EUR";
+                }
+
+                return {
+                    id: item.id,
+                    title: item.title || item.name || 'Egypt Destination',
+                    image: finalImage,
+                    category: item.category || categoryName,
+                    rating: item.rating || 4.5,
+                    reviews: item.reviews_count || item.reviews || 120,
+                    location: item.location || destinationName,
+                    description: item.description,
+                    rawPrice: rawPrice,
+                    baseCurrency: baseCurrency
+                };
         });
     };
 
@@ -289,7 +301,13 @@ const ExplorePage = () => {
                 </h3>
                 <div className="text-sm text-gray-500 mb-4">{item.location}</div>
                 <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
-                    <span className="text-lg font-bold text-[#05073C]"><PriceDisplay price={item.rawPrice} baseCurrency="EGP" /> <span className="text-sm font-normal text-gray-500">avg</span></span>
+                    <span className="text-lg font-bold text-[#05073C]">
+                        {item.rawPrice > 0 ? (
+                            <><PriceDisplay price={item.rawPrice} baseCurrency={item.baseCurrency || "EGP"} /> <span className="text-sm font-normal text-gray-500">avg</span></>
+                        ) : (
+                            <span className="text-[#22c55e]">Free (مجاناً)</span>
+                        )}
+                    </span>
                     <span className="text-sm bg-[#EB662B] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#d55822] transition pointer-events-none">
                         Select
                     </span>
