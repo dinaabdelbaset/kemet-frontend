@@ -146,10 +146,32 @@ const ExplorePage = () => {
             return validKeywords.some(kw => locLc.includes(kw));
         });
 
-        // STRICT MODE: Only use items that actually belong to this specific destination
+        // STRICT MODE: First try to get up to 2 items that actually belong to this specific destination
         let valid = destItems.slice(0, 2);
 
-
+        // FALLBACK: User explicitly requested EXACTLY 2 items in every list. 
+        // If this destination lacks data, pull REAL items from the global database to fill the gap.
+        if (valid.length < 2 && items && items.length > 0) {
+            const needed = 2 - valid.length;
+            // Get items that match the category but are not already in `valid`
+            const globalCategoryItems = items.filter(i => {
+                const iCat = (i.category || "").toLowerCase();
+                const cName = (categoryName || "").toLowerCase();
+                const fKey = (fallbackKey || "").toLowerCase();
+                return (iCat.includes(cName) || iCat.includes(fKey) || cName.includes(iCat));
+            });
+            
+            // If we found matching category items globally, use them
+            if (globalCategoryItems.length > 0) {
+                const fallbackItems = globalCategoryItems.filter(i => !valid.find(v => v.id === i.id)).slice(0, needed);
+                fallbackItems.forEach(item => valid.push(item));
+            } else {
+                // Extreme fallback if there are NO items for this category in the entire DB
+                // Just use any random items from the global list to ensure exactly 2 items
+                const extremeFallbacks = items.filter(i => !valid.find(v => v.id === i.id)).slice(0, needed);
+                extremeFallbacks.forEach(item => valid.push(item));
+            }
+        }
 
         // Ensure the two items have DIFFERENT prices if there are exactly 2
         if (valid.length === 2) {
