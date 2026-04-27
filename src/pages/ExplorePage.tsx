@@ -149,33 +149,7 @@ const ExplorePage = () => {
         // STRICT MODE: Only use items that actually belong to this specific destination
         let valid = destItems.slice(0, 2);
 
-        // FALLBACK: If the destination has less than 2 items in this category, generate authentic-looking synthetic items
-        if (valid.length < 2) {
-            const needed = 2 - valid.length;
-            const genericTitles: Record<string, string[]> = {
-                "Hotels": ["Premium Resort", "City Center Hotel"],
-                "Museums": ["National Museum", "Heritage Center"],
-                "Restaurants": ["Authentic Cuisine", "Seafood & Grill"],
-                "Safari": ["Desert Adventure", "Oasis Exploration"],
-                "Bazaars": ["Traditional Souk", "Local Market"],
-                "Events": ["Cultural Festival", "Live Performance"]
-            };
-            
-            for (let i = 0; i < needed; i++) {
-                const titleSuffix = genericTitles[categoryName] ? genericTitles[categoryName][i] : "Experience";
-                const synthId = 9000 + i + (valid.length * 10);
-                valid.push({
-                    id: synthId,
-                    title: `${isEgypt ? 'Egypt' : destinationName} ${titleSuffix}`,
-                    image: getCitySpecificImage(destinationName, categoryName, synthId),
-                    location: isEgypt ? "Egypt" : destinationName,
-                    category: categoryName,
-                    rating: 4.6 + (i * 0.2),
-                    reviews_count: 150 + (i * 50),
-                    [priceKey]: 250 + (i * 150)
-                });
-            }
-        }
+
 
         // Ensure the two items have DIFFERENT prices if there are exactly 2
         if (valid.length === 2) {
@@ -191,15 +165,48 @@ const ExplorePage = () => {
         }
 
         return valid.map((item: any, idx: number) => {
-            const rawImage = item.image || item.image_url || '/placeholder.png';
+            let rawImage = item.image || item.image_url;
             
-            // Extreme safety net: Check if image is obviously broken or missing
-            const isInvalidImg = !rawImage 
-                || rawImage.includes('unsplash.com') 
-                || rawImage.includes('hotel_fallback')
-                || (!rawImage.startsWith('/') && !rawImage.startsWith('http'));
+            // Map real DB titles to their exact correct uploaded images!
+            if (!rawImage || rawImage === "hotel_fallback" || rawImage.includes("unsplash") || rawImage.includes("placeholder") || (!rawImage.startsWith('/') && !rawImage.startsWith('http'))) {
+                const t = (item.title || item.name || "").toLowerCase();
+                const cn = categoryName.toLowerCase();
+                
+                // Museums
+                if (t.includes("karnak")) rawImage = "/images/museums2/karnak_temple.png";
+                else if (t.includes("gem") || t.includes("grand egyptian")) rawImage = "/images/museums2/gem_giza.png";
+                else if (t.includes("islamic")) rawImage = "/images/museums2/islamic_art.png";
+                else if (t.includes("montaza") || t.includes("alexandria")) rawImage = "/images/museums2/montaza_palace.png";
+                else if (t.includes("nubian") || t.includes("aswan")) rawImage = "/images/museums2/nubian_museum.png";
+                else if (t.includes("egyptian museum")) rawImage = "/images/era-pharaonic.png";
+                else if (t.includes("luxor museum")) rawImage = "/images/tour-museum.png";
+                
+                // Safaris
+                else if (t.includes("bahariya") || t.includes("black")) rawImage = "/images/safaris2/bahariya_oasis.png";
+                else if (t.includes("white")) rawImage = "/images/safaris2/white_desert.png";
+                else if (t.includes("siwa") && cn.includes("safari")) rawImage = "/images/safaris2/siwa_oasis.png";
+                else if (t.includes("rayan")) rawImage = "/images/safaris2/wadi_rayan.png";
+                else if (t.includes("atv") || t.includes("quad") || (t.includes("hurghada") && cn.includes("safari"))) rawImage = "/images/safaris2/hurghada_atv.png";
+                
+                // Bazaars
+                else if (t.includes("khalili") || (t.includes("cairo") && cn.includes("bazaar"))) rawImage = "/images/bazaars2/khan_khalili.png";
+                else if (t.includes("luxor") && cn.includes("bazaar")) rawImage = "/images/bazaars2/luxor_souk.png";
+                else if (t.includes("aswan") && cn.includes("bazaar")) rawImage = "/images/bazaars2/aswan_souk.png";
+                
+                // Events
+                else if (t.includes("opera")) rawImage = "/images/events2/cairo_opera.png";
+                else if (t.includes("gouna") || t.includes("film")) rawImage = "/images/events2/gouna_film_fest.png";
+                else if (t.includes("jazz") || t.includes("nile")) rawImage = "/images/events2/nile_jazz.png";
+                else if (t.includes("tunis") || t.includes("pottery")) rawImage = "/images/events2/tunis_pottery.png";
+                else if (t.includes("pyramid") && cn.includes("event")) rawImage = "/images/events2/pyramids_film_fest.png";
+                
+                // Fallback generic
+                if (!rawImage || rawImage === "hotel_fallback") {
+                     rawImage = getCitySpecificImage(destinationName, categoryName, idx);
+                }
+            }
 
-            const finalImage = isInvalidImg ? getCitySpecificImage(destinationName, categoryName, idx) : rawImage;
+            const finalImage = rawImage;
             
             return {
                 id: item.id,
