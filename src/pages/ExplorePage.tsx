@@ -154,11 +154,15 @@ const ExplorePage = () => {
         // If they have 1 item, duplicate it. If 0 items, generate local synthetic items.
         // WE MUST NEVER PULL ITEMS FROM OTHER CITIES (e.g. Farafra Safari into Cairo).
         if (valid.length === 1) {
-            // Duplicate the 1 item and make it Premium
+            // Duplicate the 1 item and make it Premium with a higher price
+            const origPrice = parseFloat(String(valid[0][priceKey] || valid[0].ticket_price || valid[0].price_range_min || valid[0].price || 0).replace(/[^\d.]/g, '')) || 1000;
             valid.push({
                 ...valid[0],
                 id: valid[0].id + 9000,
                 title: `${valid[0].title || valid[0].name} - Premium`,
+                [priceKey]: origPrice * 1.5,
+                ticket_price: origPrice * 1.5,
+                price: origPrice * 1.5,
             });
         } else if (valid.length === 0) {
             // Generate exactly 2 synthetic items specifically for THIS destination
@@ -218,10 +222,10 @@ const ExplorePage = () => {
                 
                 // Safaris
                 else if (t.includes("bahariya") || t.includes("black")) rawImage = "/images/safaris2/bahariya_oasis.png";
-                else if (t.includes("white")) rawImage = "/images/safaris2/white_desert.png";
-                else if (t.includes("siwa") && cn.includes("safari")) rawImage = "/images/safaris2/siwa_oasis.png";
-                else if (t.includes("rayan")) rawImage = "/images/safaris2/wadi_rayan.png";
-                else if (t.includes("atv") || t.includes("quad") || (t.includes("hurghada") && cn.includes("safari"))) rawImage = "/images/safaris2/hurghada_atv.png";
+                else if (t.includes("white") || t.includes("بيضاء")) rawImage = "/images/safaris2/white_desert.png";
+                else if (t.includes("siwa") || t.includes("سيوة")) rawImage = "/images/safaris2/siwa_oasis.png";
+                else if (t.includes("rayan") || t.includes("degla") || t.includes("دجلة")) rawImage = "/images/safaris2/wadi_rayan.png";
+                else if (t.includes("atv") || t.includes("quad") || t.includes("hurghada") || t.includes("غردقة")) rawImage = "/images/safaris2/hurghada_atv.png";
                 
                 // Bazaars
                 else if (t.includes("khalili") || (t.includes("cairo") && cn.includes("bazaar"))) rawImage = "/images/bazaars2/khan_khalili.png";
@@ -252,7 +256,7 @@ const ExplorePage = () => {
                 reviews: item.reviews_count || item.reviews || 120,
                 location: item.location || destinationName,
                 description: item.description,
-                rawPrice: Number(item[priceKey] || item.ticket_price || item.price_range_min || item.price || 0)
+                rawPrice: parseFloat(String(item[priceKey] || item.ticket_price || item.price_range_min || item.price || 0).replace(/[^\d.]/g, '')) || 1500
             };
         });
     };
