@@ -119,7 +119,7 @@ const ExplorePage = () => {
     };
 
     const filterAndMap = (items: any[], isEgypt: boolean, categoryName: string, fallbackKey: string, priceKey: string = "price") => {
-        if (!items || items.length === 0) return [];
+        if (!items || !Array.isArray(items)) items = [];
         const normalizedDest = destination.toLowerCase() === "sharm el.s" ? "sharm" : destination.toLowerCase();
         
         const locationMap: Record<string, string[]> = {
