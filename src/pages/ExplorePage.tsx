@@ -146,29 +146,10 @@ const ExplorePage = () => {
             return validKeywords.some(kw => locLc.includes(kw));
         });
 
-        // STRICT MODE: Try to get up to 2 real items that match
+        // STRICT MODE: Only use items that actually belong to this specific destination
         let valid = destItems.slice(0, 2);
-        
-        // Pad to exactly 2 items using REAL database items from anywhere if this destination is missing data
-        if (valid.length < 2 && items.length > 0) {
-            const needed = 2 - valid.length;
-            const fallbackItems = items.filter((i: any) => !valid.find(v => v.id === i.id)).slice(0, needed);
-            
-            fallbackItems.forEach((item: any) => {
-                valid.push(item); // Keep the real original item exactly as it is (real title, image, and location)
-            });
-        }
-        
-        // Extreme fallback if there's literally only 1 item in the entire database for this category
-        if (valid.length === 1) {
-            valid.push({
-                ...valid[0],
-                id: valid[0].id + 1000,
-                [priceKey]: Number(valid[0][priceKey] || valid[0].ticket_price || 0) + 150
-            });
-        }
 
-        // Ensure the two items have DIFFERENT prices
+        // Ensure the two items have DIFFERENT prices if there are exactly 2
         if (valid.length === 2) {
             let p1 = parseFloat(valid[0][priceKey] || valid[0].ticket_price || valid[0].price_range_min || valid[0].price || 0);
             let p2 = parseFloat(valid[1][priceKey] || valid[1].ticket_price || valid[1].price_range_min || valid[1].price || 0);
