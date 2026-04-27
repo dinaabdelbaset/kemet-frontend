@@ -289,7 +289,7 @@ const ExplorePage = () => {
                 </h3>
                 <div className="text-sm text-gray-500 mb-4">{item.location}</div>
                 <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
-                    <span className="text-lg font-bold text-[#05073C]"><PriceDisplay amount={item.rawPrice} baseCurrency="EGP" /> <span className="text-sm font-normal text-gray-500">avg</span></span>
+                    <span className="text-lg font-bold text-[#05073C]"><PriceDisplay price={item.rawPrice} baseCurrency="EGP" /> <span className="text-sm font-normal text-gray-500">avg</span></span>
                     <span className="text-sm bg-[#EB662B] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#d55822] transition pointer-events-none">
                         Select
                     </span>
