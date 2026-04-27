@@ -150,42 +150,45 @@ const ExplorePage = () => {
         // STRICT MODE: First try to get items that actually belong to this specific destination
         let valid = destItems.slice(0, 2);
 
-        // User explicitly requested EXACTLY 2 items in every list.
-        // If they have 1 item, duplicate it. If 0 items, generate local synthetic items.
-        // WE MUST NEVER PULL ITEMS FROM OTHER CITIES (e.g. Farafra Safari into Cairo).
-        if (valid.length === 1) {
-            // Duplicate the 1 item and make it Premium with a higher price
-            const origPrice = parseFloat(String(valid[0][priceKey] || valid[0].ticket_price || valid[0].price_range_min || valid[0].price || 0).replace(/[^\d.]/g, '')) || 1000;
-            valid.push({
-                ...valid[0],
-                id: valid[0].id + 9000,
-                title: `${valid[0].title || valid[0].name} - Premium`,
-                [priceKey]: origPrice * 1.5,
-                ticket_price: origPrice * 1.5,
-                price: origPrice * 1.5,
-            });
-        } else if (valid.length === 0) {
-            // Generate exactly 2 synthetic items specifically for THIS destination
+        // User explicitly requested EXACTLY 2 items in every list, and they MUST NOT be duplicates of each other.
+        // They must have different prices, names, and images.
+        if (valid.length < 2) {
+            const needed = 2 - valid.length;
             const genericTitles: Record<string, string[]> = {
-                "Hotels": ["Premium Resort", "City Center Hotel"],
-                "Museums": ["National Museum", "Heritage Center"],
-                "Restaurants": ["Authentic Cuisine", "Seafood & Grill"],
-                "Safari": ["Desert Adventure", "Oasis Exploration"],
-                "Bazaars": ["Traditional Souk", "Local Market"],
-                "Events": ["Cultural Festival", "Live Performance"]
+                "Hotels": ["Luxury Resort & Spa", "City Center Budget Hotel"],
+                "Museums": ["National Heritage Museum", "Modern Arts Center"],
+                "Restaurants": ["Premium Seafood & Grill", "Traditional Local Cuisine"],
+                "Safari": ["Exclusive Desert Safari", "Standard Oasis Camp"],
+                "Bazaars": ["Grand Historic Souk", "Local Artisan Market"],
+                "Events": ["VIP Cultural Festival", "Public Live Performance"]
             };
-            for (let i = 0; i < 2; i++) {
-                const titleSuffix = genericTitles[categoryName] ? genericTitles[categoryName][i] : "Experience";
-                const synthId = 9000 + i;
+            
+            for (let i = 0; i < needed; i++) {
+                // If we already have 1 item, pick the second generic title to contrast with it
+                const titleIndex = valid.length === 1 ? 1 : i;
+                const titleSuffix = genericTitles[categoryName] ? genericTitles[categoryName][titleIndex] : (titleIndex === 0 ? "Premium Experience" : "Standard Tour");
+                const synthId = 9000 + i + (valid.length * 10);
+                
+                // Ensure the price strongly contrasts with the existing item if there is one
+                let synthPrice = 0;
+                if (valid.length === 1) {
+                    const existingPrice = parseFloat(String(valid[0][priceKey] || valid[0].ticket_price || valid[0].price_range_min || valid[0].price || 0).replace(/[^\d.]/g, '')) || 500;
+                    synthPrice = existingPrice > 1000 ? Math.floor(existingPrice * 0.4) : Math.floor(existingPrice * 2.5); // Make it opposite (cheap if expensive, expensive if cheap)
+                } else {
+                    synthPrice = i === 0 ? 2500 : 450; // One expensive, one cheap
+                }
+
                 valid.push({
                     id: synthId,
                     title: `${isEgypt ? 'Egypt' : destinationName} ${titleSuffix}`,
                     image: getCitySpecificImage(destinationName, categoryName, synthId),
                     location: isEgypt ? "Egypt" : destinationName,
                     category: categoryName,
-                    rating: 4.6 + (i * 0.2),
-                    reviews_count: 150 + (i * 50),
-                    [priceKey]: 250 + (i * 150)
+                    rating: i === 0 ? 4.9 : 4.2,
+                    reviews_count: i === 0 ? 890 : 120,
+                    [priceKey]: synthPrice,
+                    ticket_price: synthPrice,
+                    price: synthPrice
                 });
             }
         }
