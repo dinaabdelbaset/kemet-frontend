@@ -90,27 +90,27 @@ const ExplorePage = () => {
     const getCitySpecificImage = (city: string, category: string, index: number) => {
         const hash = getCityHash(city) + (index * 7); // Multiply index to avoid sequential adjacent picks
 
-        if (category === "Hotels") {
+        if (category === "Hotels" || category === "Luxury/Budget Hotel") {
            const imgs = ['/images/tour-red-sea.png', '/images/home/why-quality.jpg', '/images/era-greco-roman.png', '/images/home/why-flex.jpg', '/images/nile-cruise.png', '/images/nile-luxor-aswan.png', '/images/destinations/giza.png', '/images/destinations/fayoum.png'];
            return imgs[hash % imgs.length];
         }
-        if (category === "Museums") {
+        if (category === "Museums" || category === "History") {
            const imgs = ['/images/era-greco-roman.png', '/images/tour-museum.png', '/images/era-pharaonic.png', '/images/saint-catherine.png', '/images/era-coptic.png', '/images/era-islamic.png'];
            return imgs[hash % imgs.length];
         }
-        if (category === "Restaurants") {
+        if (category === "Restaurants" || category === "Local Cuisine") {
            const imgs = ['/images/tour-cairo-food.png', '/images/tour-nile-cruise.png', '/food/koshary.png', '/food/molokhia.png', '/food/grills.png', '/food/chicken-tajine.png', '/food/pigeon.png', '/food/meat-tajine.png'];
            return imgs[hash % imgs.length];
         }
-        if (category === "Safari") {
+        if (category === "Safari" || category === "Adventure") {
            const imgs = ['/images/tour-desert-safari.png', '/images/siwa-safari.png', '/images/destinations/marsa-matrouh.png', '/images/home/why-flex.jpg'];
            return imgs[hash % imgs.length];
         }
-        if (category === "Bazaars") {
+        if (category === "Bazaars" || category === "Local Market") {
            const imgs = ['/images/luxor-souk.png', '/images/era-islamic.png', '/images/aswan-nubian-market.png', '/images/tour-pyramids.png'];
            return imgs[hash % imgs.length];
         }
-        if (category === "Events") {
+        if (category === "Events" || category === "Event") {
            const imgs = ['/images/pyramids-vip.png', '/images/era-pharaonic.png', '/images/tour-pyramids.png', '/images/era-islamic.png', '/images/destinations/port-said.png', '/images/era-greco-roman.png'];
            return imgs[hash % imgs.length];
         }
@@ -325,41 +325,12 @@ const ExplorePage = () => {
                         {(category === "all" || category === "restaurants") && (localRestaurants.length > 0 || category === "restaurants") && (
                             <section>
                                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
-                                    <h2 className="text-2xl font-bold text-[#05073C] text-right w-full">أشهر المطاعم في {destinationName}</h2>
+                                    <h2 className="text-2xl font-bold text-[#05073C]">Restaurants (مطاعم)</h2>
                                 </div>
                                 {localRestaurants.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-right" dir="rtl">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {localRestaurants.map(restaurant => (
-                                            <Link to={`/restaurants/${restaurant.id}`} key={`rest-${restaurant.id}`} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(212,175,55,0.06)] border border-gray-100 hover:-translate-y-2 transition-all duration-500 flex flex-col group block">
-                                              <div className="relative w-full aspect-video overflow-hidden">
-                                                <img 
-                                                  src={restaurant.image || '/placeholder.png'} 
-                                                  alt={restaurant.title} 
-                                                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 relative z-0" 
-                                                />
-                                                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm text-[#cd4f3c] text-xs font-bold flex items-center gap-1.5 z-10">
-                                                  <FaMapMarkerAlt /> {restaurant.location}
-                                                </div>
-                                              </div>
-                                              <div className="p-6 flex flex-col flex-grow text-right">
-                                                <h3 className="text-2xl font-bold text-[#14213d] mb-2 group-hover:text-[#cd4f3c] transition-colors duration-300">{restaurant.title}</h3>
-                                                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{restaurant.description || 'أفضل تجربة طعام مصرية وأجواء رائعة لك ولعائلتك'}</p>
-                                                <div className="flex justify-between items-center mb-4">
-                                                  <span className="text-[#cd4f3c] font-bold text-sm bg-[#cd4f3c]/10 px-3 py-1 rounded-md">{restaurant.category || "أكل مصري"}</span>
-                                                  <div className="flex items-center gap-1.5">
-                                                    <span className="text-yellow-400">★</span>
-                                                    <span className="text-sm font-bold">{restaurant.rating}</span>
-                                                    <span className="text-xs text-gray-500">({restaurant.reviews})</span>
-                                                  </div>
-                                                </div>
-                                                <div className="border-t border-gray-100 pt-4 flex justify-between items-center mt-auto cursor-pointer">
-                                                  <span className="text-gray-700 font-bold group-hover:text-[#cd4f3c] flex-1">
-                                                      {document.cookie.includes('/ar') || document.documentElement.dir === 'rtl' ? 'تصفح المنيو والحجز \u2190' : 'View Menu & Booking \u2192'}
-                                                  </span>
-                                                  <span className="text-gray-500 text-xs">10:00 AM - 12:00 AM</span>
-                                                </div>
-                                              </div>
-                                            </Link>
+                                            <GenericCard key={`rest-${restaurant.id}`} item={restaurant} linkTo={`/restaurants/${restaurant.id}`} />
                                         ))}
                                     </div>
                                 ) : (
