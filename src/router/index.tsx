@@ -77,6 +77,7 @@ const AttractionPage         = lazy(() => import("../pages/AttractionPage"));
 const FlightPage             = lazy(() => import("../pages/FlightPage"));
 const DashboardPage          = lazy(() => import("../pages/DashboardPage"));
 const AdminApprovalsPage     = lazy(() => import("../pages/AdminApprovalsPage"));
+const GoogleSearchMock       = lazy(() => import("../pages/GoogleSearchMock"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -88,6 +89,7 @@ const router = createBrowserRouter(
         <Route path="attraction/:destination" element={withSuspense(AttractionPage)} />
         <Route path="flights" element={withSuspense(FlightPage)} />
         <Route path="ai-planner" element={withSuspense(AITripPlannerPage)} />
+        <Route path="google" element={withSuspense(GoogleSearchMock)} />
         <Route path="hotels" element={withSuspense(HotelsPage)} />
         <Route path="hotels/:hotelId" element={withSuspense(HotelDetailsPage)} />
         <Route path="transportation" element={withSuspense(TransportationPage)} />

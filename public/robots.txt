@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Block admin and private routes from search engines
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /checkout
+Disallow: /wishlist
+
+Sitemap: https://kemet-tourism.com/sitemap.xml

@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import fs from "fs"
+import { VitePWA } from "vite-plugin-pwa"
 
 // ── Auto-copy AI-generated images to public/images on dev server start ──
 const BRAIN = "C:/Users/Technologist/.gemini/antigravity/brain/c2d84a60-43f5-453b-b555-f79cac85e55b"
@@ -66,7 +67,38 @@ function autoCopyImagesPlugin() {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [autoCopyImagesPlugin(), react(), tailwindcss()],
+  plugins: [
+    autoCopyImagesPlugin(), 
+    react(), 
+    tailwindcss(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      manifest: {
+        name: 'Kemet - Egypt Tourism Platform',
+        short_name: 'Kemet',
+        description: 'Explore the wonders of Egypt, book tours, and plan your journey.',
+        theme_color: '#D4AF37',
+        background_color: '#ffffff',
+        display: 'standalone',
+        icons: [
+          {
+            src: 'https://cdn-icons-png.flaticon.com/512/11516/11516147.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'https://cdn-icons-png.flaticon.com/512/11516/11516147.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      },
+      devOptions: {
+        enabled: true
+      }
+    })
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

@@ -18,6 +18,7 @@ const ScrollStatsSection = lazy(() => import("../components/sections/ScrollStats
 import { getHomeMarquee } from "../api/contentService";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useScrollReveal } from "../hooks/useAnimations";
+import SEO from "../components/common/SEO";
 
 const HomePage = () => {
   useDocumentTitle("Home");
@@ -42,6 +43,11 @@ const HomePage = () => {
 
   return (
     <>
+      <SEO 
+        title="Kemet | Explore the Wonders of Egypt" 
+        description="Book the best tours, hotels, and museum tickets in Egypt. Your ultimate guide to the Pyramids, Nile Cruises, and the Red Sea." 
+        keywords="Egypt tourism, pyramids tour, Cairo hotels, Nile cruise, Sharm el-Sheikh, Luxor temples" 
+      />
       <Hero />
 
       {/* ═══ TICKER STRIP 1 - After Hero ═══ */}
