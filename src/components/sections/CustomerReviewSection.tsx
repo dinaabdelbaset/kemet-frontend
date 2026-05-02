@@ -72,8 +72,8 @@ const CustomerReviewSection = () => {
             "
           </span>
           <Image
-            src="/images/home/customer-avatar.jpg"
-            alt="user"
+            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=256&auto=format&fit=crop"
+            alt="Dina Abdelbaset Abdalluh"
             className="w-full h-full rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </Link>
@@ -88,9 +88,14 @@ const CustomerReviewSection = () => {
         </p>
 
         {/* Author */}
-        <div ref={authorRef} className="mb-6">
-          <p className="font-medium text-heading">Eslam Naser</p>
-          <p className="text-sm text-gray-500">Traveler</p>
+        <div ref={authorRef} className="mb-6 flex flex-col items-center">
+          <h4 className="text-xl font-bold bg-gradient-to-r from-[#1A365D] via-[#D4AF37] to-[#EB662B] bg-clip-text text-transparent flex items-center gap-2 drop-shadow-sm">
+            Dina Abdelbaset Abdalluh
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#D4AF37]" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+          </h4>
+          <p className="text-sm font-semibold tracking-wider text-gray-500 uppercase mt-1">Verified Traveler</p>
         </div>
 
         {/* Dots */}

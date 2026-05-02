@@ -119,13 +119,13 @@ const HeroSection = () => {
     return (
       <div key={index} className="w-full h-full shrink-0 relative">
         {item.type === "video" ? (
-          <video 
-            src={item.src} 
-            className="w-full h-full object-cover" 
-            autoPlay={isActive} 
-            muted 
-            playsInline 
-            onEnded={NextImage} 
+          <video
+            src={item.src}
+            className="w-full h-full object-cover"
+            autoPlay={isActive}
+            muted
+            playsInline
+            onEnded={NextImage}
             preload={isActive ? "auto" : "none"}
           />
         ) : (
@@ -146,7 +146,7 @@ const HeroSection = () => {
 
       {/* Cinematic overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent z-5" />
-      
+
       {/* Left vignette */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/15 to-transparent z-5" />
 
@@ -161,11 +161,10 @@ const HeroSection = () => {
           <button
             key={idx}
             onClick={() => setCurrentIndex(idx)}
-            className={`rounded-full transition-all duration-700 ${
-              idx === currentIndex
-                ? "w-10 h-1.5 bg-[#D4AF37]"
-                : "w-4 h-1.5 bg-white/30 hover:bg-white/50"
-            }`}
+            className={`rounded-full transition-all duration-700 ${idx === currentIndex
+              ? "w-10 h-1.5 bg-[#D4AF37]"
+              : "w-4 h-1.5 bg-white/30 hover:bg-white/50"
+              }`}
           />
         ))}
       </div>
