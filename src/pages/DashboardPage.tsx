@@ -119,16 +119,18 @@ const DashboardPage = () => {
                    </Link>
                 </div>
 
-                {/* Admin Tools */}
-                <div className="mb-8">
-                   <Link to="/admin/approvals" className="bg-gradient-to-r from-[#EB662B] to-[#d55822] p-6 rounded-3xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group flex items-center justify-between">
-                      <div>
-                         <p className="text-2xl font-black text-white">طلبات الشركات (Pending Approvals)</p>
-                         <p className="text-sm text-white/80 font-bold mt-1">Review and approve company requests</p>
-                      </div>
-                      <div className="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><FaExclamationTriangle /></div>
-                   </Link>
-                </div>
+                {/* Admin Tools (Only visible to Admins) */}
+                {user?.email && ['dinaabdelbaset08@gmail.com', 'eslam.15963278@gmail.com'].includes(user.email.toLowerCase()) && (
+                  <div className="mb-8">
+                     <Link to="/admin/approvals" className="bg-gradient-to-r from-[#EB662B] to-[#d55822] p-6 rounded-3xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group flex items-center justify-between">
+                        <div>
+                           <p className="text-2xl font-black text-white">طلبات الشركات (Pending Approvals)</p>
+                           <p className="text-sm text-white/80 font-bold mt-1">Review and approve company requests</p>
+                        </div>
+                        <div className="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><FaExclamationTriangle /></div>
+                     </Link>
+                  </div>
+                )}
 
                 {/* Recently Viewed Widget */}
                 <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">

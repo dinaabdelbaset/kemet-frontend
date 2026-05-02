@@ -1,5 +1,5 @@
 import SectionWrapper from "@/components/sections/SectionWrapper";
-import { FaCheckCircle, FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaCheckCircle, FaLinkedin, FaGithub, FaGraduationCap } from "react-icons/fa";
 
 const teamMembers = [
   // --- البنات ---
@@ -136,6 +136,73 @@ const AboutPage = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* --- Special Thanks & Supervisors Section --- */}
+        <div className="mt-32 pt-20 border-t border-gray-200 relative">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-8">
+            <div className="text-5xl text-[#D4AF37] bg-white rounded-full p-2">
+              <FaGraduationCap />
+            </div>
+          </div>
+          
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold text-[#1A365D] mb-4 font-serif">Special Thanks & Acknowledgments</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#D4AF37] to-[#EB662B] mx-auto mb-6 rounded-full"></div>
+            <p className="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
+              We extend our deepest gratitude and profound appreciation to our esteemed professors and supervisors. Their invaluable guidance, continuous support, and profound knowledge have been the cornerstone of this graduation project's success.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 justify-center max-w-4xl mx-auto px-4">
+            
+            {/* Supervisor Card 1 */}
+            <div className="bg-gradient-to-b from-[#1A365D] to-[#0d1e36] rounded-[2.5rem] p-8 text-center text-white relative group overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.15)] hover:-translate-y-3 transition-transform duration-500 border border-[#2a4a7f]">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37] rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+              
+              <div className="relative mb-8 mx-auto w-56 h-56">
+                <img 
+                  src="/images/team/naglaa.jpeg" 
+                  alt="Prof. Dr. Naglaa Saeed" 
+                  onError={(e) => {
+                    e.currentTarget.src = "https://ui-avatars.com/api/?name=Naglaa+Saeed&background=D4AF37&color=fff&size=256";
+                  }}
+                  className="w-full h-full rounded-full object-cover object-top border-4 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-500" 
+                />
+              </div>
+              
+              <h3 className="text-2xl font-bold mb-2 text-[#D4AF37] font-serif">Prof. Dr. Naglaa Saeed</h3>
+              <p className="text-gray-300 text-xs font-bold tracking-widest uppercase mb-5 bg-white/10 py-1.5 px-4 rounded-full inline-block">Project Supervisor</p>
+              <p className="text-gray-400 text-sm leading-relaxed italic">
+                "For their visionary leadership, inspiring insights, and unwavering support throughout our graduation journey."
+              </p>
+            </div>
+
+
+
+            {/* Supervisor Card 3 (Optional / Teaching Assistant) */}
+            <div className="bg-gradient-to-b from-[#1A365D] to-[#0d1e36] rounded-[2.5rem] p-8 text-center text-white relative group overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.15)] hover:-translate-y-3 transition-transform duration-500 border border-[#2a4a7f]">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37] rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+              
+              <div className="relative mb-8 mx-auto w-56 h-56">
+                <img 
+                  src="/images/team/eslam_hamdy.jpeg" 
+                  alt="Eng. Eslam Hamdy" 
+                  onError={(e) => {
+                    e.currentTarget.src = "https://ui-avatars.com/api/?name=Eslam+Hamdy&background=D4AF37&color=fff&size=256";
+                  }}
+                  className="w-full h-full rounded-full object-cover object-top border-4 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-500" 
+                />
+              </div>
+              
+              <h3 className="text-2xl font-bold mb-2 text-[#D4AF37] font-serif">Eng. Eslam Hamdy</h3>
+              <p className="text-gray-300 text-xs font-bold tracking-widest uppercase mb-5 bg-white/10 py-1.5 px-4 rounded-full inline-block">Teaching Assistant</p>
+              <p className="text-gray-400 text-sm leading-relaxed italic">
+                "For their daily guidance, troubleshooting assistance, and dedication to helping us overcome obstacles."
+              </p>
+            </div>
+
           </div>
         </div>
 
