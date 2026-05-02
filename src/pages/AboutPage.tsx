@@ -155,20 +155,20 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 justify-center max-w-4xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-center max-w-[95%] mx-auto px-4">
             
             {/* Supervisor Card 1 */}
             <div className="bg-gradient-to-b from-[#1A365D] to-[#0d1e36] rounded-[2.5rem] p-8 text-center text-white relative group overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.15)] hover:-translate-y-3 transition-transform duration-500 border border-[#2a4a7f]">
               <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37] rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
               
-              <div className="relative mb-8 mx-auto w-56 h-56">
+              <div className="relative mb-8 mx-auto w-56 h-56 rounded-full overflow-hidden border-4 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)]">
                 <img 
                   src="/images/team/naglaa.jpeg" 
                   alt="Prof. Dr. Naglaa Saeed" 
                   onError={(e) => {
                     e.currentTarget.src = "https://ui-avatars.com/api/?name=Naglaa+Saeed&background=D4AF37&color=fff&size=256";
                   }}
-                  className="w-full h-full rounded-full object-cover object-top border-4 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-500" 
+                  className="w-full h-full object-cover object-[30%_70%] scale-[1.6] group-hover:scale-[1.7] transition-transform duration-500" 
                 />
               </div>
               
@@ -179,25 +179,67 @@ const AboutPage = () => {
               </p>
             </div>
 
-
-
-            {/* Supervisor Card 3 (Optional / Teaching Assistant) */}
+            {/* Supervisor Card 2 (Dr. Eslam) */}
             <div className="bg-gradient-to-b from-[#1A365D] to-[#0d1e36] rounded-[2.5rem] p-8 text-center text-white relative group overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.15)] hover:-translate-y-3 transition-transform duration-500 border border-[#2a4a7f]">
               <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37] rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
               
-              <div className="relative mb-8 mx-auto w-56 h-56">
+              <div className="relative mb-8 mx-auto w-56 h-56 rounded-full overflow-hidden border-4 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)]">
                 <img 
                   src="/images/team/eslam_hamdy.jpeg" 
-                  alt="Eng. Eslam Hamdy" 
+                  alt="Dr. Eslam Hamdy" 
                   onError={(e) => {
                     e.currentTarget.src = "https://ui-avatars.com/api/?name=Eslam+Hamdy&background=D4AF37&color=fff&size=256";
                   }}
-                  className="w-full h-full rounded-full object-cover object-top border-4 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-500" 
+                  className="w-full h-full object-cover object-[center_20%] scale-[1.3] group-hover:scale-[1.4] transition-transform duration-500" 
                 />
               </div>
               
-              <h3 className="text-2xl font-bold mb-2 text-[#D4AF37] font-serif">Eng. Eslam Hamdy</h3>
-              <p className="text-gray-300 text-xs font-bold tracking-widest uppercase mb-5 bg-white/10 py-1.5 px-4 rounded-full inline-block">Teaching Assistant</p>
+              <h3 className="text-2xl font-bold mb-2 text-[#D4AF37] font-serif">Dr. Eslam Hamdy</h3>
+              <p className="text-gray-300 text-xs font-bold tracking-widest uppercase mb-5 bg-white/10 py-1.5 px-4 rounded-full inline-block">Co-Supervisor</p>
+              <p className="text-gray-400 text-sm leading-relaxed italic">
+                "For their daily guidance, troubleshooting assistance, and dedication to helping us overcome obstacles."
+              </p>
+            </div>
+
+            {/* Supervisor Card 3 */}
+            <div className="bg-gradient-to-b from-[#1A365D] to-[#0d1e36] rounded-[2.5rem] p-8 text-center text-white relative group overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.15)] hover:-translate-y-3 transition-transform duration-500 border border-[#2a4a7f]">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37] rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+              
+              <div className="relative mb-8 mx-auto w-56 h-56 rounded-full overflow-hidden border-4 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+                <img 
+                  src="/images/team/dr_samar.jpeg" 
+                  alt="Dr. Samar" 
+                  onError={(e) => {
+                    e.currentTarget.src = "https://ui-avatars.com/api/?name=Samar&background=D4AF37&color=fff&size=256";
+                  }}
+                  className="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-500" 
+                />
+              </div>
+              
+              <h3 className="text-2xl font-bold mb-2 text-[#D4AF37] font-serif">Dr. Samar</h3>
+              <p className="text-gray-300 text-xs font-bold tracking-widest uppercase mb-5 bg-white/10 py-1.5 px-4 rounded-full inline-block">Co-Supervisor</p>
+              <p className="text-gray-400 text-sm leading-relaxed italic">
+                "For their daily guidance, troubleshooting assistance, and dedication to helping us overcome obstacles."
+              </p>
+            </div>
+
+            {/* Supervisor Card 4 */}
+            <div className="bg-gradient-to-b from-[#1A365D] to-[#0d1e36] rounded-[2.5rem] p-8 text-center text-white relative group overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.15)] hover:-translate-y-3 transition-transform duration-500 border border-[#2a4a7f]">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37] rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+              
+              <div className="relative mb-8 mx-auto w-56 h-56 rounded-full overflow-hidden border-4 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+                <img 
+                  src="/images/team/dr_dina.jpeg" 
+                  alt="Dr. Dina" 
+                  onError={(e) => {
+                    e.currentTarget.src = "https://ui-avatars.com/api/?name=Dina&background=D4AF37&color=fff&size=256";
+                  }}
+                  className="w-full h-full object-cover object-[center_30%] scale-[1.2] group-hover:scale-[1.3] transition-transform duration-500" 
+                />
+              </div>
+              
+              <h3 className="text-2xl font-bold mb-2 text-[#D4AF37] font-serif">Dr. Dina</h3>
+              <p className="text-gray-300 text-xs font-bold tracking-widest uppercase mb-5 bg-white/10 py-1.5 px-4 rounded-full inline-block">Co-Supervisor</p>
               <p className="text-gray-400 text-sm leading-relaxed italic">
                 "For their daily guidance, troubleshooting assistance, and dedication to helping us overcome obstacles."
               </p>
