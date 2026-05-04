@@ -108,7 +108,7 @@ const ExplorePage = () => {
            return imgs[hash % imgs.length];
         }
         if (category === "Bazaars" || category === "Local Market") {
-           const imgs = ['/images/luxor-souk.png', '/images/era-islamic.png', '/images/aswan-nubian-market.png', '/images/tour-pyramids.png'];
+           const imgs = ['/images/luxor-souk.png', '/images/era-islamic.png', '/images/aswan-nubian-market.png', '/images/bazaars2/khan_khalili.png'];
            return imgs[hash % imgs.length];
         }
         if (category === "Events" || category === "Event") {
