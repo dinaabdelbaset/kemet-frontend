@@ -3,6 +3,7 @@ import router from "./router";
 import { CartProvider } from "./context/CartContext";
 import "flowbite";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ChatbotWidget from "./components/chat/ChatbotWidget";
 
 const queryClient = new QueryClient();
 
@@ -13,6 +14,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <RouterProvider router={router} />
+        <ChatbotWidget />
       </CartProvider>
     </QueryClientProvider>
   );

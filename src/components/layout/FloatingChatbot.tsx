@@ -107,10 +107,10 @@ const renderMessageContent = (text: string, isBot: boolean, langCode: string) =>
 
 const FloatingChatbot = () => {
   const [sessionToken] = useState(() => {
-    let token = localStorage.getItem("kemet_chat_session");
+    let token = sessionStorage.getItem("kemet_chat_session");
     if (!token) {
       token = "sess_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-      localStorage.setItem("kemet_chat_session", token);
+      sessionStorage.setItem("kemet_chat_session", token);
     }
     return token;
   });
@@ -141,8 +141,8 @@ const FloatingChatbot = () => {
     }
 
     if (data && data.messages && data.messages.length > 0) {
-      const historyMessages: Message[] = data.messages.map((msg, idx) => ({
-        id: Date.now() + idx,
+      const historyMessages: Message[] = data.messages.map((msg: any, idx: number) => ({
+        id: msg.id || idx,
         text: msg.text,
         sender: (msg.sender === "admin" || msg.sender === "bot") ? "bot" : "user"
       }));
@@ -241,7 +241,7 @@ const FloatingChatbot = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isOpen]);
+  }, [messages.length, isOpen, isLoading]);
 
   useEffect(() => {
     const handleOpenChatbot = () => setIsOpen(true);
