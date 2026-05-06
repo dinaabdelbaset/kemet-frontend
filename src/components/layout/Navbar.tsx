@@ -11,6 +11,7 @@ import NotificationDropdown from "./NotificationDropdown";
 import { useApp } from "../../context/AppContext";
 import { useCart } from "../../context/CartContext";
 import gsap from "gsap";
+import logoImg from "../../assets/logo.png";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -108,16 +109,9 @@ const Navbar = () => {
       <div className="max-w-[1400px] mx-auto px-4 lg:px-6 flex items-center h-[50px] xl:h-[56px] gap-4 xl:gap-6">
 
         {/* ── Logo ── */}
-        <Link to="/" className="flex items-center shrink-0 group z-50 gap-2">
-          <div style={{
-            width: "36px", height: "36px",
-            background: "linear-gradient(135deg, #D4AF37, #EB662B)",
-            borderRadius: "8px",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 2px 8px rgba(212,175,55,0.4)",
-            flexShrink: 0
-          }}>
-            <span className="notranslate" style={{ color: "white", fontWeight: 900, fontSize: "20px", fontFamily: "serif", lineHeight: 1 }}>K</span>
+        <Link to="/" className="flex items-center shrink-0 group z-50 gap-2.5">
+          <div className="bg-white w-[44px] h-[44px] rounded-xl flex items-center justify-center shadow-[0_4px_12px_rgba(212,175,55,0.25)] border border-[#D4AF37]/20 p-0.5 overflow-hidden group-hover:shadow-[0_4px_16px_rgba(212,175,55,0.4)] transition-all duration-300">
+            <img src={logoImg} alt="Kemet Logo" className="w-full h-full object-contain" />
           </div>
           <span className="notranslate" style={{ fontWeight: 900, fontSize: "17px", color: "#D4AF37", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "serif" }}>
             KEMET
