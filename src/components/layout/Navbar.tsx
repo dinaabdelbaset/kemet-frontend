@@ -1,7 +1,7 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getNavItems } from "../../api/contentService";
 import { useState, useEffect, useRef } from "react";
-import Button from "../Ui/Button";
+
 import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaHeart, FaSearch, FaShoppingCart, FaUser } from "react-icons/fa";
@@ -81,12 +81,6 @@ const Navbar = () => {
     }
   };
 
-  const location = useLocation();
-  const solidNavbarPaths = [
-    '/checkout', '/wishlist', '/bookings', 
-    '/profile', '/dashboard', '/search', '/cart'
-  ];
-  const forceSolid = solidNavbarPaths.some(path => location.pathname.startsWith(path));
 
   // Navbar always has a consistent readable background
   const isTransparent = false;
