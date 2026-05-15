@@ -1,6 +1,6 @@
 import PriceDisplay from "../components/common/PriceDisplay";
-import { useState, useEffect } from "react";
-import { FaRobot, FaCalendarAlt, FaUsers, FaMoneyBillWave, FaMapMarkedAlt, FaMagic, FaCheckCircle, FaStar, FaHotel, FaUtensils, FaLandmark, FaBus, FaShoppingBag } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { FaRobot, FaCalendarAlt, FaUsers, FaMoneyBillWave, FaMapMarkedAlt, FaMagic, FaCheckCircle, FaStar, FaHotel, FaUtensils, FaLandmark, FaBus, FaShoppingBag, FaCamera, FaMicrophone } from "react-icons/fa";
 import Button from "../components/Ui/Button";
 import Input from "../components/Ui/Input";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
@@ -47,6 +47,9 @@ const AITripPlannerPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [result, setResult] = useState<any>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadingMessages = [
     "Analyzing your preferences...",
@@ -103,6 +106,64 @@ const AITripPlannerPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showToast("Voice recognition not supported in this browser.", true);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ar-EG';
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    
+    recognition.onresult = async (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      showToast(`You said: "${transcript}"`);
+      
+      if (transcript.includes("شرم") || transcript.toLowerCase().includes("sharm")) setFormData(f => ({...f, destination: "Sharm"}));
+      else if (transcript.includes("قاهرة") || transcript.toLowerCase().includes("cairo")) setFormData(f => ({...f, destination: "Cairo"}));
+      else if (transcript.includes("أقصر") || transcript.toLowerCase().includes("luxor")) setFormData(f => ({...f, destination: "Luxor"}));
+      else if (transcript.includes("غردقة") || transcript.toLowerCase().includes("hurghada")) setFormData(f => ({...f, destination: "Hurghada"}));
+      else if (transcript.includes("اسكندرية") || transcript.toLowerCase().includes("alex")) setFormData(f => ({...f, destination: "Alexandria"}));
+      
+      const nums = transcript.match(/\d+/g);
+      if (nums && nums.length > 0) {
+        if (transcript.includes("جنيه") || transcript.includes("دولار") || transcript.includes("الف") || transcript.includes("ميزانية")) {
+          setFormData(f => ({...f, budget: String(parseInt(nums[nums.length-1]) * (transcript.includes("الف") ? 1000 : 1))}));
+        }
+      }
+    };
+    recognition.start();
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsAnalyzingImage(true);
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+      try {
+        const res = await axiosClient.post('/vision/analyze', { image: base64String });
+        if (res.data.destination) {
+          const newDest = res.data.destination;
+          setFormData(f => ({ ...f, destination: newDest, vibe: res.data.vibe || f.vibe }));
+          showToast(`Detected: ${newDest} (${res.data.monument || ''})`);
+        }
+      } catch (err: any) {
+        showToast(err.response?.data?.error || "Could not analyze image. Try again.", true);
+      } finally {
+        setIsAnalyzingImage(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   
   const filteredHotelsData = hotelsData.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
@@ -130,8 +191,17 @@ const AITripPlannerPage = () => {
         {/* Form Column */}
         <div className="lg:col-span-5">
           <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-gray-100 sticky top-24">
-            <h3 className="text-xl font-bold text-[#05073C] mb-4 flex items-center gap-2">
-              <FaMagic className="text-[#D4AF37]" /> Your Preferences
+            <h3 className="text-xl font-bold text-[#05073C] mb-4 flex items-center justify-between">
+              <span className="flex items-center gap-2"><FaMagic className="text-[#D4AF37]" /> Your Preferences</span>
+              <div className="flex gap-2">
+                <button onClick={handleVoiceInput} type="button" className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 text-gray-600 hover:bg-[#05073C] hover:text-white'}`} title="Speak to auto-fill">
+                  <FaMicrophone />
+                </button>
+                <button onClick={() => fileInputRef.current?.click()} type="button" className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isAnalyzingImage ? 'bg-[#D4AF37] text-white animate-pulse' : 'bg-gray-100 text-gray-600 hover:bg-[#05073C] hover:text-white'}`} title="Upload photo to auto-fill">
+                  <FaCamera />
+                </button>
+                <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
+              </div>
             </h3>
             
             <form onSubmit={handleGenerate} className="space-y-3">
@@ -147,6 +217,9 @@ const AITripPlannerPage = () => {
                   onChange={handleChange}
                   className="w-full h-10 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all font-medium text-gray-700"
                 >
+                  {![ "Cairo", "Luxor", "Aswan", "Sharm", "Hurghada", "Alexandria", "Dahab", "MarsaAlam", "Siwa" ].includes(formData.destination) && (
+                    <option value={formData.destination}>{formData.destination} ✨ (AI Detected)</option>
+                  )}
                   <option value="Cairo">Cairo (Culture & History) 🏛️</option>
                   <option value="Luxor">Luxor (Pharaonic Ruins) ⛏️</option>
                   <option value="Aswan">Aswan (Nubia & Temples) 🌊</option>
