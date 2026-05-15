@@ -78,7 +78,7 @@ const CheckoutPage = () => {
       date: location.state?.date || null,
       time: location.state?.time || null,
       tickets: {
-        adult: location.state?.tickets?.adult ?? 2,
+        adult: location.state?.tickets?.adult ?? location.state?.guests ?? 1,
         child: location.state?.tickets?.child ?? 0,
         infant: location.state?.tickets?.infant ?? 0,
       },
