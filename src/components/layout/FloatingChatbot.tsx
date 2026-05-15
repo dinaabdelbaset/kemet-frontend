@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { FaRobot, FaTimes, FaPaperPlane } from "react-icons/fa";
+import { FaRobot, FaTimes, FaPaperPlane, FaMicrophone, FaCamera } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { askChatbot, resetChatHistory, fetchChatHistory } from "../../api/chatService";
+import axiosClient from "../../api/axiosClient";
 
 const chatbotTranslations = {
   en: {
@@ -128,6 +129,9 @@ const FloatingChatbot = () => {
   });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize chat history from backend or session storage
@@ -249,13 +253,11 @@ const FloatingChatbot = () => {
     return () => window.removeEventListener('open-chatbot', handleOpenChatbot);
   }, []);
 
-  const handleSend = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const handleSendText = async (text: string) => {
+    if (!text.trim() || isLoading) return;
 
-    const userText = input.trim();
+    const userText = text.trim();
     const newMessage: Message = { id: Date.now(), text: userText, sender: "user" };
-    // Pass the entire conversation history to the API for context memory
     const currentHistory = [...messages, newMessage];
     
     setMessages((prev) => [...prev, newMessage]);
@@ -282,6 +284,59 @@ const FloatingChatbot = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSend = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    await handleSendText(input);
+  };
+
+  const handleVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert(lang === 'ar' ? "متصفحك لا يدعم الإدخال الصوتي." : "Voice recognition not supported in this browser.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = lang === 'ar' ? 'ar-EG' : 'en-US';
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    
+    recognition.onresult = async (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      handleSendText(transcript);
+    };
+    recognition.start();
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsAnalyzingImage(true);
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+      try {
+        const res = await axiosClient.post('/vision/analyze', { image: base64String });
+        if (res.data.destination) {
+          const newDest = res.data.destination;
+          const msg = lang === 'ar' 
+            ? `أنا رفعت صورة لـ ${newDest} (${res.data.monument || ''}). تقدر ترشحلي جدول رحلة للمكان ده؟`
+            : `I uploaded an image of ${newDest} (${res.data.monument || ''}). Can you plan a trip for me there?`;
+          handleSendText(msg);
+        }
+      } catch (err: any) {
+        const errorMsg = lang === 'ar' ? "لم أتمكن من التعرف على الصورة." : "Could not analyze image.";
+        setMessages((prev) => [...prev, { id: Date.now() + 1, text: errorMsg, sender: "bot" }]);
+      } finally {
+        setIsAnalyzingImage(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const t = chatbotTranslations[lang] || chatbotTranslations['en'];
@@ -362,27 +417,46 @@ const FloatingChatbot = () => {
           </div>
 
           {/* Input Area */}
-          <form
-            onSubmit={handleSend}
-            className="p-4 bg-white border-t border-gray-100 flex gap-2"
-          >
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={t.placeholder}
-              dir="auto"
-              disabled={isLoading}
-              className={`flex-1 border border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-[#EB662B] focus:ring-1 focus:ring-[#EB662B]/30 transition disabled:opacity-50 ${lang === 'ar' ? 'pr-4' : 'pl-4'}`}
-            />
-            <button
-              type="submit"
-              disabled={!input.trim() || isLoading}
-              className="w-10 h-10 bg-[#EB662B] text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#d55822] transition shrink-0 shadow-md shadow-orange-500/20"
+          <div className="p-3 bg-white border-t border-gray-100 flex flex-col gap-2">
+            <div className="flex gap-2 w-full">
+              <button
+                type="button"
+                onClick={handleVoiceInput}
+                className={`flex-1 h-8 rounded-full flex items-center justify-center gap-1.5 transition-all text-[11px] font-bold uppercase tracking-wider ${isListening ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 hover:text-gray-900'}`}
+              >
+                <FaMicrophone /> {lang === 'ar' ? 'تحدث' : 'Speak'}
+              </button>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className={`flex-1 h-8 rounded-full flex items-center justify-center gap-1.5 transition-all text-[11px] font-bold uppercase tracking-wider ${isAnalyzingImage ? 'bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 animate-pulse' : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100 hover:text-gray-900'}`}
+              >
+                <FaCamera /> {lang === 'ar' ? 'صورة' : 'Snap'}
+              </button>
+              <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
+            </div>
+            <form
+              onSubmit={handleSend}
+              className="flex gap-2 w-full"
             >
-              <FaPaperPlane className={`text-sm ${lang === 'ar' ? '-scale-x-100' : '-ml-0.5'}`} />
-            </button>
-          </form>
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={t.placeholder}
+                dir="auto"
+                disabled={isLoading}
+                className={`flex-1 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#EB662B] focus:ring-1 focus:ring-[#EB662B]/30 transition disabled:opacity-50 ${lang === 'ar' ? 'pr-4' : 'pl-4'}`}
+              />
+              <button
+                type="submit"
+                disabled={!input.trim() || isLoading}
+                className="w-10 h-10 bg-[#EB662B] text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#d55822] transition shrink-0 shadow-md shadow-orange-500/20"
+              >
+                <FaPaperPlane className={`text-sm ${lang === 'ar' ? '-scale-x-100' : '-ml-0.5'}`} />
+              </button>
+            </form>
+          </div>
         </div>
       )}
 
