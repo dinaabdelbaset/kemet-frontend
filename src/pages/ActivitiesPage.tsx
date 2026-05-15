@@ -34,7 +34,7 @@ const ADVENTURES: Adventure[] = [
     image: "/images/tour-desert-safari.png",
     locations: "Siwa • Western Desert • Sharm El Sheikh",
     rating: 4.8,
-    price: 75,
+    price: 3638,
     color: "#E67E22",
   },
   {
@@ -54,7 +54,7 @@ const ADVENTURES: Adventure[] = [
     image: "/images/tour-red-sea.png",
     locations: "Sharm El Sheikh • Dahab • Hurghada",
     rating: 4.9,
-    price: 45,
+    price: 2183,
     color: "#3498DB",
   },
   {
@@ -74,7 +74,7 @@ const ADVENTURES: Adventure[] = [
     image: "/images/saint-catherine.png",
     locations: "St. Catherine • Dahab • Sinai",
     rating: 4.7,
-    price: 60,
+    price: 2910,
     color: "#2ECC71",
   },
   {
@@ -94,7 +94,7 @@ const ADVENTURES: Adventure[] = [
     image: "/images/tour-pyramids.png",
     locations: "Luxor • Aswan • Cairo • Abu Simbel",
     rating: 4.9,
-    price: 90,
+    price: 4365,
     color: "#D4AF37",
   },
   {
@@ -114,7 +114,7 @@ const ADVENTURES: Adventure[] = [
     image: "/images/tour-cairo-food.png",
     locations: "Cairo • Aswan • Luxor",
     rating: 4.6,
-    price: 25,
+    price: 1213,
     color: "#E74C3C",
   },
   {
@@ -134,7 +134,7 @@ const ADVENTURES: Adventure[] = [
     image: "/images/tour-nile-cruise.png",
     locations: "Dahab • Siwa • Aswan • Hurghada",
     rating: 4.8,
-    price: 40,
+    price: 1940,
     color: "#9B59B6",
   },
 ];
@@ -179,7 +179,7 @@ const AdventureCard = ({ adventure }: { adventure: Adventure }) => {
         {/* Price Badge */}
         <div className="absolute top-4 right-4">
           <div className="bg-white/95 backdrop-blur-sm text-gray-900 font-bold text-sm px-4 py-2 rounded-full shadow-lg">
-            <span className="flex items-center gap-1">From <PriceDisplay price={adventure.price} baseCurrency="USD" /></span>
+            <span className="flex items-center gap-1">From <PriceDisplay price={adventure.price} /></span>
           </div>
         </div>
 
@@ -226,7 +226,7 @@ const AdventureCard = ({ adventure }: { adventure: Adventure }) => {
             className="flex-1 block text-center py-3 rounded-xl font-bold text-white text-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
             style={{ backgroundColor: adventure.color }}
           >
-            Book Now — <PriceDisplay price={adventure.price} baseCurrency="USD" />
+            Book Now — <PriceDisplay price={adventure.price} />
           </button>
           <div className="flex items-center gap-1 text-sm">
             <FaStar className="text-yellow-400" />
