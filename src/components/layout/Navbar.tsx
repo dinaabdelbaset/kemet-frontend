@@ -19,7 +19,27 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
-  const [navbarItemsData, setNavbarItemsData] = useState<any[]>([]);
+  const defaultNavItems = [
+    { name: 'Homepage', link: '/' },
+    { name: 'Souvenir Shop 🛍️', link: '/shop' },
+    { name: 'AI Planner ✨', link: '/ai-planner' },
+    { name: 'Activities', link: '/activities' },
+    {
+      name: 'Destinations',
+      dropdown: [
+        { name: 'Hotels', link: '/hotels' },
+        { name: 'Restaurants', link: '/restaurants' },
+        { name: 'Transportation', link: '/transportation' },
+        { name: 'Events', link: '/events' },
+        { name: 'Safari', link: '/safari' },
+        { name: 'Museums', link: '/museums' },
+        { name: 'Bazaars', link: '/bazaars' },
+      ],
+    },
+    { name: 'Support', link: '/support' },
+  ];
+
+  const [navbarItemsData, setNavbarItemsData] = useState<any[]>(defaultNavItems);
 
   useEffect(() => {
     const fetchNavItems = async () => {
