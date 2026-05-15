@@ -7,85 +7,85 @@ import { FaGift, FaArrowRight, FaStar, FaClock, FaTag } from "react-icons/fa";
 gsap.registerPlugin(ScrollTrigger);
 
 const experiences = [
-  { id: 1, image: "/images/home/cta-pyramids.jpg", name: "الأهرامات", icon: "🏛️" },
-  { id: 2, image: "/images/home/cta-redsea.jpg", name: "البحر الأحمر", icon: "🤿" },
-  { id: 3, image: "/images/home/cta-luxor.jpg", name: "الأقصر", icon: "𓂀" },
-  { id: 4, image: "/images/home/cta-desert.jpg", name: "الصحراء", icon: "⭐" },
-  { id: 5, image: "/images/home/cta-alex.jpg", name: "الإسكندرية", icon: "🏺" },
-  { id: 6, image: "/images/home/cta-sinai.jpg", name: "سيناء", icon: "⛰️" },
-  { id: 7, image: "/images/home/cta-khan.jpg", name: "خان الخليلي", icon: "🧆" },
-  { id: 8, image: "/images/home/cta-cairo.jpg", name: "القاهرة", icon: "🌆" },
+  { id: 1, image: "/images/home/cta-pyramids.jpg", name: "Pyramids", icon: "🏛️" },
+  { id: 2, image: "/images/home/cta-redsea.jpg", name: "Red Sea", icon: "🤿" },
+  { id: 3, image: "/images/home/cta-luxor.jpg", name: "Luxor", icon: "𓂀" },
+  { id: 4, image: "/images/home/cta-desert.jpg", name: "Desert", icon: "⭐" },
+  { id: 5, image: "/images/home/cta-alex.jpg", name: "Alexandria", icon: "🏺" },
+  { id: 6, image: "/images/home/cta-sinai.jpg", name: "Sinai", icon: "⛰️" },
+  { id: 7, image: "/images/home/cta-khan.jpg", name: "Khan el-Khalili", icon: "🧆" },
+  { id: 8, image: "/images/home/cta-cairo.jpg", name: "Cairo", icon: "🌆" },
 ];
 
 // 4 packages per destination
 const destinationPackages: Record<number, { title: string; image: string; days: number; rating: number; originalPrice: number; tag: string }[]> = {
   1: [
-    { title: "جولة الأهرامات الكاملة", image: "/images/home/cta-pyramids.jpg", days: 3, rating: 4.9, originalPrice: 350, tag: "الأكثر حجزاً" },
-    { title: "سفاري الصحراء والأهرام", image: "/images/home/cta-desert.jpg", days: 4, rating: 4.8, originalPrice: 480, tag: "مغامرة" },
-    { title: "القاهرة والجيزة VIP", image: "/images/home/cta-cairo.jpg", days: 5, rating: 4.7, originalPrice: 620, tag: "VIP" },
-    { title: "رحلة الحضارة الفرعونية", image: "/images/home/cta-luxor.jpg", days: 7, rating: 4.9, originalPrice: 890, tag: "شامل" },
+    { title: "Full Pyramids Tour", image: "/images/home/cta-pyramids.jpg", days: 3, rating: 4.9, originalPrice: 350, tag: "Most Booked" },
+    { title: "Desert Safari & Pyramids", image: "/images/home/cta-desert.jpg", days: 4, rating: 4.8, originalPrice: 480, tag: "Adventure" },
+    { title: "Cairo & Giza VIP", image: "/images/home/cta-cairo.jpg", days: 5, rating: 4.7, originalPrice: 620, tag: "VIP" },
+    { title: "Pharaonic Civilization Trip", image: "/images/home/cta-luxor.jpg", days: 7, rating: 4.9, originalPrice: 890, tag: "All Inclusive" },
   ],
   2: [
-    { title: "غوص البحر الأحمر", image: "/images/home/cta-redsea.jpg", days: 4, rating: 4.9, originalPrice: 420, tag: "الأكثر حجزاً" },
-    { title: "سنوركل وشاطئ هرغدة", image: "/images/home/cta-sinai.jpg", days: 5, rating: 4.7, originalPrice: 550, tag: "عائلي" },
-    { title: "يخت خاص في البحر الأحمر", image: "/images/home/cta-redsea.jpg", days: 3, rating: 4.8, originalPrice: 780, tag: "VIP" },
-    { title: "بكدج شرم الشيخ الشامل", image: "/images/home/cta-sinai.jpg", days: 7, rating: 4.9, originalPrice: 950, tag: "شامل" },
+    { title: "Red Sea Diving", image: "/images/home/cta-redsea.jpg", days: 4, rating: 4.9, originalPrice: 420, tag: "Most Booked" },
+    { title: "Hurghada Beach Snorkeling", image: "/images/home/cta-sinai.jpg", days: 5, rating: 4.7, originalPrice: 550, tag: "Family" },
+    { title: "Private Yacht in Red Sea", image: "/images/home/cta-redsea.jpg", days: 3, rating: 4.8, originalPrice: 780, tag: "VIP" },
+    { title: "Sharm El-Sheikh All Inclusive", image: "/images/home/cta-sinai.jpg", days: 7, rating: 4.9, originalPrice: 950, tag: "All Inclusive" },
   ],
   3: [
-    { title: "معابد الأقصر والكرنك", image: "/images/home/cta-luxor.jpg", days: 3, rating: 4.9, originalPrice: 380, tag: "الأكثر حجزاً" },
-    { title: "رحلة النيل الكاملة", image: "/images/home/cta-bg.jpg", days: 5, rating: 4.8, originalPrice: 590, tag: "رومانسي" },
-    { title: "وادي الملوك VIP", image: "/images/home/cta-pyramids.jpg", days: 4, rating: 4.7, originalPrice: 670, tag: "VIP" },
-    { title: "أسوان والأقصر شامل", image: "/images/home/cta-luxor.jpg", days: 7, rating: 4.9, originalPrice: 1050, tag: "شامل" },
+    { title: "Luxor & Karnak Temples", image: "/images/home/cta-luxor.jpg", days: 3, rating: 4.9, originalPrice: 380, tag: "Most Booked" },
+    { title: "Full Nile Cruise", image: "/images/home/cta-bg.jpg", days: 5, rating: 4.8, originalPrice: 590, tag: "Romantic" },
+    { title: "Valley of the Kings VIP", image: "/images/home/cta-pyramids.jpg", days: 4, rating: 4.7, originalPrice: 670, tag: "VIP" },
+    { title: "Aswan & Luxor All Inclusive", image: "/images/home/cta-luxor.jpg", days: 7, rating: 4.9, originalPrice: 1050, tag: "All Inclusive" },
   ],
   4: [
-    { title: "سفاري الصحراء الغربية", image: "/images/home/cta-desert.jpg", days: 3, rating: 4.8, originalPrice: 310, tag: "مغامرة" },
-    { title: "واحة سيوة الليلية", image: "/images/home/cta-sinai.jpg", days: 4, rating: 4.9, originalPrice: 450, tag: "الأكثر حجزاً" },
-    { title: "ليلة في قلب الصحراء", image: "/images/home/cta-desert.jpg", days: 2, rating: 4.7, originalPrice: 280, tag: "رومانسي" },
-    { title: "جيب سفاري الواحات", image: "/images/home/cta-khan.jpg", days: 5, rating: 4.8, originalPrice: 580, tag: "شامل" },
+    { title: "Western Desert Safari", image: "/images/home/cta-desert.jpg", days: 3, rating: 4.8, originalPrice: 310, tag: "Adventure" },
+    { title: "Siwa Oasis by Night", image: "/images/home/cta-sinai.jpg", days: 4, rating: 4.9, originalPrice: 450, tag: "Most Booked" },
+    { title: "Night in the Heart of Desert", image: "/images/home/cta-desert.jpg", days: 2, rating: 4.7, originalPrice: 280, tag: "Romantic" },
+    { title: "Oasis Jeep Safari", image: "/images/home/cta-khan.jpg", days: 5, rating: 4.8, originalPrice: 580, tag: "All Inclusive" },
   ],
   5: [
-    { title: "إسكندرية التاريخية", image: "/images/home/cta-alex.jpg", days: 2, rating: 4.7, originalPrice: 220, tag: "تاريخي" },
-    { title: "كورنيش وقلعة قايتباي", image: "/images/home/cta-alex.jpg", days: 3, rating: 4.8, originalPrice: 340, tag: "الأكثر حجزاً" },
-    { title: "ساحل الإسكندرية VIP", image: "/images/home/cta-sinai.jpg", days: 4, rating: 4.6, originalPrice: 490, tag: "VIP" },
-    { title: "رحلة البحر الأبيض المتوسط", image: "/images/home/cta-alex.jpg", days: 5, rating: 4.9, originalPrice: 670, tag: "شامل" },
+    { title: "Historical Alexandria", image: "/images/home/cta-alex.jpg", days: 2, rating: 4.7, originalPrice: 220, tag: "Historical" },
+    { title: "Corniche & Qaitbay Citadel", image: "/images/home/cta-alex.jpg", days: 3, rating: 4.8, originalPrice: 340, tag: "Most Booked" },
+    { title: "Alexandria Coast VIP", image: "/images/home/cta-sinai.jpg", days: 4, rating: 4.6, originalPrice: 490, tag: "VIP" },
+    { title: "Mediterranean Sea Trip", image: "/images/home/cta-alex.jpg", days: 5, rating: 4.9, originalPrice: 670, tag: "All Inclusive" },
   ],
   6: [
-    { title: "جبل موسى وسانت كاترين", image: "/images/home/cta-sinai.jpg", days: 2, rating: 4.9, originalPrice: 290, tag: "الأكثر حجزاً" },
-    { title: "شاطئ سيناء الجنوبية", image: "/images/home/cta-redsea.jpg", days: 4, rating: 4.8, originalPrice: 460, tag: "عائلي" },
-    { title: "غوص رأس محمد", image: "/images/home/cta-redsea.jpg", days: 3, rating: 4.7, originalPrice: 540, tag: "مغامرة" },
-    { title: "سيناء الشامل - برية وبحر", image: "/images/home/cta-sinai.jpg", days: 7, rating: 4.9, originalPrice: 980, tag: "شامل" },
+    { title: "Mount Moses & St. Catherine", image: "/images/home/cta-sinai.jpg", days: 2, rating: 4.9, originalPrice: 290, tag: "Most Booked" },
+    { title: "South Sinai Beach", image: "/images/home/cta-redsea.jpg", days: 4, rating: 4.8, originalPrice: 460, tag: "Family" },
+    { title: "Ras Mohammed Diving", image: "/images/home/cta-redsea.jpg", days: 3, rating: 4.7, originalPrice: 540, tag: "Adventure" },
+    { title: "Sinai All Inclusive - Land & Sea", image: "/images/home/cta-sinai.jpg", days: 7, rating: 4.9, originalPrice: 980, tag: "All Inclusive" },
   ],
   7: [
-    { title: "جولة خان الخليلي", image: "/images/home/cta-khan.jpg", days: 1, rating: 4.7, originalPrice: 85, tag: "الأكثر حجزاً" },
-    { title: "القاهرة الإسلامية", image: "/images/home/cta-cairo.jpg", days: 2, rating: 4.8, originalPrice: 195, tag: "تاريخي" },
-    { title: "قلعة صلاح الدين + الأزهر", image: "/images/home/cta-cairo.jpg", days: 3, rating: 4.6, originalPrice: 310, tag: "مع مرشد" },
-    { title: "القاهرة الكاملة الشامل", image: "/images/home/cta-khan.jpg", days: 5, rating: 4.9, originalPrice: 550, tag: "شامل" },
+    { title: "Khan el-Khalili Tour", image: "/images/home/cta-khan.jpg", days: 1, rating: 4.7, originalPrice: 85, tag: "Most Booked" },
+    { title: "Islamic Cairo", image: "/images/home/cta-cairo.jpg", days: 2, rating: 4.8, originalPrice: 195, tag: "Historical" },
+    { title: "Saladin Citadel & Al-Azhar", image: "/images/home/cta-cairo.jpg", days: 3, rating: 4.6, originalPrice: 310, tag: "Guided" },
+    { title: "Full Cairo All Inclusive", image: "/images/home/cta-khan.jpg", days: 5, rating: 4.9, originalPrice: 550, tag: "All Inclusive" },
   ],
   8: [
-    { title: "القاهرة في يوم واحد", image: "/images/home/cta-cairo.jpg", days: 1, rating: 4.7, originalPrice: 120, tag: "الأكثر حجزاً" },
-    { title: "القاهرة والجيزة 3 أيام", image: "/images/home/cta-pyramids.jpg", days: 3, rating: 4.8, originalPrice: 360, tag: "عائلي" },
-    { title: "القاهرة الحديثة والقديمة", image: "/images/home/cta-cairo.jpg", days: 4, rating: 4.6, originalPrice: 480, tag: "تاريخي" },
-    { title: "مصر كلها من القاهرة", image: "/images/home/cta-bg.jpg", days: 10, rating: 4.9, originalPrice: 1450, tag: "شامل" },
+    { title: "Cairo in a Day", image: "/images/home/cta-cairo.jpg", days: 1, rating: 4.7, originalPrice: 120, tag: "Most Booked" },
+    { title: "Cairo & Giza 3 Days", image: "/images/home/cta-pyramids.jpg", days: 3, rating: 4.8, originalPrice: 360, tag: "Family" },
+    { title: "Modern & Old Cairo", image: "/images/home/cta-cairo.jpg", days: 4, rating: 4.6, originalPrice: 480, tag: "Historical" },
+    { title: "All Egypt from Cairo", image: "/images/home/cta-bg.jpg", days: 10, rating: 4.9, originalPrice: 1450, tag: "All Inclusive" },
   ],
 };
 
 const tagColors: Record<string, string> = {
-  "الأكثر حجزاً": "#EB662B",
+  "Most Booked": "#EB662B",
   "VIP": "#D4AF37",
-  "شامل": "#4caf82",
-  "مغامرة": "#7ec8e3",
-  "رومانسي": "#c9956a",
-  "عائلي": "#a78bfa",
-  "تاريخي": "#D4AF37",
-  "مع مرشد": "#4caf82",
+  "All Inclusive": "#4caf82",
+  "Adventure": "#7ec8e3",
+  "Romantic": "#c9956a",
+  "Family": "#a78bfa",
+  "Historical": "#D4AF37",
+  "Guided": "#4caf82",
 };
 
 const getCashback = (count: number) => {
-  if (count === 0) return { pct: 0, label: "اختار وجهاتك", color: "#ffffff30" };
-  if (count <= 2) return { pct: 5, label: "5% كاش باك", color: "#c9956a" };
-  if (count <= 4) return { pct: 10, label: "10% كاش باك", color: "#D4AF37" };
-  if (count <= 6) return { pct: 15, label: "15% كاش باك", color: "#EB662B" };
-  return { pct: 20, label: "20% كاش باك 🎉", color: "#4caf82" };
+  if (count === 0) return { pct: 0, label: "Select Destinations", color: "#ffffff30" };
+  if (count <= 2) return { pct: 5, label: "5% Cashback", color: "#c9956a" };
+  if (count <= 4) return { pct: 10, label: "10% Cashback", color: "#D4AF37" };
+  if (count <= 6) return { pct: 15, label: "15% Cashback", color: "#EB662B" };
+  return { pct: 20, label: "20% Cashback 🎉", color: "#4caf82" };
 };
 
 const ParallaxCTA = () => {
@@ -155,14 +155,14 @@ const ParallaxCTA = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] text-[11px] font-black tracking-[0.25em] uppercase mb-5">
-            <FaGift /> اختار وجهاتك واكسب كاش باك
+            <FaGift /> Choose destinations & earn cashback
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white leading-tight mb-3">
-            كل وجهة بتختارها{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#EB662B]">هدية ليك</span>
+            Every destination you choose is{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#EB662B]">a gift for you</span>
           </h2>
           <p className="text-white/40 text-sm max-w-md mx-auto">
-            اختار التجارب اللي بتحبها — وهنديك كاش باك على حجزك الجاي كهدية من Kemet
+            Choose the experiences you love — and we will give you cashback on your next booking as a gift from Kemet
           </p>
         </div>
 
@@ -207,12 +207,12 @@ const ParallaxCTA = () => {
             <div className="flex items-center gap-3 mb-5">
               <span className="text-2xl">{focusedExp?.icon}</span>
               <h3 className="text-white font-black text-lg">
-                باقات <span style={{ color: cashback.color === "#ffffff30" ? "#D4AF37" : cashback.color }}>{focusedExp?.name}</span>
+                <span style={{ color: cashback.color === "#ffffff30" ? "#D4AF37" : cashback.color }}>{focusedExp?.name}</span> Packages
               </h3>
               {cashback.pct > 0 && (
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-black text-[#05073C]"
                   style={{ background: `linear-gradient(135deg, ${cashback.color}, #EB662B)` }}>
-                  خصم {cashback.pct}%
+                  {cashback.pct}% OFF
                 </span>
               )}
             </div>
@@ -251,7 +251,7 @@ const ParallaxCTA = () => {
                       <p className="text-white text-[11px] font-black leading-tight mb-2 line-clamp-2">{pkg.title}</p>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1 text-[9px] text-white/50">
-                          <FaClock className="text-[8px]" /> {pkg.days} أيام
+                          <FaClock className="text-[8px]" /> {pkg.days} Days
                         </div>
                         <div className="flex items-center gap-1 text-[9px] text-[#D4AF37]">
                           <FaStar className="text-[8px]" /> {pkg.rating}
@@ -273,7 +273,7 @@ const ParallaxCTA = () => {
                           style={{ background: `linear-gradient(135deg, ${cashback.color === "#ffffff30" ? "#D4AF37" : cashback.color}, #EB662B)` }}
                           onClick={e => e.stopPropagation()}
                         >
-                          احجز <FaArrowRight className="text-[8px]" />
+                          Book <FaArrowRight className="text-[8px]" />
                         </Link>
                       </div>
                     </div>
@@ -288,7 +288,7 @@ const ParallaxCTA = () => {
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-2 px-1">
             <span className="text-white/40 text-[11px] uppercase tracking-widest font-black">
-              {selected.size} / {experiences.length} وجهات
+              {selected.size} / {experiences.length} Destinations
             </span>
             <span className="text-lg font-black transition-all duration-500" style={{ color: cashback.color === "#ffffff30" ? "rgba(255,255,255,0.3)" : cashback.color }}>
               {cashback.label}
@@ -311,17 +311,17 @@ const ParallaxCTA = () => {
           </div>
           <div className="text-center">
             {selected.size === 0 ? (
-              <p className="text-white/30 text-sm font-medium py-4">👆 اضغط على الصور اللي تحب تزورها</p>
+              <p className="text-white/30 text-sm font-medium py-4">👆 Click on the photos you'd love to visit</p>
             ) : (
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <div className="px-5 py-3 rounded-xl border text-sm font-black"
                   style={{ borderColor: `${cashback.color}40`, backgroundColor: `${cashback.color}12`, color: cashback.color }}>
-                  🎁 ستحصل على {cashback.pct}% كاش باك على حجزك
+                  🎁 You will get {cashback.pct}% cashback on your booking
                 </div>
                 <Link to="/packages"
                   className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-extrabold text-sm text-[#05073C] hover:-translate-y-0.5 hover:shadow-[0_15px_40px_rgba(212,175,55,0.4)] transition-all duration-300"
                   style={{ background: `linear-gradient(135deg, ${cashback.color === "#ffffff30" ? "#D4AF37" : cashback.color}, #EB662B)` }}>
-                  احجز واحصل على الكاش باك <FaArrowRight />
+                  Book & Get Cashback <FaArrowRight />
                 </Link>
               </div>
             )}
