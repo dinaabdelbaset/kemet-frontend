@@ -291,24 +291,48 @@ const FloatingChatbot = () => {
     await handleSendText(input);
   };
 
+  const recognitionRef = useRef<any>(null);
+
   const handleVoiceInput = () => {
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      return;
+    }
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert(lang === 'ar' ? "متصفحك لا يدعم الإدخال الصوتي." : "Voice recognition not supported in this browser.");
       return;
     }
     const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
     recognition.lang = lang === 'ar' ? 'ar-EG' : 'en-US';
     recognition.interimResults = false;
     
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
     
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error", event.error);
+      setIsListening(false);
+      if (event.error === 'not-allowed') {
+        alert(lang === 'ar' ? "يرجى السماح باستخدام الميكروفون من إعدادات المتصفح." : "Please allow microphone access in your browser settings.");
+      } else if (event.error !== 'no-speech') {
+        alert(lang === 'ar' ? "حدث خطأ في الميكروفون: " + event.error : "Microphone error: " + event.error);
+      }
+    };
+    
     recognition.onresult = async (event: any) => {
       const transcript = event.results[0][0].transcript;
-      handleSendText(transcript);
+      setInput((prev) => prev ? prev + " " + transcript : transcript);
     };
-    recognition.start();
+    
+    try {
+      recognition.start();
+    } catch (e) {
+      console.error("Could not start recognition", e);
+      setIsListening(false);
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

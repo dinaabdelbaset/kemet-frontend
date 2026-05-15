@@ -419,10 +419,10 @@ const MenuCategoryPage = () => {
   } else if (category === 'koshary-meals') {
     const ASSET_URL = '/food/';
     baseCategoryMeals = [
-      { id: 1, title: "كشري التحرير ميجا", img: `/food/koshary_authentic.png`, price: 2.00, calories: 650 },
-      { id: 2, title: "طاجن مكرونة باللحمة", img: `/food/fatta_new.png`, price: 2.50, calories: 550 },
-      { id: 3, title: "طاجن مكرونة بالفراخ", img: `/food/hawawshi_meat.png`, price: 2.20, calories: 500 },
-      { id: 4, title: "كشري وسط", img: `/food/koshary_authentic.png`, price: 1.50, calories: 450 },
+      { id: 1, title: "كشري ميجا", img: `/food/koshary_authentic.png`, price: 2.00, calories: 650 },
+      { id: 2, title: "طاجن مكرونة باللحمة", img: `/food/koshary_meat_tagine.png`, price: 2.50, calories: 550 },
+      { id: 3, title: "طاجن مكرونة بالفراخ", img: `/food/koshary_chicken_tagine.png`, price: 2.20, calories: 500 },
+      { id: 4, title: "كشري وسط", img: `/food/koshary.png`, price: 1.50, calories: 450 },
     ];
   } else if (category === 'extras') {
     baseCategoryMeals = [
@@ -434,9 +434,9 @@ const MenuCategoryPage = () => {
   } else if (category === 'birds') {
     baseCategoryMeals = [
       { id: 1, title: "حمام محشي أرز", img: `/food/true_pigeon.png`, price: 4.50, calories: 750 },
-      { id: 2, title: "نصف بطة بلدي", img: `/food/food_mandi_chicken.png`, price: 8.00, calories: 950 },
-      { id: 3, title: "فراخ مشوية عالفحم", img: `/food/pigeon.png`, price: 6.00, calories: 600 },
-      { id: 4, title: "سمك دنيس مشوي", img: `/food/grilled_denis.png`, price: 12.00, calories: 450 },
+      { id: 2, title: "نصف بطة بلدي", img: `/food/stuffed_ducks_fayoum.png`, price: 8.00, calories: 950 },
+      { id: 3, title: "فراخ مشوية عالفحم", img: `/food/egyptian_chicken_grill.png`, price: 6.00, calories: 600 },
+      { id: 4, title: "سمان مشوي محشي", img: `/food/khufu_stuffed_quail.png`, price: 12.00, calories: 450 },
     ];
   } else if (category === 'appetizers') {
     baseCategoryMeals = [
@@ -457,7 +457,7 @@ const MenuCategoryPage = () => {
     baseCategoryMeals = [
       { id: 1, title: "كبدة إسكندراني", img: `/food/kibda_new.png`, price: 1.50, calories: 480 },
       { id: 2, title: "حواوشي بلدي", img: `/food/hawawshi_meat.png`, price: 1.50, calories: 550 },
-      { id: 3, title: "سجق شرقي", img: `/food/egyptian_kebab_kofta.png`, price: 1.40, calories: 510 },
+      { id: 3, title: "سجق شرقي", img: `/food/falah_sogoq.png`, price: 1.40, calories: 510 },
       { id: 4, title: "فتة مصري باللحمة", img: `/food/fatta_new.png`, price: 3.00, calories: 850 },
       { id: 5, title: "حواوشي إسكندراني", img: `/food/hawawshi_meat.png`, price: 1.50, calories: 600 },
       { id: 6, title: "ملوخية طاجن", img: `/food/molokhia_new.png`, price: 1.80, calories: 310 },
@@ -498,16 +498,8 @@ const MenuCategoryPage = () => {
     const priceOffset = (numId * 0.15) + (index * 0.05);
     const newPrice = Number((meal.price + priceOffset).toFixed(2));
     
-    // Customize title
-    const isArabic = /[\u0600-\u06FF]/.test(meal.title);
+    // Customize title (Removed the "(من ...)" suffix because it looks artificial)
     let newTitle = meal.title;
-    if (restaurantName) {
-      if (isArabic) {
-        newTitle = `${meal.title} (من ${restaurantName})`;
-      } else {
-        newTitle = `${restaurantName}'s ${meal.title}`;
-      }
-    }
     
     return { ...meal, id: uniqueId, title: newTitle, price: newPrice };
   });

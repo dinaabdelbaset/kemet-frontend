@@ -148,8 +148,25 @@ export const getSpecificRestaurantMenu = (restaurantName: string, category: stri
   }
 
   /* =========================================
-     LUXOR & ASWAN (6 Restaurants)
+     LUXOR & ASWAN (6 Restaurants + Waha Khattab which is technically in Alex but listed near here before)
      ========================================= */
+  if (nameLc.includes("khattab") || nameLc.includes("خطاب")) {
+    return [
+      { id: 1251, title: "مندي ضاني واحة خطاب", img: "/food/mandi_meat_tray.png", price: 35.0, calories: 1200 },
+      { id: 1252, title: "صينية مكرونة مبكبكة باللحمة", img: "/food/macaroni_bechamel.png", price: 20.0, calories: 950 },
+      { id: 1253, title: "فراخ مشوية على الحطب واحاتي", img: "/food/egyptian_chicken_grill.png", price: 15.0, calories: 750 },
+      { id: 1254, title: "صينية مشويات خطاب مشكل", img: "/food/egyptian_kebab_kofta.png", price: 30.0, calories: 1100 }
+    ];
+  }
+  if (nameLc.includes("moon") || nameLc.includes("مون")) {
+    return [
+      { id: 1261, title: "طاجن بامية باللحمة الصعيدي", img: "/food/okra_lamb_tagine.png", price: 18.0, calories: 600 },
+      { id: 1262, title: "كباب وكفتة على الفحم", img: "/food/egyptian_kebab_kofta.png", price: 22.0, calories: 850 },
+      { id: 1263, title: "طاجن ملوخية أسواني بالدجاج", img: "/food/molokhia_new.png", price: 14.0, calories: 500 },
+      { id: 1264, title: "سمك بلطي مشوي ردة أسواني", img: "/food/singary_fish.png", price: 15.0, calories: 400 }
+    ];
+  }
+
   if (nameLc.includes("solaih") || nameLc.includes("صليح") || nameLc.includes("صلح")) {
     return [
       { id: 1301, title: "طاجن جاكود نوبي بالسبانخ واللحم", img: "/food/okra_lamb_tagine.png", price: 14.0, calories: 650 },
@@ -341,9 +358,9 @@ export const getSpecificRestaurantMenu = (restaurantName: string, category: stri
   if (nameLc.includes("tahrir") || nameLc.includes("تحرير")) {
     return [
       { id: 3501, title: "كشري التحرير ميجا (أكبر حجم)", img: "/food/koshary_authentic.png", price: 4.0, calories: 800 },
-      { id: 3502, title: "كشري توب التحرير (وسط)", img: "/food/koshary_authentic.png", price: 3.0, calories: 600 },
-      { id: 3503, title: "طاجن دجاج بصلصة الطماطم", img: "/food/fatta_new.png", price: 5.0, calories: 600 },
-      { id: 3504, title: "طاجن لحمة مفرومة", img: "/food/fatta_new.png", price: 5.5, calories: 650 },
+      { id: 3502, title: "كشري توب التحرير (وسط)", img: "/food/koshary.png", price: 3.0, calories: 600 },
+      { id: 3503, title: "طاجن مكرونة بالفراخ", img: "/food/koshary_chicken_tagine.png", price: 5.0, calories: 600 },
+      { id: 3504, title: "طاجن مكرونة باللحمة المفرومة", img: "/food/koshary_meat_tagine.png", price: 5.5, calories: 650 },
       { id: 3505, title: "أرز بلبن سادة", img: "/food/rice_pudding.png", price: 1.5, calories: 350 }
     ];
   }
