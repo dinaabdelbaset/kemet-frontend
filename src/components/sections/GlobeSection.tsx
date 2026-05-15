@@ -176,10 +176,10 @@ function GlobeScene() {
 
 const DAYS = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
 const MONTHS = [
-  { v: "01", l: "يناير" }, { v: "02", l: "فبراير" }, { v: "03", l: "مارس" },
-  { v: "04", l: "أبريل" }, { v: "05", l: "مايو" }, { v: "06", l: "يونيو" },
-  { v: "07", l: "يوليو" }, { v: "08", l: "أغسطس" }, { v: "09", l: "سبتمبر" },
-  { v: "10", l: "أكتوبر" }, { v: "11", l: "نوفمبر" }, { v: "12", l: "ديسمبر" },
+  { v: "01", l: "January" }, { v: "02", l: "February" }, { v: "03", l: "March" },
+  { v: "04", l: "April" }, { v: "05", l: "May" }, { v: "06", l: "June" },
+  { v: "07", l: "July" }, { v: "08", l: "August" }, { v: "09", l: "September" },
+  { v: "10", l: "October" }, { v: "11", l: "November" }, { v: "12", l: "December" },
 ];
 const currentYear = new Date().getFullYear();
 const YEARS = Array.from({ length: 3 }, (_, i) => String(currentYear + i));
@@ -191,8 +191,8 @@ const GlobeSection = () => {
   const [globeVisible, setGlobeVisible] = useState(false); // 🚀 Lazy load globe
 
   const [tripType, setTripType] = useState<"round" | "oneway">("round");
-  const [from, setFrom] = useState("القاهرة (CAI)");
-  const [to, setTo] = useState("الأقصر (LXR)");
+  const [from, setFrom] = useState("Cairo (CAI)");
+  const [to, setTo] = useState("Luxor (LXR)");
   const [depDay, setDepDay] = useState("01");
   const [depMonth, setDepMonth] = useState("01");
   const [depYear, setDepYear] = useState(String(currentYear));
@@ -273,11 +273,11 @@ const GlobeSection = () => {
           {/* Header */}
           <div className="flex items-center gap-3 mb-5">
             <div className="h-[2px] w-8 bg-gradient-to-r from-[#D4AF37] to-[#EB662B] rounded-full" />
-            <span className="text-[11px] font-black text-[#D4AF37] uppercase tracking-[0.25em]">✈️ مصر للطيران</span>
+            <span className="text-[11px] font-black text-[#D4AF37] uppercase tracking-[0.25em]">✈️ EgyptAir</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-extrabold leading-tight mb-5 text-white">
-            احجز رحلتك{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#EB662B]">الجوية إلى مصر</span>
+            Book your{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#EB662B]">flight to Egypt</span>
           </h2>
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 shadow-xl rounded-2xl p-5 space-y-4">
@@ -292,27 +292,27 @@ const GlobeSection = () => {
                     : { background: "#f5f5f5", color: "#888", borderColor: "#e0e0e0" }
                   }
                 >
-                  {i === 0 ? "ذهاب وعودة" : "ذهاب فقط"}
+                  {i === 0 ? "Round Trip" : "One Way"}
                 </button>
               ))}
             </div>
 
             {/* From / To */}
             <div className="grid grid-cols-2 gap-3">
-              <AirportSelect label="من" value={from} onChange={setFrom} iconColor="#D4AF37" iconRotate="rotate-45" />
-              <AirportSelect label="إلى" value={to} onChange={setTo} iconColor="#EB662B" />
+              <AirportSelect label="From" value={from} onChange={setFrom} iconColor="#D4AF37" iconRotate="rotate-45" />
+              <AirportSelect label="To" value={to} onChange={setTo} iconColor="#EB662B" />
             </div>
 
             {/* Dates */}
             <div className={`grid gap-3 ${tripType === "round" ? "grid-cols-2" : "grid-cols-1"}`}>
               {/* Departure */}
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-gray-400 font-black block mb-1.5">تاريخ الذهاب</label>
+                <label className="text-[10px] uppercase tracking-widest text-gray-400 font-black block mb-1.5">Departure Date</label>
                 <div className="grid grid-cols-3 gap-1">
                   {[
-                    { val: depDay, set: setDepDay, opts: DAYS, placeholder: "يوم" },
-                    { val: depMonth, set: setDepMonth, opts: MONTHS.map(m => m.v), labels: MONTHS.map(m => m.l), placeholder: "شهر" },
-                    { val: depYear, set: setDepYear, opts: YEARS, placeholder: "سنة" },
+                    { val: depDay, set: setDepDay, opts: DAYS, placeholder: "Day" },
+                    { val: depMonth, set: setDepMonth, opts: MONTHS.map(m => m.v), labels: MONTHS.map(m => m.l), placeholder: "Month" },
+                    { val: depYear, set: setDepYear, opts: YEARS, placeholder: "Year" },
                   ].map(({ val, set, opts, labels, placeholder }, i) => (
                     <select key={i} value={val} onChange={e => set(e.target.value)}
                       className="bg-white/10 border border-white/20 rounded-lg px-1.5 py-2 text-white text-[11px] font-semibold focus:outline-none focus:border-[#D4AF37] appearance-none cursor-pointer text-center"
@@ -330,12 +330,12 @@ const GlobeSection = () => {
               {/* Return */}
               {tripType === "round" && (
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest text-gray-400 font-black block mb-1.5">تاريخ العودة</label>
+                  <label className="text-[10px] uppercase tracking-widest text-gray-400 font-black block mb-1.5">Return Date</label>
                   <div className="grid grid-cols-3 gap-1">
                     {[
-                      { val: retDay, set: setRetDay, opts: DAYS, placeholder: "يوم" },
-                      { val: retMonth, set: setRetMonth, opts: MONTHS.map(m => m.v), labels: MONTHS.map(m => m.l), placeholder: "شهر" },
-                      { val: retYear, set: setRetYear, opts: YEARS, placeholder: "سنة" },
+                      { val: retDay, set: setRetDay, opts: DAYS, placeholder: "Day" },
+                      { val: retMonth, set: setRetMonth, opts: MONTHS.map(m => m.v), labels: MONTHS.map(m => m.l), placeholder: "Month" },
+                      { val: retYear, set: setRetYear, opts: YEARS, placeholder: "Year" },
                     ].map(({ val, set, opts, labels, placeholder }, i) => (
                       <select key={i} value={val} onChange={e => set(e.target.value)}
                         className="bg-white/10 border border-white/20 rounded-lg px-1.5 py-2 text-white text-[11px] font-semibold focus:outline-none focus:border-[#D4AF37] appearance-none cursor-pointer text-center"
@@ -354,12 +354,12 @@ const GlobeSection = () => {
 
             {/* Passengers */}
             <div>
-              <label className="text-[10px] uppercase tracking-widest text-gray-400 font-black block mb-1.5">المسافرون</label>
+              <label className="text-[10px] uppercase tracking-widest text-gray-400 font-black block mb-1.5">Passengers</label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { label: "بالغ", val: adults, min: 1, set: setAdults },
-                  { label: "طفل", val: children, min: 0, set: setChildren },
-                  { label: "رضيع", val: infants, min: 0, set: setInfants },
+                  { label: "Adult", val: adults, min: 1, set: setAdults },
+                  { label: "Child", val: children, min: 0, set: setChildren },
+                  { label: "Infant", val: infants, min: 0, set: setInfants },
                 ].map(({ label, val, min, set }) => (
                   <div key={label} className="bg-white/10 border border-white/20 rounded-xl px-2 py-2 flex items-center justify-between">
                     <span className="text-[10px] text-white/70 font-black">{label}</span>
@@ -379,9 +379,9 @@ const GlobeSection = () => {
             <button onClick={handleSearch}
               className="flex items-center justify-center gap-2.5 w-full py-3.5 rounded-xl font-extrabold text-sm text-white bg-gradient-to-r from-[#D4AF37] to-[#EB662B] hover:shadow-[0_12px_32px_rgba(212,175,55,0.4)] hover:-translate-y-0.5 transition-all duration-300"
             >
-              <FaPlane /> ابحث عن الرحلات المتاحة
+              <FaPlane /> Search Available Flights
             </button>
-            <p className="text-center text-white/40 text-[10px]">🔒 حجز آمن · أفضل الأسعار المضمونة · إلغاء مجاني</p>
+            <p className="text-center text-white/40 text-[10px]">🔒 Secure Booking · Best Price Guarantee · Free Cancellation</p>
           </div>
         </div>
 
@@ -410,7 +410,7 @@ const GlobeSection = () => {
             <span className="text-lg">🇪🇬</span>
             <div>
               <p className="text-white text-[11px] font-black leading-tight">Egypt</p>
-              <p className="text-[#D4AF37] text-[9px] font-medium">مضيئة على الخريطة</p>
+              <p className="text-[#D4AF37] text-[9px] font-medium">Highlighted on map</p>
             </div>
           </div>
         </div>
