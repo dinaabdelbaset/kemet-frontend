@@ -12,8 +12,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const TrendingDestinationSection = () => {
-  const [destinations, setDestinations] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const defaultDestinations = [
+    { id: 1, title: 'Cairo', src: '/images/tour-desert-safari.png', tours: 142 },
+    { id: 2, title: 'Luxor', src: '/images/luxor-souk.png', tours: 89 },
+    { id: 3, title: 'Aswan', src: '/images/aswan-nubian-market.png', tours: 74 },
+    { id: 4, title: 'Alexandria', src: '/images/era-greco-roman.png', tours: 105 },
+    { id: 5, title: 'Hurghada', src: '/images/tour-red-sea.png', tours: 112 },
+    { id: 6, title: 'Sharm El.S', src: '/images/home/dest-redsea.jpg', tours: 95 },
+    { id: 7, title: 'Marsa Alam', src: '/images/tour-red-sea.png', tours: 63 },
+    { id: 8, title: 'Dahab', src: '/images/saint-catherine.png', tours: 48 },
+  ];
+
+  const [destinations, setDestinations] = useState<any[]>(defaultDestinations);
+  const [loading, setLoading] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
 
