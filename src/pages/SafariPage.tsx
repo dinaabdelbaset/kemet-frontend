@@ -13,7 +13,7 @@ const SafariPage = () => {
   const [filteredSafaris, setFilteredSafaris] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sidebarFilters, setSidebarFilters] = useState<{ priceRange: [number, number]; stars: number[] }>({
-    priceRange: [0, 5000],
+    priceRange: [0, 30000],
     stars: []
   });
   const [activeCity, setActiveCity] = useState("All");
@@ -127,7 +127,7 @@ const SafariPage = () => {
                 <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
                   <p className="text-gray-500 text-lg">No safaris found matching your filters.</p>
                   <button
-                    onClick={() => setSidebarFilters({ priceRange: [0, 1000], stars: [] })}
+                    onClick={() => setSidebarFilters({ priceRange: [0, 30000], stars: [] })}
                     className="mt-4 text-[#EB662B] font-medium hover:underline"
                   >
                     Clear Filters

@@ -11,7 +11,7 @@ const ToursPage = () => {
   const uniqueCities = ["All Locations", ...new Set(tours.map((item: any) => item.location || item.city).filter(Boolean))];
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState<{ priceRange: [number, number]; stars: number[] }>({
-    priceRange: [0, 1000],
+    priceRange: [0, 30000],
     stars: []
   });
 

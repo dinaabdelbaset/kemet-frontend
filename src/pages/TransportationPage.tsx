@@ -16,7 +16,7 @@ const TransportationPage = () => {
   const [selectedCity, setSelectedCity] = useState("All Locations");
   const uniqueCities = ["All Locations", ...new Set(transportData.map((item: any) => item.location || item.city).filter(Boolean))];
   const [sidebarFilters, setSidebarFilters] = useState<{ priceRange: [number, number]; stars: number[] }>({
-    priceRange: [0, 5000],
+    priceRange: [0, 30000],
     stars: []
   });
 
