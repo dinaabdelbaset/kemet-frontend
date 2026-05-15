@@ -120,21 +120,38 @@ const AITripPlannerPage = () => {
     recognition.onend = () => setIsListening(false);
     
     recognition.onresult = async (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      showToast(`You said: "${transcript}"`);
+      const originalTranscript = event.results[0][0].transcript;
+      const transcript = originalTranscript.toLowerCase();
+      showToast(`You said: "${originalTranscript}"`);
       
-      if (transcript.includes("شرم") || transcript.toLowerCase().includes("sharm")) setFormData(f => ({...f, destination: "Sharm"}));
-      else if (transcript.includes("قاهرة") || transcript.toLowerCase().includes("cairo")) setFormData(f => ({...f, destination: "Cairo"}));
-      else if (transcript.includes("أقصر") || transcript.toLowerCase().includes("luxor")) setFormData(f => ({...f, destination: "Luxor"}));
-      else if (transcript.includes("غردقة") || transcript.toLowerCase().includes("hurghada")) setFormData(f => ({...f, destination: "Hurghada"}));
-      else if (transcript.includes("اسكندرية") || transcript.toLowerCase().includes("alex")) setFormData(f => ({...f, destination: "Alexandria"}));
+      let newDest = null;
+      if (transcript.includes("شرم") || transcript.includes("sharm")) newDest = "Sharm";
+      else if (transcript.includes("قاهرة") || transcript.includes("cairo")) newDest = "Cairo";
+      else if (transcript.includes("أقصر") || transcript.includes("luxor")) newDest = "Luxor";
+      else if (transcript.includes("غردقة") || transcript.includes("hurghada")) newDest = "Hurghada";
+      else if (transcript.includes("اسكندرية") || transcript.includes("alex")) newDest = "Alexandria";
+      else if (transcript.includes("اسوان") || transcript.includes("aswan")) newDest = "Aswan";
+      else if (transcript.includes("دهب") || transcript.includes("dahab")) newDest = "Dahab";
+      else if (transcript.includes("مرسى") || transcript.includes("marsa")) newDest = "MarsaAlam";
+      else if (transcript.includes("سيوة") || transcript.includes("siwa")) newDest = "Siwa";
       
+      let newBudget = null;
       const nums = transcript.match(/\d+/g);
       if (nums && nums.length > 0) {
-        if (transcript.includes("جنيه") || transcript.includes("دولار") || transcript.includes("الف") || transcript.includes("ميزانية")) {
-          setFormData(f => ({...f, budget: String(parseInt(nums[nums.length-1]) * (transcript.includes("الف") ? 1000 : 1))}));
+        if (transcript.includes("جنيه") || transcript.includes("دولار") || transcript.includes("الف") || transcript.includes("ميزانية") || transcript.includes("budget") || transcript.includes("pound") || transcript.includes("dollar") || transcript.includes("thousand") || transcript.includes("k")) {
+          let val = parseInt(nums[nums.length-1]);
+          if (transcript.includes("الف") || transcript.includes("thousand") || transcript.includes("k")) val *= 1000;
+          newBudget = String(val);
+        } else {
+          newBudget = String(parseInt(nums[nums.length-1]));
         }
       }
+
+      setFormData(f => ({
+        ...f, 
+        ...(newDest ? { destination: newDest } : {}),
+        ...(newBudget ? { budget: newBudget } : {})
+      }));
     };
     recognition.start();
   };
