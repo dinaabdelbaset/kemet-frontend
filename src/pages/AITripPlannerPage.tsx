@@ -136,14 +136,19 @@ const AITripPlannerPage = () => {
       else if (transcript.includes("سيوة") || transcript.includes("siwa")) newDest = "Siwa";
       
       let newBudget = null;
-      const nums = transcript.match(/\d+/g);
+      // Remove commas from numbers first (e.g. 10,000 -> 10000)
+      const cleanTranscript = transcript.replace(/,/g, '');
+      const nums = cleanTranscript.match(/\d+/g);
+      
       if (nums && nums.length > 0) {
-        if (transcript.includes("جنيه") || transcript.includes("دولار") || transcript.includes("الف") || transcript.includes("ميزانية") || transcript.includes("budget") || transcript.includes("pound") || transcript.includes("dollar") || transcript.includes("thousand") || transcript.includes("k")) {
+        // Take the largest number found as the budget if it's over 100, otherwise take the last one multiplied by 1000
+        let maxNum = Math.max(...nums.map(Number));
+        if (maxNum > 100) {
+          newBudget = String(maxNum);
+        } else if (transcript.includes("جنيه") || transcript.includes("دولار") || transcript.includes("الف") || transcript.includes("ميزانية") || transcript.includes("budget") || transcript.includes("pound") || transcript.includes("dollar") || transcript.includes("thousand") || transcript.includes("k") || transcript.includes("thousands")) {
           let val = parseInt(nums[nums.length-1]);
           if (transcript.includes("الف") || transcript.includes("thousand") || transcript.includes("k")) val *= 1000;
           newBudget = String(val);
-        } else {
-          newBudget = String(parseInt(nums[nums.length-1]));
         }
       }
 
