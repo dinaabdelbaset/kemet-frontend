@@ -49,10 +49,10 @@ const AITripPlannerPage = () => {
   const [result, setResult] = useState<any>(null);
 
   const loadingMessages = [
-    "جاري تحليل تفضيلاتك...",
-    "البحث في قاعدة البيانات عن أفضل الخيارات...",
-    "ترتيب الجدول الزمني المثالي...",
-    "إعداد خطة رحلتك الشاملة...",
+    "Analyzing your preferences...",
+    "Searching database for best options...",
+    "Organizing the perfect itinerary...",
+    "Preparing your comprehensive trip plan...",
   ];
 
   const { showToast } = useApp();
@@ -92,7 +92,7 @@ const AITripPlannerPage = () => {
       setResult(res.data);
     } catch (err: any) {
       console.error(err);
-      showToast(err.response?.data?.error || "حدث خطأ أثناء بناء الرحلة بالذكاء الاصطناعي. الرجاء المحاولة مرة أخرى.", true);
+      showToast(err.response?.data?.error || "An error occurred while generating the AI trip. Please try again.", true);
     } finally {
        clearInterval(interval);
        setIsGenerating(false);
@@ -115,10 +115,10 @@ const AITripPlannerPage = () => {
              <FaRobot className="text-[#D4AF37] text-3xl" />
           </div>
           <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-1">
-            مخطط الرحلات الذكي <span className="text-[#D4AF37]">✨</span>
+            Smart Trip Planner <span className="text-[#D4AF37]">✨</span>
           </h1>
           <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-            حدد وجهتك وميزانيتك ومدة الرحلة وسيقوم نظامنا الذكي ببناء رحلة كاملة من فنادق ومطاعم ومتاحف وجولات من بياناتنا الفعلية
+            Specify your destination, budget, and trip duration, and our AI system will build a full trip including hotels, restaurants, museums, and tours from our actual data
           </p>
         </div>
         <div className="absolute top-[-50%] left-[-10%] w-96 h-96 bg-[#D4AF37]/20 blur-[120px] rounded-full point-events-none" />
@@ -131,7 +131,7 @@ const AITripPlannerPage = () => {
         <div className="lg:col-span-5">
           <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-gray-100 sticky top-24">
             <h3 className="text-xl font-bold text-[#05073C] mb-4 flex items-center gap-2">
-              <FaMagic className="text-[#D4AF37]" /> تفضيلاتك
+              <FaMagic className="text-[#D4AF37]" /> Your Preferences
             </h3>
             
             <form onSubmit={handleGenerate} className="space-y-3">
@@ -139,7 +139,7 @@ const AITripPlannerPage = () => {
               {/* Destination */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
-                   <FaMapMarkedAlt className="text-gray-400" /> الوجهة
+                   <FaMapMarkedAlt className="text-gray-400" /> Destination
                 </label>
                 <select 
                   name="destination"
@@ -147,15 +147,15 @@ const AITripPlannerPage = () => {
                   onChange={handleChange}
                   className="w-full h-10 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all font-medium text-gray-700"
                 >
-                  <option value="Cairo">القاهرة (ثقافة وتاريخ) 🏛️</option>
-                  <option value="Luxor">الأقصر (آثار فرعونية) ⛏️</option>
-                  <option value="Aswan">أسوان (نوبة ومعابد) 🌊</option>
-                  <option value="Sharm">شرم الشيخ (بحر وغوص) 🏖️</option>
-                  <option value="Hurghada">الغردقة (شاطئ ومرح) 🐠</option>
-                  <option value="Alexandria">الإسكندرية (بحر وثقافة) 🌅</option>
-                  <option value="Dahab">دهب (مغامرة وحرية) 🏄‍♂️</option>
-                  <option value="MarsaAlam">مرسى علم (غوص ودلافين) 🐬</option>
-                  <option value="Siwa">واحة سيوا (صحراء ومغامرة) 🏜️</option>
+                  <option value="Cairo">Cairo (Culture & History) 🏛️</option>
+                  <option value="Luxor">Luxor (Pharaonic Ruins) ⛏️</option>
+                  <option value="Aswan">Aswan (Nubia & Temples) 🌊</option>
+                  <option value="Sharm">Sharm El Sheikh (Sea & Diving) 🏖️</option>
+                  <option value="Hurghada">Hurghada (Beach & Fun) 🐠</option>
+                  <option value="Alexandria">Alexandria (Sea & Culture) 🌅</option>
+                  <option value="Dahab">Dahab (Adventure & Freedom) 🏄‍♂️</option>
+                  <option value="MarsaAlam">Marsa Alam (Diving & Dolphins) 🐬</option>
+                  <option value="Siwa">Siwa Oasis (Desert & Adventure) 🏜️</option>
                 </select>
               </div>
 
@@ -163,12 +163,12 @@ const AITripPlannerPage = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                     <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
-                      <FaUsers className="text-gray-400" /> بالغين
+                      <FaUsers className="text-gray-400" /> Adults
                     </label>
                     <Input type="number" name="adults" min="1" value={formData.adults} onChange={handleChange} required />
                 </div>
                 <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">أطفال</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">Children</label>
                     <Input type="number" name="children" min="0" value={formData.children} onChange={handleChange} required />
                 </div>
               </div>
@@ -178,13 +178,13 @@ const AITripPlannerPage = () => {
                 <DateTimePicker 
                   compact 
                   showTime={false} 
-                  dateLabel="تاريخ الوصول" 
+                  dateLabel="Arrival Date" 
                   onDateChange={(val) => setFormData({...formData, startDate: val})} 
                 />
                 <DateTimePicker 
                   compact 
                   showTime={false} 
-                  dateLabel="تاريخ المغادرة" 
+                  dateLabel="Departure Date" 
                   onDateChange={(val) => setFormData({...formData, endDate: val})} 
                 />
               </div>
@@ -192,7 +192,7 @@ const AITripPlannerPage = () => {
               {/* Budget */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
-                   <FaMoneyBillWave className="text-gray-400" /> الميزانية الإجمالية
+                   <FaMoneyBillWave className="text-gray-400" /> Total Budget
                 </label>
                 <div className="flex gap-2">
                   <select 
@@ -206,14 +206,14 @@ const AITripPlannerPage = () => {
                     <option value="EUR">EUR €</option>
                     <option value="GBP">GBP £</option>
                   </select>
-                  <Input type="number" name="budget" placeholder="مثال: 2500" className="flex-1" value={formData.budget} onChange={handleChange} required />
+                  <Input type="number" name="budget" placeholder="e.g.: 2500" className="flex-1" value={formData.budget} onChange={handleChange} required />
                 </div>
               </div>
 
                {/* Vibe */}
                <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
-                   <FaStar className="text-gray-400" /> نوع الرحلة
+                   <FaStar className="text-gray-400" /> Trip Vibe
                 </label>
                 <select 
                   name="vibe"
@@ -222,10 +222,10 @@ const AITripPlannerPage = () => {
                   className="w-full h-10 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all font-bold text-gray-700 text-sm"
                 >
                   <option>Surprise Me 🎁</option>
-                  <option>استرخاء وسبا 💆‍♂️</option>
-                  <option>تاريخ وثقافة 🏛️</option>
-                  <option>مغامرة وسفاري 🏜️</option>
-                  <option>ترفيه وحياة ليلية 🪩</option>
+                  <option>Relaxation & Spa 💆‍♂️</option>
+                  <option>History & Culture 🏛️</option>
+                  <option>Adventure & Safari 🏜️</option>
+                  <option>Entertainment & Nightlife 🪩</option>
                 </select>
               </div>
 
@@ -234,7 +234,7 @@ const AITripPlannerPage = () => {
                 className="w-full py-4 mt-2 bg-[#05073C] hover:bg-[#1A365D] text-white font-black text-lg rounded-xl shadow-[0_10px_20px_rgba(5,7,60,0.2)] hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)] border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-1 transition-all duration-300"
                 disabled={isGenerating}
               >
-                {isGenerating ? "جاري التخطيط..." : "ابدأ تخطيط الرحلة ✨"}
+                {isGenerating ? "Planning..." : "Start Trip Planning ✨"}
               </Button>
             </form>
           </div>
@@ -249,9 +249,9 @@ const AITripPlannerPage = () => {
                <div className="w-24 h-24 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mb-6">
                  <FaRobot className="text-[#D4AF37] text-4xl opacity-50" />
                </div>
-               <h3 className="text-2xl font-bold text-gray-400 mb-1">في انتظار بياناتك</h3>
+               <h3 className="text-2xl font-bold text-gray-400 mb-1">Awaiting your details</h3>
                <p className="text-gray-500 max-w-sm">
-                 املأ النموذج على اليسار وسيقوم نظامنا الذكي ببناء رحلة كاملة مخصصة لك من بيانات الموقع الفعلية.
+                 Fill the form on the left and our AI system will build a complete custom trip for you from actual site data.
                </p>
             </div>
           )}
@@ -264,7 +264,7 @@ const AITripPlannerPage = () => {
                   <div className="absolute inset-2 rounded-full border-r-4 border-[#05073C] border-opacity-30 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
                   <FaRobot className="text-5xl text-[#D4AF37] animate-bounce" />
                </div>
-               <h3 className="text-2xl font-extrabold text-[#05073C] mb-1">النظام يعمل...</h3>
+               <h3 className="text-2xl font-extrabold text-[#05073C] mb-1">System is working...</h3>
                <p className="text-[#EB662B] font-bold text-lg animate-fade-in-up transition-all duration-300 mt-4 h-8">
                  {loadingMessages[loadingStep]}
                </p>
@@ -279,29 +279,29 @@ const AITripPlannerPage = () => {
                    <div className="absolute top-0 right-0 p-6 opacity-10">
                       <FaMagic className="text-9xl" />
                    </div>
-                   <span className="inline-block px-3 py-1 bg-[#D4AF37] text-[#05073C] text-xs font-black tracking-widest uppercase rounded mb-4">خطة رحلة ذكية</span>
+                   <span className="inline-block px-3 py-1 bg-[#D4AF37] text-[#05073C] text-xs font-black tracking-widest uppercase rounded mb-4">Smart Trip Plan</span>
                    <h2 className="text-3xl md:text-4xl font-extrabold leading-tight mb-4">{result.title}</h2>
                    
                    <div className="flex flex-wrap items-center gap-6 text-sm font-medium">
                      <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><FaMoneyBillWave className="text-[#D4AF37]" /></div>
                         <div>
-                          <p className="text-white/60 text-xs">التكلفة التقديرية</p>
+                          <p className="text-white/60 text-xs">Estimated Cost</p>
                           <p className="font-bold text-lg"><PriceDisplay price={Number(result.totalCost)} /></p>
                         </div>
                      </div>
                      <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><FaCalendarAlt className="text-[#D4AF37]" /></div>
                         <div>
-                          <p className="text-white/60 text-xs">المدة</p>
-                          <p className="font-bold text-lg">{result.days} أيام</p>
+                          <p className="text-white/60 text-xs">Duration</p>
+                          <p className="font-bold text-lg">{result.days} Days</p>
                         </div>
                      </div>
                      <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><FaUsers className="text-[#D4AF37]" /></div>
                         <div>
-                          <p className="text-white/60 text-xs">المسافرون</p>
-                          <p className="font-bold text-lg">{formData.adults} بالغين + {formData.children} أطفال</p>
+                          <p className="text-white/60 text-xs">Passengers</p>
+                          <p className="font-bold text-lg">{formData.adults} Adults + {formData.children} Children</p>
                         </div>
                      </div>
                    </div>
@@ -314,7 +314,7 @@ const AITripPlannerPage = () => {
                    <div className="mb-10">
                       <h3 className="text-xl font-bold text-[#05073C] border-b border-gray-100 pb-4 mb-6 flex items-center gap-2">
                         <span className="w-8 h-8 rounded-full bg-[#EB662B]/10 text-[#EB662B] flex items-center justify-center text-sm"><FaHotel /></span>
-                        الفندق المقترح
+                        Suggested Hotel
                       </h3>
                       
                       <Link to={`/hotels/${result.hotel.id || 1}`} className="flex flex-col sm:flex-row gap-6 bg-gray-50 rounded-2xl p-4 border border-transparent hover:border-[#D4AF37] transition-all hover:shadow-[0_10px_30px_rgba(212,175,55,0.15)] group">
@@ -324,8 +324,8 @@ const AITripPlannerPage = () => {
                              <FaStar/><FaStar/><FaStar/><FaStar/><FaStar/> <span className="text-gray-500 ml-1">({result.hotel.rating})</span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 group-hover:text-[#EB662B] transition-colors">{result.hotel.name}</h4>
-                          <p className="text-sm text-gray-500 mt-1 mb-4">{result.hotel.city || result.destination} • مطابق لتفضيلاتك</p>
-                          <div className="font-black text-[#05073C]"><PriceDisplay price={Number(result.hotel.price)} /> <span className="text-xs text-gray-400 font-medium">/ليلة</span></div>
+                          <p className="text-sm text-gray-500 mt-1 mb-4">{result.hotel.city || result.destination} • Matches your preferences</p>
+                          <div className="font-black text-[#05073C]"><PriceDisplay price={Number(result.hotel.price)} /> <span className="text-xs text-gray-400 font-medium">/night</span></div>
                         </div>
                       </Link>
                    </div>
@@ -335,7 +335,7 @@ const AITripPlannerPage = () => {
                      <div key={day.day} className="mb-10">
                        <h3 className="text-xl font-bold text-[#05073C] border-b border-gray-100 pb-4 mb-6 flex items-center gap-2">
                          <span className="w-8 h-8 rounded-full bg-[#EB662B]/10 text-[#EB662B] flex items-center justify-center text-sm font-bold">{day.day}</span>
-                         اليوم {day.day}
+                         Day {day.day}
                        </h3>
                        
                        <div className="space-y-3">
@@ -354,7 +354,7 @@ const AITripPlannerPage = () => {
                                </div>
                              </div>
                              <div className="text-right">
-                               <div className="font-bold text-[#05073C]">{act.price > 0 ? `$${act.price}` : "مجاناً"}</div>
+                               <div className="font-bold text-[#05073C]">{act.price > 0 ? `$${act.price}` : "Free"}</div>
                              </div>
                            </div>
                          ))}
@@ -367,7 +367,7 @@ const AITripPlannerPage = () => {
                      <div className="mb-10">
                        <h3 className="text-xl font-bold text-[#05073C] border-b border-gray-100 pb-4 mb-6 flex items-center gap-2">
                          <span className="w-8 h-8 rounded-full bg-[#EB662B]/10 text-[#EB662B] flex items-center justify-center text-sm"><FaBus /></span>
-                         المواصلات المقترحة
+                         Suggested Transport
                        </h3>
                        <Link to={result.transport.link} className="flex items-center justify-between p-5 rounded-2xl border border-gray-100 bg-gray-50 hover:border-[#D4AF37] transition-all">
                          <div>
@@ -404,10 +404,10 @@ const AITripPlannerPage = () => {
                         }}
                         className="flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg bg-[#EB662B] text-white hover:bg-[#d55822] transition text-center"
                       >
-                       <FaCheckCircle /> احجز الرحلة كاملة
+                       <FaCheckCircle /> Book the full trip
                      </Link>
                      <button onClick={() => setResult(null)} className="flex-1 py-4 rounded-xl font-bold text-[#05073C] border border-gray-200 hover:bg-gray-50 flex items-center justify-center transition">
-                       تعديل التفضيلات
+                       Edit preferences
                      </button>
                    </div>
 
