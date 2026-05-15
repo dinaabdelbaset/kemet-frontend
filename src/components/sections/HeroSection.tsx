@@ -8,7 +8,10 @@ import gsap from "gsap";
 import Magnetic from "../common/Magnetic";
 
 const HeroSection = () => {
-  const [heroSlidesData, setHeroSlidesData] = useState<any[]>([]);
+  const [heroSlidesData, setHeroSlidesData] = useState<any[]>([
+    // Fallback slide to show immediately before API loads
+    { type: "image", src: "/pyramids_sound_light.png", alt: "Egypt Pyramids" }
+  ]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const heroRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -96,7 +99,11 @@ const HeroSection = () => {
     const fetchSlides = async () => {
       try {
         const data = await getHeroSlides();
-        if (Array.isArray(data) && data.length > 0) setHeroSlidesData(data);
+        if (Array.isArray(data) && data.length > 0) {
+          // Add a small delay to ensure smooth transition from fallback if needed,
+          // but we can just set it directly.
+          setHeroSlidesData(data);
+        }
       } catch (error) {
         console.error('Error fetching hero slides:', error);
       }
@@ -117,19 +124,21 @@ const HeroSection = () => {
   const slides = heroSlidesData.map((item, index) => {
     const isActive = index === currentIndex;
     return (
-      <div key={index} className="w-full h-full shrink-0 relative">
+      <div key={index} className="w-full h-full shrink-0 relative bg-[#05073C]">
         {item.type === "video" ? (
           <video
             src={item.src}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-80"
             autoPlay={isActive}
             muted
             playsInline
-            onEnded={NextImage}
-            preload={isActive ? "auto" : "none"}
+            loop={heroSlidesData.length === 1}
+            onEnded={heroSlidesData.length > 1 ? NextImage : undefined}
+            preload="auto"
+            poster="/pyramids_sound_light.png"
           />
         ) : (
-          <Image src={item.src} alt={item.alt || ""} className="w-full h-full object-cover" eager={index === 0} />
+          <Image src={item.src} alt={item.alt || ""} className="w-full h-full object-cover opacity-80" eager={index === 0} />
         )}
       </div>
     );
