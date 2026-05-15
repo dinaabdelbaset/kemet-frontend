@@ -1,6 +1,6 @@
 import PriceDisplay from "../components/common/PriceDisplay";
-import { useState, useEffect, useRef } from "react";
-import { FaRobot, FaCalendarAlt, FaUsers, FaMoneyBillWave, FaMapMarkedAlt, FaMagic, FaCheckCircle, FaStar, FaHotel, FaUtensils, FaLandmark, FaBus, FaShoppingBag, FaCamera, FaMicrophone } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaRobot, FaCalendarAlt, FaUsers, FaMoneyBillWave, FaMapMarkedAlt, FaMagic, FaCheckCircle, FaStar, FaHotel, FaUtensils, FaLandmark, FaBus, FaShoppingBag } from "react-icons/fa";
 import Button from "../components/Ui/Button";
 import Input from "../components/Ui/Input";
 import DateTimePicker from "@/components/Ui/DateTimePicker";
@@ -47,9 +47,6 @@ const AITripPlannerPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [result, setResult] = useState<any>(null);
-  const [isListening, setIsListening] = useState(false);
-  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadingMessages = [
     "Analyzing your preferences...",
@@ -106,86 +103,6 @@ const AITripPlannerPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleVoiceInput = () => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      showToast("Voice recognition not supported in this browser.", true);
-      return;
-    }
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'ar-EG';
-    recognition.interimResults = false;
-    
-    recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
-    
-    recognition.onresult = async (event: any) => {
-      const originalTranscript = event.results[0][0].transcript;
-      const transcript = originalTranscript.toLowerCase();
-      showToast(`You said: "${originalTranscript}"`);
-      
-      let newDest = null;
-      if (transcript.includes("شرم") || transcript.includes("sharm")) newDest = "Sharm";
-      else if (transcript.includes("قاهرة") || transcript.includes("cairo")) newDest = "Cairo";
-      else if (transcript.includes("أقصر") || transcript.includes("luxor")) newDest = "Luxor";
-      else if (transcript.includes("غردقة") || transcript.includes("hurghada")) newDest = "Hurghada";
-      else if (transcript.includes("اسكندرية") || transcript.includes("alex")) newDest = "Alexandria";
-      else if (transcript.includes("اسوان") || transcript.includes("aswan")) newDest = "Aswan";
-      else if (transcript.includes("دهب") || transcript.includes("dahab")) newDest = "Dahab";
-      else if (transcript.includes("مرسى") || transcript.includes("marsa")) newDest = "MarsaAlam";
-      else if (transcript.includes("سيوة") || transcript.includes("siwa")) newDest = "Siwa";
-      
-      let newBudget = null;
-      // Remove commas from numbers first (e.g. 10,000 -> 10000)
-      const cleanTranscript = transcript.replace(/,/g, '');
-      const nums = cleanTranscript.match(/\d+/g);
-      
-      if (nums && nums.length > 0) {
-        // Take the largest number found as the budget if it's over 100, otherwise take the last one multiplied by 1000
-        let maxNum = Math.max(...nums.map(Number));
-        if (maxNum > 100) {
-          newBudget = String(maxNum);
-        } else if (transcript.includes("جنيه") || transcript.includes("دولار") || transcript.includes("الف") || transcript.includes("ميزانية") || transcript.includes("budget") || transcript.includes("pound") || transcript.includes("dollar") || transcript.includes("thousand") || transcript.includes("k") || transcript.includes("thousands")) {
-          let val = parseInt(nums[nums.length-1]);
-          if (transcript.includes("الف") || transcript.includes("thousand") || transcript.includes("k")) val *= 1000;
-          newBudget = String(val);
-        }
-      }
-
-      setFormData(f => ({
-        ...f, 
-        ...(newDest ? { destination: newDest } : {}),
-        ...(newBudget ? { budget: newBudget } : {})
-      }));
-    };
-    recognition.start();
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsAnalyzingImage(true);
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64String = reader.result as string;
-      try {
-        const res = await axiosClient.post('/vision/analyze', { image: base64String });
-        if (res.data.destination) {
-          const newDest = res.data.destination;
-          setFormData(f => ({ ...f, destination: newDest, vibe: res.data.vibe || f.vibe }));
-          showToast(`Detected: ${newDest} (${res.data.monument || ''})`);
-        }
-      } catch (err: any) {
-        showToast(err.response?.data?.error || "Could not analyze image. Try again.", true);
-      } finally {
-        setIsAnalyzingImage(false);
-        if (fileInputRef.current) fileInputRef.current.value = '';
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
   
   const filteredHotelsData = hotelsData.filter((item: any) => selectedCity === "All Locations" || (item.location || item.city) === selectedCity);
   return (
@@ -213,17 +130,8 @@ const AITripPlannerPage = () => {
         {/* Form Column */}
         <div className="lg:col-span-5">
           <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-gray-100 sticky top-24">
-            <h3 className="text-xl font-bold text-[#05073C] mb-4 flex items-center justify-between">
-              <span className="flex items-center gap-2"><FaMagic className="text-[#D4AF37]" /> Your Preferences</span>
-              <div className="flex gap-2">
-                <button onClick={handleVoiceInput} type="button" className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-100 text-gray-600 hover:bg-[#05073C] hover:text-white'}`} title="Speak to auto-fill">
-                  <FaMicrophone />
-                </button>
-                <button onClick={() => fileInputRef.current?.click()} type="button" className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isAnalyzingImage ? 'bg-[#D4AF37] text-white animate-pulse' : 'bg-gray-100 text-gray-600 hover:bg-[#05073C] hover:text-white'}`} title="Upload photo to auto-fill">
-                  <FaCamera />
-                </button>
-                <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
-              </div>
+            <h3 className="text-xl font-bold text-[#05073C] mb-4 flex items-center gap-2">
+              <FaMagic className="text-[#D4AF37]" /> Your Preferences
             </h3>
             
             <form onSubmit={handleGenerate} className="space-y-3">
