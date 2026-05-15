@@ -57,7 +57,7 @@ const DealCard = ({ deal }: { deal: DealCategory }) => {
         {/* Price Badge */}
         <div className="absolute top-3 right-3">
           <div className="bg-white/95 backdrop-blur-sm text-gray-900 font-bold text-xs px-3 py-1.5 rounded-full shadow-lg group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
-            From <PriceDisplay amount={Number(deal.price)} /> {deal.category === 'Hotel' && '/night'}
+            From <PriceDisplay price={Number(deal.price)} /> {deal.category === 'Hotel' && '/night'}
           </div>
         </div>
 
@@ -105,7 +105,7 @@ const DealCard = ({ deal }: { deal: DealCategory }) => {
             style={{ backgroundColor: deal.color }}
           >
             <span className="flex items-center justify-center gap-1">
-              Book Now — From <PriceDisplay amount={Number(deal.price)} /> {deal.category === 'Hotel' && '/night'}
+              Book Now — From <PriceDisplay price={Number(deal.price)} /> {deal.category === 'Hotel' && '/night'}
             </span>
           </Link>
           <div className="flex items-center gap-1 text-sm">
