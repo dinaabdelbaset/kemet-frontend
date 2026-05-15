@@ -204,22 +204,18 @@ const BookingDetailsStep = ({ data, itemPrice, itemType, onChange }: Props) => {
           </div>
         ) : (
           <>
-            <h3 className="text-xl font-bold text-[#05073C]">Select Your Tickets</h3>
+            <h3 className="text-xl font-bold text-[#05073C]">Select Number of Tickets</h3>
             
             <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-600 space-y-2">
               <p className="flex items-start gap-2 before:content-['•'] before:text-gray-400">
-                Free for kids under 6 and disabled visitors (74%+)
-              </p>
-              <p className="flex items-start gap-2 before:content-['•'] before:text-gray-400">
-                Pregnant women, families with strollers, and visitors on crutches can buy priority tickets at the venue
+                Unified ticket price for all attendees.
               </p>
             </div>
 
-            {/* Adult Ticket */}
-            <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
+            <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between mt-4">
               <div>
-                <h4 className="font-bold text-gray-900">Adult (18+)</h4>
-                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay price={itemPrice} /></div>
+                <h4 className="font-bold text-gray-900">Number of Tickets</h4>
+                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay price={itemPrice} /> / ticket</div>
               </div>
               <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden h-10">
                 <button 
@@ -230,47 +226,6 @@ const BookingDetailsStep = ({ data, itemPrice, itemType, onChange }: Props) => {
                 <button 
                   className="px-3 hover:bg-gray-50 h-full text-gray-600 font-medium"
                   onClick={() => handleTicketChange("adult", 1)}
-                >+</button>
-              </div>
-            </div>
-
-            {/* Child Ticket */}
-            <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
-              <div>
-                <h4 className="font-bold text-gray-900">Child (6-17)</h4>
-                <p className="text-xs text-gray-500 mt-1">With valid ID</p>
-                <p className="text-xs text-gray-500">Only in combination with: Adult (18+)</p>
-                <div className="font-bold text-[#EB662B] mt-1"><PriceDisplay price={itemType === 'flight' ? Math.round(itemPrice * 0.75) : 22} /></div>
-              </div>
-              <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden h-10">
-                <button 
-                  className="px-3 hover:bg-gray-50 h-full text-gray-500 font-medium"
-                  onClick={() => handleTicketChange("child", -1)}
-                >-</button>
-                <div className="w-10 text-center font-semibold text-gray-900 h-full flex items-center justify-center bg-gray-50">{data.tickets.child}</div>
-                <button 
-                  className="px-3 hover:bg-gray-50 h-full text-gray-600 font-medium"
-                  onClick={() => handleTicketChange("child", 1)}
-                >+</button>
-              </div>
-            </div>
-
-            {/* Infant Ticket */}
-            <div className="border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
-              <div>
-                <h4 className="font-bold text-gray-900">Infant (0-5)</h4>
-                <p className="text-xs text-gray-500 mt-1">Only in combination with: Adult (18+)</p>
-                <div className="font-bold text-[#EB662B] mt-1 uppercase text-sm">Free</div>
-              </div>
-              <div className="flex items-center gap-1 border border-gray-200 rounded-lg overflow-hidden h-10">
-                <button 
-                  className="px-3 hover:bg-gray-50 h-full text-gray-500 font-medium"
-                  onClick={() => handleTicketChange("infant", -1)}
-                >-</button>
-                <div className="w-10 text-center font-semibold text-gray-900 h-full flex items-center justify-center bg-gray-50">{data.tickets.infant}</div>
-                <button 
-                  className="px-3 hover:bg-gray-50 h-full text-gray-600 font-medium"
-                  onClick={() => handleTicketChange("infant", 1)}
                 >+</button>
               </div>
             </div>

@@ -499,7 +499,7 @@ const CheckoutPage = () => {
                         <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center font-semibold text-xs text-gray-600">
                           {checkoutData.booking.tickets.adult}
                         </span>
-                        <span className="text-gray-600">{checkoutData.item.type === 'hotel' ? 'Nights' : checkoutData.item.type === 'bus' ? 'Seats' : checkoutData.item.type === 'event' ? 'Tickets' : 'Adult (18+)'} (<PriceDisplay price={checkoutData.item.price} />)</span>
+                        <span className="text-gray-600">{checkoutData.item.type === 'hotel' ? 'Nights' : checkoutData.item.type === 'bus' ? 'Seats' : checkoutData.item.type === 'flight' ? 'Adult (18+)' : 'Tickets'} (<PriceDisplay price={checkoutData.item.price} />)</span>
                       </div>
                       <span className="font-semibold"><PriceDisplay price={checkoutData.booking.tickets.adult * checkoutData.item.price} /></span>
                     </div>
