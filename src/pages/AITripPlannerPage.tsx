@@ -109,20 +109,21 @@ const AITripPlannerPage = () => {
     <div className="min-h-screen bg-gray-50 pt-[70px] pb-6 overflow-x-hidden">
       
       {/* Header Banner */}
-      <div className="bg-[#05073C] py-4 px-4 relative overflow-hidden mb-4">
+      <div className="bg-[#05073C] py-14 px-4 relative overflow-hidden mb-8 shadow-xl">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-overlay"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm border border-white/20">
-             <FaRobot className="text-[#D4AF37] text-3xl" />
+          <div className="inline-flex items-center justify-center p-4 bg-white/5 rounded-3xl mb-5 backdrop-blur-md border border-white/10 shadow-[0_0_30px_rgba(212,175,55,0.1)]">
+             <FaMagic className="text-[#D4AF37] text-4xl" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-1">
-            Smart Trip Planner <span className="text-[#D4AF37]">✨</span>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-md">
+            Smart AI Trip Planner ✨
           </h1>
-          <p className="text-gray-300 text-sm max-w-2xl mx-auto leading-relaxed">
-            Specify your destination, budget, and trip duration, and our AI system will build a full trip including hotels, restaurants, museums, and tours from our actual data
+          <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
+            Let our advanced artificial intelligence engine craft your perfect Egyptian itinerary in seconds based on real-time data and availability.
           </p>
         </div>
-        <div className="absolute top-[-50%] left-[-10%] w-96 h-96 bg-[#D4AF37]/20 blur-[120px] rounded-full point-events-none" />
-        <div className="absolute bottom-[-50%] right-[-10%] w-96 h-96 bg-[#EB662B]/20 blur-[120px] rounded-full point-events-none" />
+        <div className="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-[#D4AF37]/20 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-[#EB662B]/20 blur-[100px] rounded-full pointer-events-none" />
       </div>
 
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -246,16 +247,71 @@ const AITripPlannerPage = () => {
         {/* Result Column */}
         <div className="lg:col-span-7">
           
-          {/* Default Empty State */}
+          {/* Default Empty State - WOW Animated AI Design */}
           {!isGenerating && !result && (
-            <div className="h-full flex flex-col items-center justify-center text-center p-10 bg-white/50 rounded-3xl border border-dashed border-gray-300 min-h-[500px]">
-               <div className="w-24 h-24 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mb-6">
-                 <FaRobot className="text-[#D4AF37] text-4xl opacity-50" />
+            <div className="relative h-full flex flex-col items-center justify-center text-center p-8 rounded-[2.5rem] min-h-[600px] overflow-hidden group shadow-[0_20px_60px_rgba(0,0,0,0.15)] bg-[#07091A]">
+               
+               {/* 1. Animated Gradient Mesh Background */}
+               <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                 <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-[#D4AF37]/20 blur-[120px] rounded-full animate-pulse" style={{ animationDuration: '6s' }}></div>
+                 <div className="absolute bottom-[0%] -right-[10%] w-[60%] h-[60%] bg-[#EB662B]/20 blur-[120px] rounded-full animate-pulse" style={{ animationDuration: '8s', animationDirection: 'alternate' }}></div>
+                 <div className="absolute top-[30%] left-[30%] w-[40%] h-[40%] bg-blue-600/20 blur-[100px] rounded-full animate-pulse" style={{ animationDuration: '10s' }}></div>
                </div>
-               <h3 className="text-2xl font-bold text-gray-400 mb-1">Awaiting your details</h3>
-               <p className="text-gray-500 max-w-sm">
-                 Fill the form on the left and our AI system will build a complete custom trip for you from actual site data.
-               </p>
+
+               {/* 2. Abstract Geometric Grid */}
+               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.05] pointer-events-none"></div>
+               
+               {/* 3. The Central AI Core (WOW Animation) */}
+               <div className="relative z-10 w-72 h-72 flex items-center justify-center mb-6">
+                 {/* Outer Radar Rings */}
+                 <div className="absolute inset-0 border border-white/10 rounded-full animate-spin" style={{ animationDuration: '15s', animationTimingFunction: 'linear' }}></div>
+                 <div className="absolute inset-6 border-2 border-t-[#D4AF37]/50 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin" style={{ animationDuration: '4s', animationTimingFunction: 'linear' }}></div>
+                 <div className="absolute inset-12 border-2 border-b-[#EB662B]/60 border-t-transparent border-r-transparent border-l-transparent rounded-full animate-spin" style={{ animationDuration: '6s', animationTimingFunction: 'linear', animationDirection: 'reverse' }}></div>
+                 <div className="absolute inset-[4.5rem] border border-white/5 rounded-full border-dashed animate-spin" style={{ animationDuration: '20s', animationTimingFunction: 'linear' }}></div>
+                 
+                 {/* Orbiting Particles */}
+                 <div className="absolute inset-0 animate-spin" style={{ animationDuration: '8s', animationTimingFunction: 'linear' }}>
+                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full absolute -top-1.5 left-1/2 shadow-[0_0_15px_#D4AF37]"></div>
+                 </div>
+                 <div className="absolute inset-6 animate-spin" style={{ animationDuration: '5s', animationTimingFunction: 'linear', animationDirection: 'reverse' }}>
+                    <div className="w-2 h-2 bg-[#EB662B] rounded-full absolute bottom-1 left-1/4 shadow-[0_0_10px_#EB662B]"></div>
+                 </div>
+
+                 {/* Central Orb */}
+                 <div className="relative w-28 h-28 rounded-full flex items-center justify-center bg-gradient-to-tr from-[#D4AF37] to-[#EB662B] shadow-[0_0_50px_rgba(212,175,55,0.6)] animate-bounce cursor-pointer group-hover:scale-110 transition-transform duration-500" style={{ animationDuration: '4s' }}>
+                    <div className="absolute inset-0 bg-white/30 rounded-full animate-ping opacity-50" style={{ animationDuration: '3s' }}></div>
+                    <FaRobot className="text-white text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]" />
+                 </div>
+               </div>
+
+               {/* 4. Animated Text */}
+               <div className="relative z-10 flex flex-col items-center">
+                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full mb-5 backdrop-blur-md shadow-lg">
+                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span className="text-[10px] font-black text-white tracking-[0.2em] uppercase">AI Core Online</span>
+                 </div>
+                 <h3 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-[#D4AF37] mb-4 tracking-tight drop-shadow-2xl">
+                   Ready to Calculate
+                 </h3>
+                 <p className="text-gray-400 max-w-md text-[15px] leading-relaxed font-medium">
+                   Initialize your parameters on the left. Our intelligent engine will evaluate millions of routing possibilities to synthesize your ultimate Egyptian experience.
+                 </p>
+               </div>
+
+               {/* 5. Floating Feature Cards (Bottom) */}
+               <div className="relative z-10 grid grid-cols-3 gap-4 mt-10 w-full max-w-md">
+                 {[
+                   { icon: <FaCheckCircle/>, title: "Precision", color: "text-green-400", delay: "0s" },
+                   { icon: <FaMagic/>, title: "Curated", color: "text-[#D4AF37]", delay: "0.2s" },
+                   { icon: <FaStar/>, title: "Premium", color: "text-[#EB662B]", delay: "0.4s" }
+                 ].map((feat, idx) => (
+                   <div key={idx} className="flex flex-col items-center justify-center p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl transform hover:-translate-y-2 hover:bg-white/10 transition-all duration-300 shadow-xl" style={{ animation: `fade-in-up 1s ease-out ${feat.delay} both` }}>
+                     <div className={`text-2xl mb-2 animate-pulse ${feat.color}`} style={{ animationDuration: '3s', animationDelay: feat.delay }}>{feat.icon}</div>
+                     <span className="text-white/80 text-[10px] font-bold tracking-widest uppercase">{feat.title}</span>
+                   </div>
+                 ))}
+               </div>
+
             </div>
           )}
 

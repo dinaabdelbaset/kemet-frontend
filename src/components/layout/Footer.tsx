@@ -60,17 +60,17 @@ const Footer = () => {
 
 
   return (
-    <footer className="bg-[#FFF7F3] pt-16">
+    <footer className="bg-[#FFF7F3] dark:bg-[#0f0f1a] pt-16 border-t border-transparent dark:border-white/5 relative z-10">
       <div className="container mx-auto px-4">
         {/* Top */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-12">
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-heading mb-4">Contact</h4>
-            <p className="text-sm text-body leading-relaxed">
+            <h4 className="font-semibold text-heading dark:text-white mb-4">Contact</h4>
+            <p className="text-sm text-body dark:text-gray-300 leading-relaxed">
               328 Queensberry Street, cairo,Egypt
             </p>
-            <p className="mt-3 text-sm text-body text-black font-semibold">nasere489@gmail.com</p>
+            <p className="mt-3 text-sm text-body text-black dark:text-white font-semibold">dinaabdelbaset@gmail.com</p>
             <div className="flex items-center gap-3 mt-6">
               <a href="https://www.facebook.com/share/14UL6j576Qw/" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700 transition transform hover:scale-110 shadow-sm" aria-label="Visit our Facebook">
                 <FaFacebookF size={14} />
@@ -89,31 +89,31 @@ const Footer = () => {
 
           {/* Company */}
           <div>
-            <h4 className="font-semibold text-heading mb-4">Company</h4>
-            <ul className="space-y-2 text-sm text-body">{companyLinks}</ul>
+            <h4 className="font-semibold text-heading dark:text-white mb-4">Company</h4>
+            <ul className="space-y-2 text-sm text-body dark:text-gray-300">{companyLinks}</ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="font-semibold text-heading mb-4">Support</h4>
-            <ul className="space-y-2 text-sm text-body">{supportLinks}</ul>
+            <h4 className="font-semibold text-heading dark:text-white mb-4">Support</h4>
+            <ul className="space-y-2 text-sm text-body dark:text-gray-300">{supportLinks}</ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h4 className="font-semibold text-heading mb-4">Newsletter</h4>
-            <p className="text-sm text-body mb-4">
+            <h4 className="font-semibold text-heading dark:text-white mb-4">Newsletter</h4>
+            <p className="text-sm text-body dark:text-gray-300 mb-4">
               Subscribe to the free newsletter and stay up to date
             </p>
 
-            <div className="flex bg-white rounded-md overflow-hidden border">
+            <div className="flex bg-white dark:bg-white/10 rounded-md overflow-hidden border dark:border-white/10">
               <Input
                 name="sendEmail"
                 type="email"
                 placeholder="Your email address"
-                className="flex-1 py-3 pl-2 text-sm outline-none"
+                className="flex-1 py-3 pl-2 text-sm outline-none bg-transparent dark:text-white dark:placeholder-gray-400"
               />
-              <Button className="flex-1  text-sm font-medium text-white ">
+              <Button className="flex-1 text-sm font-medium text-white bg-[#EB662B] hover:bg-[#d55822]">
                 Send
               </Button>
             </div>
@@ -121,14 +121,14 @@ const Footer = () => {
 
           {/* Mobile Apps */}
           <div>
-            <h4 className="font-semibold text-heading mb-4">Mobile Apps</h4>
-            <ul className="space-y-2 text-sm text-body">{mobileLinks}</ul>
+            <h4 className="font-semibold text-heading dark:text-white mb-4">Mobile Apps</h4>
+            <ul className="space-y-2 text-sm text-body dark:text-gray-300">{mobileLinks}</ul>
           </div>
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-default py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-body">© Copyright Viatours 2026</p>
+        <div className="border-t border-default dark:border-white/10 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-body dark:text-gray-400">© Copyright Viatours 2026</p>
 
           <div className="flex items-center gap-2">{PayImages}</div>
         </div>

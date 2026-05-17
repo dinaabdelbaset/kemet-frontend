@@ -43,7 +43,7 @@ export default function AdminApprovalsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pt-32 pb-12">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-[#05073C] mb-2 flex items-center gap-3">

@@ -32,7 +32,7 @@ const LanguageSwitcher = ({ scrolled = true }: { scrolled?: boolean }) => {
       document.documentElement.lang = 'ar';
     } else {
       document.documentElement.dir = 'ltr';
-      document.documentElement.lang = currentLang.code;
+      document.documentElement.lang = 'auto'; // allow Google Translate to detect Arabic
     }
   }, [currentLang]);
 
@@ -46,7 +46,7 @@ const LanguageSwitcher = ({ scrolled = true }: { scrolled?: boolean }) => {
       document.documentElement.lang = 'ar';
     } else {
       document.documentElement.dir = 'ltr';
-      document.documentElement.lang = lang.code;
+      document.documentElement.lang = 'auto'; // allow Google Translate to detect Arabic
     }
 
     // Safely configure Google Translate Cookies to aggressively translate

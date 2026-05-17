@@ -89,13 +89,19 @@ const ExplorePage = () => {
 
     // Smart dynamic image mapping based on City + Category using deterministic hashing
     const getCitySpecificImage = (city: string, category: string, index: number) => {
-        const hash = getCityHash(city) + (index * 7); // Multiply index to avoid sequential adjacent picks
+        const hash = getCityHash(city) + (index * 7); 
+        const loc = city.toLowerCase();
+        const isCoastal = loc.includes("marsa") || loc.includes("sharm") || loc.includes("hurghada") || loc.includes("dahab") || loc.includes("matrouh") || loc === "مرسى علم" || loc === "شرم الشيخ" || loc === "الغردقة" || loc === "دهب";
 
         if (category === "Hotels" || category === "Luxury/Budget Hotel") {
-           const imgs = ['/images/tour-red-sea.png', '/images/home/why-quality.jpg', '/images/era-greco-roman.png', '/images/home/why-flex.jpg', '/images/nile-cruise.png', '/images/nile-luxor-aswan.png', '/images/destinations/giza.png', '/images/destinations/fayoum.png'];
+           const imgs = isCoastal 
+              ? ['/images/tour-red-sea.png', '/images/home/why-quality.jpg', '/images/home/why-flex.jpg']
+              : ['/images/tour-red-sea.png', '/images/home/why-quality.jpg', '/images/era-greco-roman.png', '/images/home/why-flex.jpg', '/images/nile-cruise.png', '/images/nile-luxor-aswan.png', '/images/destinations/giza.png', '/images/destinations/fayoum.png'];
            return imgs[hash % imgs.length];
         }
         if (category === "Museums" || category === "History") {
+           if (loc.includes("marsa") || loc.includes("مرسى")) return ['/images/marsa_alam/wadi_gemal_museum.png', '/images/marsa_alam/quseir_fort.png'][index % 2];
+           if (isCoastal) return ['/images/tour-red-sea.png', '/images/home/why-quality.jpg'][hash % 2];
            const imgs = ['/images/era-greco-roman.png', '/images/tour-museum.png', '/images/era-pharaonic.png', '/images/saint-catherine.png', '/images/era-coptic.png', '/images/era-islamic.png'];
            return imgs[hash % imgs.length];
         }
@@ -108,11 +114,28 @@ const ExplorePage = () => {
            return imgs[hash % imgs.length];
         }
         if (category === "Bazaars" || category === "Local Market") {
+           if (loc.includes("marsa") || loc.includes("مرسى")) return ['/images/marsa_alam/port_ghalib_souk.png', '/images/marsa_alam/traditional_market.png'][index % 2];
+           if (isCoastal) return ['/images/luxor-souk.png', '/images/home/why-quality.jpg'][hash % 2];
            const imgs = ['/images/luxor-souk.png', '/images/era-islamic.png', '/images/aswan-nubian-market.png', '/images/bazaars2/khan_khalili.png'];
            return imgs[hash % imgs.length];
         }
         if (category === "Events" || category === "Event") {
-           const imgs = ['/images/pyramids-vip.png', '/images/era-pharaonic.png', '/images/tour-pyramids.png', '/images/era-islamic.png', '/images/destinations/port-said.png', '/images/era-greco-roman.png'];
+           if (loc === "cairo" || loc === "giza" || city === "القاهرة" || city === "الجيزة") {
+               const imgs = ['/images/pyramids-vip.png', '/images/events2/cairo_opera.png', '/images/tour-pyramids.png'];
+               return imgs[hash % imgs.length];
+           }
+           if (loc === "aswan" || city === "أسوان") {
+               const imgs = ['/images/events2/aswan_vip_festival.png', '/images/events2/aswan_live_performance.png'];
+               return imgs[hash % imgs.length];
+           }
+           if (loc.includes("capital") || city.includes("العاصمة")) {
+               const imgs = ['/images/events2/new_capital_arts_festival.png', '/images/events2/new_capital_light_show.png'];
+               return imgs[hash % imgs.length];
+           }
+           if (isCoastal) {
+               return ['/images/tour-red-sea.png', '/images/home/why-flex.jpg'][hash % 2];
+           }
+           const imgs = ['/images/events2/nile_jazz.png', '/images/era-pharaonic.png', '/images/era-islamic.png', '/images/destinations/port-said.png', '/images/era-greco-roman.png'];
            return imgs[hash % imgs.length];
         }
         return '/images/home/why-quality.jpg';
@@ -159,15 +182,31 @@ const ExplorePage = () => {
         // They must have different prices, names, and images.
         if (valid.length < 2) {
             const needed = 2 - valid.length;
-            const genericTitles: Record<string, string[]> = {
-                "Hotels": ["Luxury Resort & Spa", "City Center Budget Hotel"],
-                "Museums": ["National Heritage Museum", "Modern Arts Center"],
+            const isCoastalName = destinationName.toLowerCase().includes("marsa") || destinationName.toLowerCase().includes("sharm") || destinationName.toLowerCase().includes("hurghada") || destinationName.toLowerCase().includes("dahab") || destinationName.includes("مرسى") || destinationName.includes("شرم") || destinationName.includes("غردقة");
+
+            let specificTitles = null;
+            if (destinationName.toLowerCase().includes("marsa") || destinationName.includes("مرسى")) {
+                specificTitles = {
+                    "Hotels": ["Jaz Grand Marsa Resort", "Hilton Marsa Alam Nubian Resort"],
+                    "Museums": ["Wadi El Gemal National Park Museum", "Historic Quseir Fort"],
+                    "Restaurants": ["Divino Restaurant Port Ghalib", "Hakuna Matata Beach Grill"],
+                    "Safari": ["Wadi El Gemal 4x4 Desert Safari", "Marsa Alam Quad Bike Adventure"],
+                    "Bazaars": ["Port Ghalib Marina Souk", "Marsa Alam Traditional Market"],
+                    "Events": ["Port Ghalib Yacht Party", "Marsa Alam Beach Festival"]
+                };
+            }
+
+            const genericTitles: Record<string, string[]> = specificTitles || {
+                "Hotels": isCoastalName ? ["Beachfront Luxury Resort", "Marina View Hotel"] : ["Luxury Resort & Spa", "City Center Budget Hotel"],
+                "Museums": isCoastalName ? ["Marine Life Museum", "Red Sea Heritage Center"] : ["National Heritage Museum", "Modern Arts Center"],
                 "Restaurants": ["Premium Seafood & Grill", "Traditional Local Cuisine"],
                 "Safari": (destinationName.toLowerCase() === "cairo" || destinationName === "القاهرة") 
                           ? ["Pyramids Beach Buggy Tour", "Pyramids Bicycle Tour"] 
                           : ["Exclusive Desert Safari", "Standard Oasis Camp"],
-                "Bazaars": ["Grand Historic Souk", "Local Artisan Market"],
-                "Events": ["VIP Cultural Festival", "Public Live Performance"]
+                "Bazaars": isCoastalName ? ["Marina Night Souk", "Tourists Handicraft Market"] : ["Grand Historic Souk", "Local Artisan Market"],
+                "Events": (destinationName.toLowerCase().includes("capital") || destinationName.includes("العاصمة"))
+                          ? ["Modern Arts Festival", "Iconic Tower Light Show"]
+                          : (isCoastalName ? ["Beach DJ Party", "Yacht Sunset Cruise"] : ["VIP Cultural Festival", "Public Live Performance"])
             };
             
             for (let i = 0; i < needed; i++) {

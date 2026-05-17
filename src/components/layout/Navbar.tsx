@@ -106,7 +106,7 @@ const Navbar = () => {
   const isTransparent = false;
   const navClasses = `fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out ${
     scrolled || mobileOpen
-      ? "bg-white/95 dark:bg-[#0f0f1a]/97 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 shadow-sm"
+      ? "bg-white/95 dark:bg-[#0f0f1a]/95 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 shadow-sm"
       : "bg-white/80 dark:bg-[#0f0f1a]/80 backdrop-blur-md border-b border-gray-100/60 dark:border-white/5"
   } py-1`;
 

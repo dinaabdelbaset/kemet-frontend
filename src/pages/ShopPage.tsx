@@ -150,30 +150,61 @@ const ShopPage = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.filter(p => selectedCategory === "All Categories" || p.category === selectedCategory).map((product) => (
-              <div key={product.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all flex flex-col">
-                <div className="h-56 overflow-hidden relative">
-                  {/* Fallback image if product.image is missing */}
-                  <img 
-                    src={getProductImage(product)} 
-                    alt={product.name} 
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+              <div
+                key={product.id}
+                className="block relative bg-white border border-[#E7E6E6] dark:border-gray-700 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#D4AF37] hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] group h-[420px] w-full"
+              >
+                {/* Background Cover Image (Slides up on hover) */}
+                <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[40%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
+                  <img
+                    src={getProductImage(product)}
+                    alt={product.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
                   />
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-xs font-bold px-2 py-1 rounded text-gray-700">
-                    {product.category}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
+                  
+                  {/* Category Badge */}
+                  <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg border border-white/10 z-20">
+                    <span className="font-bold text-white text-xs tracking-wider uppercase">{product.category}</span>
+                  </div>
+
+                  {/* Price Badge */}
+                  <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg border border-gray-100 z-20">
+                    <span className="font-bold text-[#cf4a36] text-xs flex items-center gap-1.5">
+                       <PriceDisplay price={Number(product.price)} />
+                    </span>
+                  </div>
+
+                  {/* Pre-Hover Title Overlay */}
+                  <div className="absolute bottom-6 left-5 right-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col text-left">
+                    <h3 className="text-white font-extrabold text-2xl leading-tight text-shadow-md mb-2">{product.name}</h3>
+                    <p className="text-white/80 text-sm line-clamp-2">{product.description}</p>
                   </div>
                 </div>
-                <div className="p-5 flex flex-col flex-grow">
-                  <h3 className="font-bold text-lg text-gray-800 mb-1 line-clamp-1">{product.name}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-grow">{product.description}</p>
-                  
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-                    <PriceDisplay className="text-xl font-extrabold text-[#EB662B]" price={Number(product.price)} />
-                    <button 
-                      onClick={() => addToCart({ ...product, image: getProductImage(product) })}
-                      className="text-sm font-semibold bg-gray-100 hover:bg-[#05073C] text-[#05073C] hover:text-white px-4 py-2 rounded-lg transition"
-                    >
-                      Add to Cart
-                    </button>
+
+                {/* Content (Revealed on hover) */}
+                <div className="absolute inset-x-0 bottom-0 h-[60%] bg-white dark:bg-gray-800 px-6 pt-5 pb-5 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-left">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                       <span className="text-xs font-bold uppercase tracking-wider text-[#EB662B] bg-[#EB662B]/10 px-2.5 py-1 rounded-md">{product.category}</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-[#14213d] dark:text-white leading-snug hover:text-[#D4AF37] transition-colors line-clamp-2 mb-3">
+                      {product.name}
+                    </h3>
+                    
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-4 leading-relaxed">
+                      {product.description}
+                    </p>
+                  </div>
+
+                  <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-4">
+                     <button
+                       onClick={() => addToCart({ ...product, image: getProductImage(product) })}
+                       className="w-full text-center py-3.5 rounded-xl font-bold text-white text-[15px] bg-[#05073C] hover:bg-[#EB662B] transition-colors duration-300 shadow-md flex items-center justify-center gap-2"
+                     >
+                       <FaShoppingCart /> Add to Cart — <PriceDisplay price={Number(product.price)} />
+                     </button>
                   </div>
                 </div>
               </div>

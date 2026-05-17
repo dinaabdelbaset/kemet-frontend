@@ -138,7 +138,7 @@ const HeroSection = () => {
             poster="/pyramids_sound_light.png"
           />
         ) : (
-          <Image src={item.src} alt={item.alt || ""} className="w-full h-full object-cover opacity-80" eager={index === 0} />
+          <Image src={item.src} alt={item.alt || ""} className={`w-full h-full object-cover opacity-80 transform transition-transform duration-[8000ms] ease-linear ${isActive ? 'scale-110' : 'scale-100'}`} eager={index === 0} />
         )}
       </div>
     );
@@ -147,7 +147,7 @@ const HeroSection = () => {
   return (
     <section ref={heroRef} className="relative w-full h-[90vh] md:rounded-2xl overflow-hidden">
       {/* Slider */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden bg-[#05073C]">
         <div className="flex h-full transition-transform duration-1000 ease-[cubic-bezier(0.77,0,0.175,1)]" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
           {slides}
         </div>

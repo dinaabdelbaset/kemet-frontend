@@ -61,7 +61,7 @@ const WishlistPage = () => {
   const totalItems = tours.length + activities.length;
 
   return (
-    <div className="container mx-auto px-4 py-12 min-h-[70vh]">
+    <div className="container mx-auto px-4 pt-32 pb-12 min-h-[70vh]">
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-bold text-[#05073C] mb-4">Your Wishlist ❤️</h1>
         <p className="text-gray-600">All your saved adventures in one place.</p>

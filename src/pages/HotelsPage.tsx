@@ -249,82 +249,89 @@ const HotelsPage = () => {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                   {filteredHotels.map((hotel) => (
-            <div
+            <Link
               key={hotel.id}
-              className="bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-[#D4AF37] hover:shadow-[0_12px_30px_rgba(212,175,55,0.25)] transition-all duration-500 group flex flex-col h-full hover:-translate-y-2"
+              to={`/hotels/${hotel.id}`}
+              className="block relative bg-white dark:bg-gray-800 border border-[#E7E6E6] dark:border-gray-700 rounded-2xl overflow-hidden transition-all duration-[600ms] hover:border-[#D4AF37] hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] group h-[400px] w-full"
             >
-              {/* Hotel Image */}
-              <div className="relative h-64 overflow-hidden">
+              {/* Background Cover Image (Slides up on hover) */}
+              <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[45%] z-10 overflow-hidden rounded-t-2xl group-hover:rounded-b-none rounded-b-2xl">
                 <img
                   src={getHotelImage(hotel)}
-                  alt={hotel.title || "Hotel"}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  alt={hotel.title || hotel.name || "Hotel"}
+                  className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 transition-opacity duration-700 group-hover:opacity-0" />
                 
-                {/* Booking.com Style Badges */}
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
+                {/* Badges (Always visible) */}
+                <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
                    {hotel.id % 3 === 0 && (
-                     <span className="bg-red-600 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-md w-max">
-                        High Demand - Only 2 rooms left!
+                     <span className="bg-red-600 text-white text-[9px] font-black uppercase px-2 py-1 rounded shadow-md w-max">
+                        Only 2 rooms left!
                      </span>
                    )}
                    {hotel.id % 2 === 0 && (
-                     <span className="bg-[#003580] text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-md flex items-center gap-1 w-max">
-                        Kemet VIP Genius Level 2
+                     <span className="bg-[#003580] text-white text-[9px] font-black uppercase px-2 py-1 rounded shadow-md flex items-center gap-1 w-max">
+                        Genius Level 2
                      </span>
                    )}
                 </div>
 
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-[#05073C] font-bold shadow-sm flex flex-col items-center gap-1">
-                  <div className="flex gap-1 items-center">
-                     <span className="text-xl">{(Number(hotel.rating) || 9.8).toFixed(1)}</span>
+                <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-2.5 py-1 rounded-lg text-[#05073C] font-bold shadow-md flex flex-col items-center gap-0.5 z-20 border border-gray-100">
+                   <span className="text-sm">{(Number(hotel.rating) || 9.8).toFixed(1)}</span>
+                   <span className="text-[8px] text-gray-500 uppercase">{Number(hotel.rating) >= 4.5 ? 'Exceptional' : 'Fabulous'}</span>
+                </div>
+
+                {/* Pre-Hover Title Overlay */}
+                <div className="absolute bottom-6 left-5 right-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col">
+                  <div className="flex items-center gap-1.5 mb-2 bg-black/30 w-max px-2.5 py-1 rounded-full backdrop-blur-sm">
+                    <FaMapMarkerAlt className="text-[#D4AF37] text-xs" />
+                    <span className="text-white/90 text-xs font-semibold tracking-wide">{hotel.location || hotel.city}</span>
                   </div>
-                  <span className="text-[10px] text-gray-500 uppercase">{Number(hotel.rating) >= 4.5 ? 'Exceptional' : 'Fabulous'}</span>
+                  <h3 className="text-white font-extrabold text-xl leading-tight text-shadow-md mb-2">{hotel.title || hotel.name}</h3>
+                  <div className="flex items-baseline gap-1.5 drop-shadow-md">
+                     <span className="text-white/70 text-[10px] uppercase font-bold">From</span>
+                     <span className="text-[#D4AF37] text-lg font-bold"><PriceDisplay price={Number(hotel.price_starts_from || hotel.price)} baseCurrency="EGP" /></span>
+                     <span className="text-white/60 text-[10px]">/ night</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Hotel Details */}
-              <div className="p-6 flex flex-col grow">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#EB662B] uppercase tracking-wider mb-2">
-                  <FaMapMarkerAlt />
-                  {hotel.location || hotel.city}
-                </div>
-                <h3 className="text-xl font-bold text-[#05073C] group-hover:text-[#EB662B] transition-colors leading-tight">
-                  {hotel.title || hotel.name}
-                </h3>
-                
-                {/* Free Cancellation Badge */}
-                <div className="mt-2 mb-3">
-                   <p className="text-green-700 font-bold text-xs">✓ Free cancellation</p>
-                   <p className="text-green-700 text-[10px]">No prepayment needed – pay at the property</p>
-                </div>
-                
-                <p className="text-sm text-gray-500 line-clamp-2 mt-auto mb-4">
-                  {hotel.description || "Experience luxury with top-tier amenities and stunning views."}
-                </p>
-
-                <div className="flex items-center justify-between pt-4 border-t border-gray-50 mt-auto">
-                  <div>
-                    <p className="text-xs text-gray-400 uppercase font-bold">
-                      Starts from
-                    </p>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-black text-[#05073C]">
-                        <PriceDisplay price={Number(hotel.price_starts_from || hotel.price)} baseCurrency="EGP" />
-                      </span>
-                      <span className="text-sm text-gray-500 font-medium">
-                        /night
-                      </span>
-                    </div>
+              {/* Content (Revealed on hover) */}
+              <div className="absolute inset-x-0 bottom-0 h-[55%] bg-white dark:bg-gray-800 px-5 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">
+                    <FaMapMarkerAlt className="text-[#EB662B]" />
+                    <span>{hotel.location || hotel.city}</span>
                   </div>
-                  <Link to={`/hotels/${hotel.id}`}>
-                    <Button className="text-white text-sm px-7 py-3 rounded-xl font-bold hover:shadow-lg transition-all">
-                      View Stay
-                    </Button>
-                  </Link>
+                  
+                  <h3 className="text-lg font-bold text-[#05073C] dark:text-white leading-snug hover:text-[#EB662B] transition-colors line-clamp-2">
+                    {hotel.title || hotel.name}
+                  </h3>
+                  
+                  <div className="mt-2 mb-3 bg-green-50 border border-green-100 rounded p-1.5 w-max">
+                     <p className="text-green-700 font-bold text-[10px] flex items-center gap-1">✓ Free cancellation</p>
+                     <p className="text-green-600 text-[9px] mt-0.5">No prepayment needed</p>
+                  </div>
+                  
+                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                    {hotel.description || "Experience luxury with top-tier amenities and stunning views. The perfect stay awaits you."}
+                  </p>
+                </div>
+
+                <div className="border-t border-gray-100 dark:border-gray-700 mt-3 pt-3 flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-gray-400 uppercase font-bold">Total price from</span>
+                    <span className="text-[#05073C] dark:text-[#D4AF37] font-black text-lg">
+                      <PriceDisplay price={Number(hotel.price_starts_from || hotel.price)} baseCurrency="EGP" />
+                    </span>
+                  </div>
+                  <span className="text-white bg-[#05073C] hover:bg-[#D4AF37] text-xs px-4 py-2 rounded-lg font-bold transition-colors">
+                    View Stay
+                  </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
               </>

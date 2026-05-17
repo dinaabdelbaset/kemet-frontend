@@ -261,6 +261,15 @@ body {
   animation: fadeInUpPharaoh 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0; /* Important so elements start hidden before animation */
+}
+
 /* --- Lenis Smooth Scroll --- */
 html.lenis,
 html.lenis body {

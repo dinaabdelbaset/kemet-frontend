@@ -165,33 +165,64 @@ const RestaurantsPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredRestaurants?.map((restaurant: any) => (
-                <Link to={`/restaurants/${restaurant.id}`} key={restaurant.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(212,175,55,0.06)] border border-gray-100 hover:-translate-y-2 transition-all duration-500 flex flex-col group block">
-                  <div className="relative w-full aspect-video overflow-hidden">
-                    <img 
-                      src={restaurant.image || '/placeholder.png'} 
-                      alt={restaurant.name} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                <Link
+                  key={restaurant.id}
+                  to={`/restaurants/${restaurant.id}`}
+                  className="block relative bg-white border border-gray-100 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#cd4f3c] hover:shadow-[0_20px_40px_rgba(205,79,60,0.15)] group h-[400px] w-full"
+                >
+                  {/* Background Cover Image (Slides up on hover) */}
+                  <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[45%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
+                    <img
+                      src={restaurant.image || '/placeholder.png'}
+                      alt={restaurant.name}
+                      className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
                     />
-                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm text-[#cd4f3c] text-xs font-bold flex items-center gap-1.5">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
+                    
+                    {/* Location Badge (Always visible) */}
+                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm text-[#cd4f3c] text-xs font-bold flex items-center gap-1.5 z-20">
                       <FaMapMarkerAlt /> {restaurant.location}
                     </div>
-                  </div>
-                  <div className="p-6 flex flex-col flex-grow text-right">
-                    <h3 className="text-2xl font-bold text-[#14213d] mb-2 group-hover:text-[#cd4f3c] transition-colors duration-300">{restaurant.name}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{restaurant.description}</p>
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-[#cd4f3c] font-bold text-sm bg-[#cd4f3c]/10 px-3 py-1 rounded-md">{restaurant.cuisine}</span>
-                      <div className="flex items-center gap-1.5">
+
+                    {/* Pre-Hover Title Overlay */}
+                    <div className="absolute bottom-6 right-5 left-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col text-right">
+                      <span className="bg-[#cd4f3c] text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-md w-max mb-2 self-end">
+                        {restaurant.cuisine}
+                      </span>
+                      <h3 className="text-white font-extrabold text-2xl leading-tight text-shadow-md mb-2">{restaurant.name}</h3>
+                      <div className="flex items-center gap-1.5 drop-shadow-md text-white/90 text-sm font-bold justify-end">
                         <FaStar className="text-yellow-400" />
-                        <span className="text-sm font-bold">{restaurant.rating}</span>
-                        <span className="text-xs text-gray-500">({restaurant.reviews_count})</span>
+                        <span>{restaurant.rating}</span>
+                        <span className="text-white/60 text-xs font-normal">({restaurant.reviews_count} تقييم)</span>
                       </div>
                     </div>
-                    <div className="border-t border-gray-100 pt-4 flex justify-between items-center mt-auto cursor-pointer">
-                      <span className="text-gray-700 font-bold group-hover:text-[#cd4f3c]">
+                  </div>
+
+                  {/* Content (Revealed on hover) */}
+                  <div className="absolute inset-x-0 bottom-0 h-[55%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-right">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-[#cd4f3c] font-bold text-[11px] bg-[#cd4f3c]/10 px-2.5 py-1 rounded-md">{restaurant.cuisine}</span>
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-[#14213d]">
+                          <FaStar className="text-yellow-400" />
+                          <span>{restaurant.rating}</span>
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-[#14213d] leading-snug hover:text-[#cd4f3c] transition-colors line-clamp-1 mb-2">
+                        {restaurant.name}
+                      </h3>
+                      
+                      <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                        {restaurant.description}
+                      </p>
+                    </div>
+
+                    <div className="border-t border-gray-100 mt-3 pt-3 flex items-center justify-between">
+                      <span className="text-[#cd4f3c] font-bold text-sm">
                           {document.cookie.includes('/ar') || document.documentElement.dir === 'rtl' ? 'تصفح المنيو والحجز \u2190' : 'View Menu & Booking \u2192'}
                       </span>
-                      <span className="text-gray-500 text-xs">{restaurant.opening_hours}</span>
+                      <span className="text-gray-500 text-[10px] font-medium bg-gray-50 px-2 py-1 rounded">{restaurant.opening_hours}</span>
                     </div>
                   </div>
                 </Link>

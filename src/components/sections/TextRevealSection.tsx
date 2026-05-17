@@ -321,109 +321,97 @@ const TextRevealSection = () => {
               />
             </div>
 
-            {/* Content */}
-            <div
-              className={`era-content relative z-10 max-w-6xl mx-auto px-6 md:pl-24 md:pr-10 py-20 md:py-28 grid grid-cols-1 md:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? "md:[direction:rtl]" : ""}`}
-            >
-              {/* Text side */}
-              <div className={i % 2 === 1 ? "md:[direction:ltr]" : ""}>
-                {/* Year badge */}
-                <div
-                  className="era-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest mb-5"
-                  style={{
-                    backgroundColor: era.palette.card,
-                    border: `1px solid ${era.palette.border}`,
-                    color: era.palette.accent,
-                  }}
+            {/* Hover Reveal Card Content */}
+            <div className="era-content relative z-10 max-w-6xl mx-auto px-4 md:px-10 py-16 md:py-28">
+              <div 
+                className="relative w-full h-[550px] md:h-[600px] rounded-[2rem] overflow-hidden group shadow-2xl transition-all duration-700"
+                style={{ backgroundColor: era.palette.bg, border: `1px solid ${era.palette.border}` }}
+              >
+                {/* Text Side (Underneath) */}
+                <div 
+                  className={`absolute inset-y-0 flex flex-col justify-center px-8 md:px-16 w-full md:w-1/2 transition-opacity duration-700 delay-100 ${i % 2 === 0 ? 'md:right-0' : 'md:left-0'}`}
+                  dir={isArabic ? 'rtl' : 'ltr'}
                 >
-                  <span className="text-base">{era.symbol}</span>
-                  {isArabic ? `${era.yearEn} · ${era.year}` : era.yearEn}
-                </div>
+                  <div className="transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-200">
+                    <div
+                      className="era-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest mb-5"
+                      style={{
+                        backgroundColor: era.palette.card,
+                        border: `1px solid ${era.palette.border}`,
+                        color: era.palette.accent,
+                      }}
+                    >
+                      <span className="text-base">{era.symbol}</span>
+                      {isArabic ? `${era.yearEn} · ${era.year}` : era.yearEn}
+                    </div>
 
-                {/* Era label */}
-                <p
-                  className="text-[11px] font-black uppercase tracking-[0.3em] mb-3 opacity-60"
-                  style={{ color: era.palette.accent }}
-                >
-                  {isArabic ? era.era : era.eraEn}
-                </p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] mb-3 opacity-60" style={{ color: era.palette.accent }}>
+                      {isArabic ? era.era : era.eraEn}
+                    </p>
 
-                {/* Title */}
-                <h3 className="text-3xl md:text-5xl font-black leading-tight mb-4" style={{ color: era.palette.text }}>
-                  {isArabic ? era.title : era.titleEn}
-                </h3>
+                    <h3 className="text-3xl md:text-5xl font-black leading-tight mb-4" style={{ color: era.palette.text }}>
+                      {isArabic ? era.title : era.titleEn}
+                    </h3>
 
-                {/* Description */}
-                <p className="text-sm md:text-base leading-relaxed mb-8 opacity-60" style={{ color: era.palette.text }}>
-                  {isArabic ? era.desc : era.descEn}
-                </p>
+                    <p className="text-sm md:text-base leading-relaxed mb-8 opacity-60" style={{ color: era.palette.text }}>
+                      {isArabic ? era.desc : era.descEn}
+                    </p>
 
-                {/* Places to visit now */}
-                <div className="mb-8">
-                  <p className="text-[10px] uppercase tracking-[0.3em] opacity-40 mb-3" style={{ color: era.palette.text }}>
-                    {isArabic ? "اكتشفها اليوم" : "Discover it Today"}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {era.places.map((place, pi) => (
-                      <Link
-                        key={pi}
-                        to={place.link}
-                        className="px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:scale-105"
-                        style={{
-                          backgroundColor: era.palette.card,
-                          border: `1px solid ${era.palette.border}`,
-                          color: era.palette.accent,
-                          boxShadow: `0 4px 12px ${era.palette.glow}`,
-                        }}
-                      >
-                        {isArabic ? place.name : place.nameEn}
-                      </Link>
-                    ))}
+                    <div className="mb-8">
+                      <p className="text-[10px] uppercase tracking-[0.3em] opacity-40 mb-3" style={{ color: era.palette.text }}>
+                        {isArabic ? "اكتشفها اليوم" : "Discover it Today"}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {era.places.map((place, pi) => (
+                          <Link
+                            key={pi}
+                            to={place.link}
+                            className="px-4 py-2 rounded-full text-[12px] font-semibold transition-all duration-300 hover:-translate-y-1 hover:scale-105"
+                            style={{
+                              backgroundColor: era.palette.card,
+                              border: `1px solid ${era.palette.border}`,
+                              color: era.palette.accent,
+                              boxShadow: `0 4px 12px ${era.palette.glow}`,
+                            }}
+                          >
+                            {isArabic ? place.name : place.nameEn}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Image card side */}
-              <div className={`relative ${i % 2 === 1 ? "md:[direction:ltr]" : ""}`}>
-                <div
-                  className="relative rounded-2xl overflow-hidden aspect-[4/3]"
-                  style={{
-                    border: `1px solid ${era.palette.border}`,
-                    boxShadow: `0 30px 80px ${era.palette.glow}`,
-                  }}
+                {/* Image Cover (Slides aside on hover) */}
+                <div 
+                  className={`era-img absolute inset-y-0 z-10 w-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] ${i % 2 === 0 ? 'md:left-0 group-hover:md:w-1/2' : 'md:right-0 group-hover:md:w-1/2'} origin-center overflow-hidden`}
                 >
                   <img
                     src={era.image}
                     alt={era.era}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
                     style={{
                       filter: era.id === "pharaonic" ? "sepia(40%) brightness(0.85)" : "brightness(0.8)",
                     }}
                   />
-                  {/* Image overlay */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background: `linear-gradient(to top, rgba(5, 7, 60, 0.9) 0%, transparent 60%)`,
-                    }}
-                  />
-                  {/* Era name on image */}
-                  <div className="absolute bottom-4 left-4 right-4 z-10">
-                    <p className="text-[10px] uppercase tracking-[0.3em] font-black opacity-90" style={{ color: era.palette.accent }}>
-                      {isArabic ? era.era : era.eraEn}
-                    </p>
-                    <p className="text-white font-bold text-sm">{isArabic ? era.year : era.yearEn}</p>
+                  
+                  {/* Overlay gradient & Title (Visible before hover) */}
+                  <div className="absolute inset-0 bg-black/40 transition-colors duration-700 group-hover:bg-transparent flex flex-col items-center justify-center">
+                     <span className="text-[#D4AF37] text-6xl md:text-8xl mb-4 transform transition-all duration-700 group-hover:scale-50 group-hover:opacity-0" style={{ textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                       {era.symbol}
+                     </span>
+                     <h3 className="text-white text-4xl md:text-7xl font-black text-center px-4 transform transition-all duration-700 group-hover:translate-y-10 group-hover:opacity-0" style={{ textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                       {isArabic ? era.title : era.titleEn}
+                     </h3>
+                     
+                     <div className="absolute bottom-10 flex flex-col items-center gap-2 transform transition-all duration-700 group-hover:translate-y-10 group-hover:opacity-0">
+                       <span className="text-white/80 tracking-[0.3em] uppercase text-[10px] font-bold bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10">
+                         {isArabic ? "مرر الماوس للاستكشاف" : "Hover to Discover"}
+                       </span>
+                     </div>
                   </div>
-                </div>
-
-                {/* Floating year number */}
-                <div
-                  className="absolute -top-4 -right-4 w-20 h-20 rounded-2xl flex items-center justify-center text-5xl font-black opacity-10 select-none pointer-events-none"
-                  style={{ color: era.palette.accent }}
-                >
-                  {era.symbol}
                 </div>
               </div>
             </div>
