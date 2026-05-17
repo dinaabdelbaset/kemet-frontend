@@ -85,7 +85,7 @@ const TrendingDestinationSection = () => {
   };
 
   const content = destinations.slice(0, 12).map((item) => (
-    <Link to={`/explore/${item.title}`} key={item.id} data-dest-card className="flex-shrink-0 min-w-[100px] sm:min-w-[120px]">
+    <Link to={`/explore/${item.title}`} key={item.id} data-dest-card className="flex-shrink-0 w-28 sm:w-36 snap-center">
       <DestinationCard 
         id={item.id}
         src={item.src || '/placeholder.png'} 
@@ -112,7 +112,7 @@ const TrendingDestinationSection = () => {
         
         <div 
           ref={gridRef} 
-          className="flex overflow-x-auto gap-4 sm:gap-6 md:gap-8 pb-8 px-4 hide-scrollbars justify-start" 
+          className="flex overflow-x-auto gap-4 sm:gap-8 pb-12 pt-4 px-4 sm:px-8 hide-scrollbars snap-x snap-mandatory" 
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <style dangerouslySetInnerHTML={{__html: `
