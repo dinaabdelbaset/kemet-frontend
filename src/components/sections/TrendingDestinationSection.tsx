@@ -49,19 +49,19 @@ const TrendingDestinationSection = () => {
     fetchDestinations();
   }, []);
 
-  // GSAP stagger animation for cards
+  // Sleek, modern GSAP stagger animation for cards
   useEffect(() => {
     if (loading || !gridRef.current) return;
     const cards = gridRef.current.querySelectorAll("[data-dest-card]");
     if (cards.length === 0) return;
 
     gsap.fromTo(cards,
-      { y: 60, opacity: 0, scale: 0.8, rotateY: 15 },
+      { y: 40, opacity: 0, filter: "blur(5px)" },
       {
-        y: 0, opacity: 1, scale: 1, rotateY: 0,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: "back.out(1.7)",
+        y: 0, opacity: 1, filter: "blur(0px)",
+        duration: 1,
+        stagger: 0.1,
+        ease: "power3.out",
         scrollTrigger: {
           trigger: gridRef.current,
           start: "top 85%",
@@ -70,44 +70,6 @@ const TrendingDestinationSection = () => {
       }
     );
 
-  }, [loading]);
-
-  // Auto-scroll logic
-  useEffect(() => {
-    if (loading || !gridRef.current) return;
-    let intervalId: any;
-    let isPaused = false;
-
-    const startAutoScroll = () => {
-      intervalId = setInterval(() => {
-        if (!isPaused && gridRef.current) {
-          gridRef.current.scrollLeft += 1; // Smooth slow scroll
-          // If it reaches the end, reset to start smoothly
-          if (gridRef.current.scrollLeft >= gridRef.current.scrollWidth - gridRef.current.clientWidth - 1) {
-            gridRef.current.scrollLeft = 0;
-          }
-        }
-      }, 30); // Speed of auto-scroll
-    };
-
-    startAutoScroll();
-
-    const handleMouseEnter = () => isPaused = true;
-    const handleMouseLeave = () => isPaused = false;
-    
-    const grid = gridRef.current;
-    grid.addEventListener("mouseenter", handleMouseEnter);
-    grid.addEventListener("mouseleave", handleMouseLeave);
-    grid.addEventListener("touchstart", handleMouseEnter);
-    grid.addEventListener("touchend", handleMouseLeave);
-
-    return () => {
-      clearInterval(intervalId);
-      grid.removeEventListener("mouseenter", handleMouseEnter);
-      grid.removeEventListener("mouseleave", handleMouseLeave);
-      grid.removeEventListener("touchstart", handleMouseEnter);
-      grid.removeEventListener("touchend", handleMouseLeave);
-    };
   }, [loading]);
 
   const scrollLeft = () => {
