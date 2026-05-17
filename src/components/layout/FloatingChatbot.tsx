@@ -185,6 +185,58 @@ const FloatingChatbot = () => {
     return () => clearInterval(interval);
   }, [isOpen, sessionToken]);
 
+  // المؤقت الذكي 1: إنهاء المحادثة بعد 30 ثانية من عدم رد العميل
+  useEffect(() => {
+    if (!isHumanMode || messages.length === 0) return;
+
+    const lastMsg = messages[messages.length - 1];
+    
+    if (lastMsg.sender === "bot") {
+      const inactivityTimer = setTimeout(async () => {
+        try {
+          await axiosClient.post(`/livechat/sessions/${sessionToken}/close`);
+          loadHistory(); 
+        } catch (e) {
+          console.error("Failed to close session automatically");
+        }
+      }, 30000); 
+
+      return () => clearTimeout(inactivityTimer);
+    }
+  }, [messages.length, isHumanMode]);
+
+  // المؤقت الذكي 2: العميل في انتظار الرد من الموظف لمدة 10 ثواني
+  useEffect(() => {
+    if (!isHumanMode || messages.length === 0) return;
+
+    const lastMsg = messages[messages.length - 1];
+
+    if (lastMsg.sender === "user") {
+      const waitTimer = setTimeout(async () => {
+        try {
+          setIsLoading(true);
+          await axiosClient.post(`/livechat/sessions/${sessionToken}/close`);
+          
+          const replyData = await askChatbot(messages, sessionToken, true);
+          
+          if (replyData.answer && replyData.answer.trim() !== "") {
+            const replyMessage: Message = { id: Date.now() + 1, text: replyData.answer, sender: "bot" };
+            setMessages((prev) => [...prev, replyMessage]);
+          }
+          
+          setIsHumanMode(false);
+        } catch (e) {
+          console.error("Failed to fallback to AI");
+        } finally {
+          setIsLoading(false);
+          loadHistory();
+        }
+      }, 10000);
+
+      return () => clearTimeout(waitTimer);
+    }
+  }, [messages.length, isHumanMode]);
+
   // Save state to session storage when things change
   useEffect(() => {
     sessionStorage.setItem("kemet_chatbot_isOpen", isOpen.toString());
