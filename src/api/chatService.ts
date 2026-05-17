@@ -138,6 +138,7 @@ let conversationHistory: ChatMessage[] = [];
 /**
  * Send a message to Groq and get a response.
  * Accepts either a string (single message) or the full chat history array.
+ */
 export const askChatbot = async (
   input: string | { sender: string; text: string }[],
   sessionToken: string,
