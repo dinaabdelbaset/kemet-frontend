@@ -131,6 +131,7 @@ const FloatingChatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const [showTimeoutOptions, setShowTimeoutOptions] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -212,30 +213,42 @@ const FloatingChatbot = () => {
     const lastMsg = messages[messages.length - 1];
 
     if (lastMsg.sender === "user") {
-      const waitTimer = setTimeout(async () => {
-        try {
-          setIsLoading(true);
-          await axiosClient.post(`/livechat/sessions/${sessionToken}/close`);
-          
-          const replyData = await askChatbot(messages, sessionToken, true);
-          
-          if (replyData.answer && replyData.answer.trim() !== "") {
-            const replyMessage: Message = { id: Date.now() + 1, text: replyData.answer, sender: "bot" };
-            setMessages((prev) => [...prev, replyMessage]);
-          }
-          
-          setIsHumanMode(false);
-        } catch (e) {
-          console.error("Failed to fallback to AI");
-        } finally {
-          setIsLoading(false);
-          loadHistory();
-        }
+      const waitTimer = setTimeout(() => {
+        // بدلاً من التحويل المباشر، نعرض الخيارات للعميل
+        setShowTimeoutOptions(true);
       }, 10000);
 
       return () => clearTimeout(waitTimer);
+    } else {
+      setShowTimeoutOptions(false); // إخفاء الخيارات إذا رد الموظف
     }
   }, [messages.length, isHumanMode]);
+
+  const handleWaitAdmin = () => {
+    setShowTimeoutOptions(false);
+  };
+
+  const handleFallbackToAI = async () => {
+    setShowTimeoutOptions(false);
+    try {
+      setIsLoading(true);
+      await axiosClient.post(`/livechat/sessions/${sessionToken}/close`);
+      
+      const replyData = await askChatbot(messages, sessionToken, true);
+      
+      if (replyData.answer && replyData.answer.trim() !== "") {
+        const replyMessage: Message = { id: Date.now() + 1, text: replyData.answer, sender: "bot" };
+        setMessages((prev) => [...prev, replyMessage]);
+      }
+      
+      setIsHumanMode(false);
+    } catch (e) {
+      console.error("Failed to fallback to AI");
+    } finally {
+      setIsLoading(false);
+      loadHistory();
+    }
+  };
 
   // Save state to session storage when things change
   useEffect(() => {
@@ -485,6 +498,17 @@ const FloatingChatbot = () => {
                     <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                   </div>
                   <span className="text-xs text-gray-400">{t.thinking}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Timeout Options */}
+            {showTimeoutOptions && (
+              <div className="flex flex-col gap-2 p-3 bg-orange-50 rounded-2xl border border-orange-200 animate-in fade-in slide-in-from-bottom-2">
+                <p className="text-xs text-gray-800 font-semibold text-center">الموظف مشغول حالياً، هل تود الانتظار أم التحدث مع المساعد الذكي؟</p>
+                <div className="flex gap-2 justify-center mt-1">
+                  <button onClick={handleWaitAdmin} className="px-4 py-1.5 bg-[#05073C] text-white text-[11px] font-bold rounded-full shadow-sm hover:bg-blue-900 transition">الانتظار قليلاً</button>
+                  <button onClick={handleFallbackToAI} className="px-4 py-1.5 bg-[#EB662B] text-white text-[11px] font-bold rounded-full shadow-sm hover:bg-[#d55822] transition">المساعد الذكي (AI)</button>
                 </div>
               </div>
             )}
