@@ -2,15 +2,45 @@ import SectionWrapper from "@/components/sections/SectionWrapper";
 import { useApp } from "@/context/AppContext";
 import { useCart } from "@/context/CartContext";
 import { Link } from "react-router-dom";
-import { FaUserEdit, FaEnvelope, FaPhoneAlt, FaCalendarAlt, FaHeart, FaShoppingBag, FaHistory, FaExclamationTriangle } from "react-icons/fa";
+import { 
+  FaUserEdit, 
+  FaEnvelope, 
+  FaPhoneAlt, 
+  FaCalendarAlt, 
+  FaHeart, 
+  FaShoppingBag, 
+  FaHistory, 
+  FaExclamationTriangle,
+  FaDollarSign,
+  FaPercentage,
+  FaHandshake,
+  FaChartLine,
+  FaUsers,
+  FaCoins,
+  FaBriefcase,
+  FaStore
+} from "react-icons/fa";
 
 import { useState, useEffect } from "react";
-import { getUserBookings } from "@/api/bookingService";
+import { getUserBookings, getAdminStats, getAdminBookings } from "@/api/bookingService";
+import PriceDisplay from "@/components/common/PriceDisplay";
 
 const DashboardPage = () => {
   const { user, wishlist, recentlyViewed } = useApp();
   const { totalItems } = useCart();
   const [bookingsCount, setBookingsCount] = useState<number | string>("--");
+  
+  // Admin stats state
+  const [adminStats, setAdminStats] = useState<any>(null);
+  const [adminBookings, setAdminBookings] = useState<any[]>([]);
+  const [loadingAdmin, setLoadingAdmin] = useState(false);
+
+  const isAdmin = user?.email && (
+    ['dinaabdelbaset08@gmail.com', 'eslam.15963278@gmail.com', 'admin@kemat.com', 'admin@kemet.com', 'kemet@kemet.com'].includes(user.email.toLowerCase()) ||
+    user.email.toLowerCase().includes('kemet') ||
+    user.email.toLowerCase().includes('kemat') ||
+    user.email.toLowerCase().startsWith('admin')
+  );
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -23,8 +53,29 @@ const DashboardPage = () => {
         setBookingsCount(0);
       }
     };
+
+    const fetchAdminData = async () => {
+      if (!isAdmin) return;
+      setLoadingAdmin(true);
+      try {
+        const [statsData, bookingsData] = await Promise.all([
+          getAdminStats(),
+          getAdminBookings()
+        ]);
+        setAdminStats(statsData);
+        setAdminBookings(bookingsData);
+      } catch (error) {
+        console.error("Failed to fetch admin dashboard stats:", error);
+      } finally {
+        setLoadingAdmin(false);
+      }
+    };
+
     fetchBookings();
-  }, []);
+    if (user?.email) {
+      fetchAdminData();
+    }
+  }, [user, isAdmin]);
 
   return (
     <div className="bg-[#fcfbf9] dark:bg-gray-900 min-h-screen overflow-hidden">
@@ -134,8 +185,9 @@ const DashboardPage = () => {
                 </div>
 
                 {/* Admin Tools (Only visible to Admins) */}
-                {user?.email && ['dinaabdelbaset08@gmail.com', 'eslam.15963278@gmail.com'].includes(user.email.toLowerCase()) && (
-                  <div className="mb-8 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+                {isAdmin && (
+                  <div className="space-y-8 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+                     {/* Pending Approvals Quick Link Banner */}
                      <Link to="/admin/approvals" className="bg-gradient-to-r from-[#EB662B] to-[#d55822] p-6 rounded-3xl shadow-xl shadow-orange-500/20 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group flex items-center justify-between border border-orange-400/30 relative overflow-hidden">
                         <div className="absolute inset-0 bg-white/10 w-full h-full -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                         <div className="relative z-10">
@@ -144,6 +196,217 @@ const DashboardPage = () => {
                         </div>
                         <div className="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-xl group-hover:scale-110 group-hover:rotate-12 transition-transform relative z-10"><FaExclamationTriangle className="animate-pulse" /></div>
                      </Link>
+
+                     {/* Premium Admin Commission & Revenue Stats Dashboard */}
+                     <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-8 shadow-xl shadow-gray-200/50 dark:shadow-none border border-[#D4AF37]/30 dark:border-gray-700 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/5 blur-3xl rounded-full"></div>
+                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#EB662B]/5 blur-3xl rounded-full"></div>
+                        
+                        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-gray-700 pb-6 mb-8">
+                           <div>
+                              <div className="inline-flex items-center gap-2 mb-1">
+                                 <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse"></span>
+                                 <h3 className="text-2xl font-black text-[#14213d] dark:text-white font-serif">
+                                    لوحة تحكم الأرباح والعمولات
+                                 </h3>
+                              </div>
+                              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 font-bold">
+                                 Platform Commission & Financial Analytics Ledger (15% Commission Split)
+                              </p>
+                           </div>
+                           <div className="px-4 py-2 bg-gradient-to-r from-[#D4AF37]/10 to-[#EB662B]/10 rounded-xl border border-[#D4AF37]/30 text-xs font-black text-[#EB662B] tracking-wider uppercase">
+                              Admin Ledger Active
+                           </div>
+                        </div>
+
+                        {loadingAdmin ? (
+                           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                              <div className="w-10 h-10 rounded-full border-4 border-[#EB662B] border-t-transparent animate-spin mb-4"></div>
+                              <p className="font-bold text-sm">جاري تحميل بيانات الأرباح والعمولات...</p>
+                           </div>
+                        ) : adminStats ? (
+                           <div className="space-y-8">
+                              
+                              {/* 4 Metrics Grid */}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                 {/* Metric 1: Total Revenue */}
+                                 <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900/60 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group hover:border-[#D4AF37] transition-all">
+                                    <div className="absolute top-0 right-0 w-12 h-12 bg-[#D4AF37]/10 rounded-bl-3xl flex items-center justify-center text-[#D4AF37] font-black"><FaCoins /></div>
+                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">إجمالي الإيرادات (Total Sales)</p>
+                                    <p className="text-2xl font-black text-[#14213d] dark:text-white mb-1"><PriceDisplay price={adminStats.revenue || 0} /></p>
+                                    <p className="text-[10px] text-gray-500 font-medium">مجموع الحجوزات النشطة</p>
+                                 </div>
+
+                                 {/* Metric 2: Kemet Share */}
+                                 <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900/60 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group hover:border-[#EB662B] transition-all">
+                                    <div className="absolute top-0 right-0 w-12 h-12 bg-[#EB662B]/10 rounded-bl-3xl flex items-center justify-center text-[#EB662B] font-black"><FaChartLine /></div>
+                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">نصيب المنصة (Kemet Profit - 15%)</p>
+                                    <p className="text-2xl font-black text-[#EB662B] mb-1"><PriceDisplay price={adminStats.profit || 0} /></p>
+                                    <p className="text-[10px] text-[#EB662B] font-semibold">صافي أرباح المنصة (15%)</p>
+                                 </div>
+
+                                 {/* Metric 3: Partner Share */}
+                                 <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900/60 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group hover:border-blue-500 transition-all">
+                                    <div className="absolute top-0 right-0 w-12 h-12 bg-blue-500/10 rounded-bl-3xl flex items-center justify-center text-blue-500 font-black"><FaHandshake /></div>
+                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">نصيب الشركاء (Partners Share - 85%)</p>
+                                    <p className="text-2xl font-black text-blue-600 dark:text-blue-400 mb-1"><PriceDisplay price={(adminStats.revenue - adminStats.profit) || 0} /></p>
+                                    <p className="text-[10px] text-gray-500 font-medium">مستحقات الفنادق والشركات (85%)</p>
+                                 </div>
+
+                                 {/* Metric 4: Commission Rate */}
+                                 <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900/60 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group hover:border-green-500 transition-all">
+                                    <div className="absolute top-0 right-0 w-12 h-12 bg-green-500/10 rounded-bl-3xl flex items-center justify-center text-green-500 font-black"><FaPercentage /></div>
+                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">نسبة العمولة (Commission Rate)</p>
+                                    <p className="text-2xl font-black text-green-600 dark:text-green-400 mb-1">{adminStats.commission_rate || "15%"}</p>
+                                    <p className="text-[10px] text-green-600 font-semibold">محددة ديناميكياً بالنظام</p>
+                                 </div>
+                              </div>
+
+                              {/* Profit Split Visualizer Bar */}
+                              <div className="bg-gray-50 dark:bg-gray-900/50 p-5 rounded-2xl border border-gray-100 dark:border-gray-700">
+                                 <div className="flex justify-between items-center text-xs font-bold text-gray-500 dark:text-gray-400 mb-3">
+                                    <span>نصيب الشركات الشريكة (85%)</span>
+                                    <span>نسبة توزيع الأرباح (Profit Split Ratio)</span>
+                                    <span>نصيب منصتنا (15%)</span>
+                                 </div>
+                                 <div className="w-full h-5 rounded-full overflow-hidden flex bg-gray-200 dark:bg-gray-800 shadow-inner p-0.5">
+                                    <div className="h-full bg-gradient-to-r from-blue-600 to-blue-500 rounded-l-full relative transition-all duration-1000 shadow-lg" style={{ width: '85%' }}>
+                                       <span className="absolute inset-0 flex items-center justify-center text-[10px] text-white font-black">85%</span>
+                                    </div>
+                                    <div className="h-full bg-gradient-to-r from-[#EB662B] to-[#D4AF37] rounded-r-full relative transition-all duration-1000 shadow-lg" style={{ width: '15%' }}>
+                                       <span className="absolute inset-0 flex items-center justify-center text-[10px] text-white font-black">15%</span>
+                                    </div>
+                                 </div>
+                                 <p className="text-[10px] text-gray-400 font-bold text-center mt-2.5">
+                                    مبني على نظام العمولات المعتمد لتخرج مشروع كيميت: المنصة تأخذ 15% عمولة تشغيل والشركة المنفذة تأخذ 85% من قيمة الرحلة أو حجز الفندق.
+                                 </p>
+                              </div>
+
+                              {/* Two Columns Side-by-Side: Top Places vs Top Users */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                 {/* Top Places */}
+                                 <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-5 shadow-sm">
+                                    <h4 className="font-extrabold text-sm text-[#14213d] dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                                       <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+                                       أكثر الوجهات والخدمات حجزاً (Top Destinations Booked)
+                                    </h4>
+                                    <div className="space-y-3">
+                                       {adminStats.top_places && adminStats.top_places.length > 0 ? (
+                                          adminStats.top_places.map((place: any, i: number) => (
+                                             <div key={i} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900/40 rounded-xl hover:bg-gray-100/50 dark:hover:bg-gray-900/75 transition-colors border border-transparent hover:border-gray-200/50">
+                                                <span className="text-sm font-bold text-gray-700 dark:text-gray-300 truncate max-w-[200px]">{place.name}</span>
+                                                <span className="px-3 py-1 bg-orange-100 dark:bg-orange-950/40 text-[#EB662B] text-xs font-black rounded-full flex items-center gap-1.5 border border-orange-200 dark:border-orange-900/30">
+                                                   {place.visits} حجوزات
+                                                </span>
+                                             </div>
+                                          ))
+                                       ) : (
+                                          <p className="text-xs text-gray-400 text-center py-4">لا توجد بيانات حالية</p>
+                                       )}
+                                    </div>
+                                 </div>
+
+                                 {/* Top Users */}
+                                 <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-5 shadow-sm">
+                                    <h4 className="font-extrabold text-sm text-[#14213d] dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                                       <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                       أكثر المستخدمين نشاطاً وحجزاً (Most Active Customers)
+                                    </h4>
+                                    <div className="space-y-3">
+                                       {adminStats.top_users && adminStats.top_users.length > 0 ? (
+                                          adminStats.top_users.map((item: any, i: number) => (
+                                             <div key={i} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900/40 rounded-xl hover:bg-gray-100/50 dark:hover:bg-gray-900/75 transition-colors border border-transparent hover:border-gray-200/50">
+                                                <span className="text-sm font-bold text-gray-700 dark:text-gray-300 truncate max-w-[200px]">{item.name}</span>
+                                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 text-xs font-black rounded-full flex items-center gap-1.5 border border-blue-200 dark:border-blue-900/30">
+                                                   {item.bookings} حجوزات
+                                                </span>
+                                             </div>
+                                          ))
+                                       ) : (
+                                          <p className="text-xs text-gray-400 text-center py-4">لا توجد بيانات حالية</p>
+                                       )}
+                                    </div>
+                                 </div>
+                              </div>
+
+                              {/* Detailed Bookings & Profit Splits Ledger */}
+                              <div className="border-t border-gray-100 dark:border-gray-700 pt-6">
+                                 <h4 className="font-extrabold text-sm text-[#14213d] dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37]"></span>
+                                    سجل الحجوزات وتفصيل توزيع الأرباح (Detailed Profits Ledger)
+                                 </h4>
+                                 
+                                 {adminBookings && adminBookings.length > 0 ? (
+                                    <div className="overflow-x-auto rounded-2xl border border-gray-100 dark:border-gray-700 shadow-inner">
+                                       <table className="w-full text-right text-xs font-medium text-gray-500 dark:text-gray-400 table-auto border-collapse">
+                                          <thead className="text-[10px] text-gray-400 font-black uppercase tracking-wider bg-gray-50 dark:bg-gray-900/70 border-b border-gray-100 dark:border-gray-700">
+                                             <tr>
+                                                <th className="px-4 py-3 text-center">الرقم</th>
+                                                <th className="px-4 py-3">العميل</th>
+                                                <th className="px-4 py-3">الخدمة المحجوزة</th>
+                                                <th className="px-4 py-3 text-center">الإجمالي المدفوع</th>
+                                                <th className="px-4 py-3 text-center text-[#EB662B]">نصيبنا (15%)</th>
+                                                <th className="px-4 py-3 text-center text-blue-600 dark:text-blue-400">نصيب الشركة (85%)</th>
+                                                <th className="px-4 py-3 text-center">الحالة</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                                             {adminBookings.slice(0, 10).map((booking: any) => {
+                                                const total = parseFloat(booking.total_price || booking.price || 0);
+                                                const profit = parseFloat(booking.platform_profit || (total * 0.15).toFixed(2));
+                                                const partner = parseFloat(booking.partner_share || (total - profit).toFixed(2));
+                                                
+                                                return (
+                                                   <tr key={booking.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors">
+                                                      <td className="px-4 py-3.5 text-center font-bold text-[#14213d] dark:text-white font-mono bg-gray-50/30 dark:bg-gray-900/10">
+                                                         BKG-{booking.id}
+                                                      </td>
+                                                      <td className="px-4 py-3.5 text-right font-semibold">
+                                                         <div>{booking.user?.name || "عميل خارجي"}</div>
+                                                         <div className="text-[10px] text-gray-400">{booking.user?.email || ""}</div>
+                                                      </td>
+                                                      <td className="px-4 py-3.5 text-right font-semibold text-gray-700 dark:text-gray-300">
+                                                         <div className="truncate max-w-[150px]">{booking.item_title || "خدمة سياحية"}</div>
+                                                         <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-500 font-bold tracking-widest uppercase">{booking.item_type}</span>
+                                                      </td>
+                                                      <td className="px-4 py-3.5 text-center font-extrabold text-gray-900 dark:text-white">
+                                                         <PriceDisplay price={total} />
+                                                      </td>
+                                                      <td className="px-4 py-3.5 text-center font-black text-[#EB662B] bg-orange-50/10 dark:bg-orange-950/5">
+                                                         <PriceDisplay price={profit} />
+                                                      </td>
+                                                      <td className="px-4 py-3.5 text-center font-black text-blue-600 dark:text-blue-400 bg-blue-50/10 dark:bg-blue-950/5">
+                                                         <PriceDisplay price={partner} />
+                                                      </td>
+                                                      <td className="px-4 py-3.5 text-center">
+                                                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${
+                                                            booking.status === 'cancelled' 
+                                                               ? 'bg-red-50 text-red-600 border-red-100 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/30' 
+                                                               : 'bg-green-50 text-green-600 border-green-100 dark:bg-green-950/20 dark:text-green-400 dark:border-green-900/30'
+                                                         }`}>
+                                                            {booking.status || "confirmed"}
+                                                         </span>
+                                                      </td>
+                                                   </tr>
+                                                );
+                                             })}
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 ) : (
+                                    <div className="text-center py-8 bg-gray-50 dark:bg-gray-900/40 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
+                                       <p className="text-xs text-gray-400 font-medium">لا توجد حجوزات مسجلة بالنظام حتى الآن</p>
+                                    </div>
+                                 )}
+                              </div>
+                           </div>
+                        ) : (
+                           <div className="text-center py-10 bg-red-50 dark:bg-red-950/25 border border-red-200/50 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-2xl">
+                              <p className="font-bold text-sm">خطأ أثناء جلب تفاصيل توزيع الأرباح</p>
+                              <p className="text-xs mt-1">تأكد من تشغيل خادم قاعدة البيانات والاتصال بالخلفية</p>
+                           </div>
+                        )}
+                     </div>
                   </div>
                 )}
 

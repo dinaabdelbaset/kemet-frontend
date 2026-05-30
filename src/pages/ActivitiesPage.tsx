@@ -153,9 +153,9 @@ const AdventureCard = ({ adventure }: { adventure: Adventure }) => {
   };
 
   return (
-    <div className="block relative bg-white border border-[#E7E6E6] dark:border-gray-700 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#D4AF37] hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] group h-[460px] w-full">
+    <div className="block relative bg-white border border-[#E7E6E6] dark:border-gray-700 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#D4AF37] hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] group h-[490px] w-full">
       {/* Background Cover Image (Slides up on hover) */}
-      <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[35%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
+      <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[30%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
         <img
           src={adventure.image}
           alt={adventure.title}
@@ -191,7 +191,7 @@ const AdventureCard = ({ adventure }: { adventure: Adventure }) => {
       </div>
 
       {/* Content (Revealed on hover) */}
-      <div className="absolute inset-x-0 bottom-0 h-[65%] bg-white dark:bg-gray-800 px-6 pt-5 pb-5 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-left">
+      <div className="absolute inset-x-0 bottom-0 h-[70%] bg-white dark:bg-gray-800 px-6 pt-5 pb-5 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-left">
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-2xl">{adventure.icon}</span>

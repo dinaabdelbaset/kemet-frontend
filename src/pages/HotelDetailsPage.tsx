@@ -19,11 +19,14 @@ const ROOM_IMAGE_MAP: Record<string, string> = {
   'Presidential Suite': '/images/hotels/resort4.png'
 };
 
-const getHotelMainImage = (hotel: any) => {
-  if (hotel.image) {
-      return hotel.image;
-  }
-  return '/images/hotels/resort1.png'; 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api").replace("/api", "");
+
+const getHotelMainImage = (hotel: any): string => {
+  const img = hotel.image;
+  if (!img) return '/images/hotels/resort1.png';
+  if (img.startsWith("http://") || img.startsWith("https://")) return img;
+  const clean = img.startsWith("/") ? img : `/${img}`;
+  return `${API_BASE}${clean}`;
 };
 
 const getHotelGallery = (hotel: any) => {

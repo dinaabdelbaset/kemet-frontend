@@ -1,8 +1,9 @@
 import PriceDisplay from "../components/common/PriceDisplay";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaPlane, FaClock, FaTag, FaChair, FaStar, FaShieldAlt, FaGift } from "react-icons/fa";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import axiosClient from "../api/axiosClient";
 
 interface FlightState {
   from: string;
@@ -45,7 +46,7 @@ const generateFlights = (from: string, to: string): Flight[] => [
 
 const SEAT_ROWS = Array.from({ length: 8 }, (_, i) => i + 1);
 const SEAT_COLS = ["A", "B", "C", "D", "E", "F"];
-const OCCUPIED = new Set(["1A", "1B", "2C", "2D", "3A", "3F", "4B", "4C", "5D", "5E", "6A", "6F", "7C"]);
+const DEFAULT_OCCUPIED = ["1A", "1B", "2C", "2D", "3A", "3F", "4B", "4C", "5D", "5E", "6A", "6F", "7C"];
 
 const FlightPage = () => {
   useDocumentTitle("مصر للطيران - احجز رحلتك");
@@ -63,8 +64,47 @@ const FlightPage = () => {
   const [selectedClass, setSelectedClass] = useState<"economy" | "business" | "first">("economy");
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [step, setStep] = useState<"list" | "seat" | "confirm">("list");
+  const [occupiedSeats, setOccupiedSeats] = useState<Set<string>>(new Set(DEFAULT_OCCUPIED));
   
   const totalPassengers = search.passengers.adults + search.passengers.children;
+
+  useEffect(() => {
+    if (!selectedFlight) return;
+    
+    // Start with default occupied seats
+    const currentOccupied = new Set(DEFAULT_OCCUPIED);
+    
+    // Load from local storage for instant offline fallback (with date isolation)
+    const localSaved = localStorage.getItem(`booked_seats_${selectedFlight.id}_${search.depDate}`);
+    if (localSaved) {
+      try {
+        const parsed = JSON.parse(localSaved);
+        if (Array.isArray(parsed)) {
+          parsed.forEach(s => currentOccupied.add(s));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    
+    // Fetch global occupied seats from database across all users for this specific date
+    const fetchLiveBookedSeats = async () => {
+      try {
+        const res = await axiosClient.get(`/flights/${selectedFlight.id}/occupied-seats?date=${search.depDate}`);
+        if (res.data && Array.isArray(res.data.occupied_seats)) {
+          res.data.occupied_seats.forEach((seat: string) => {
+            if (seat) currentOccupied.add(seat);
+          });
+        }
+        setOccupiedSeats(new Set(currentOccupied));
+      } catch (err) {
+        console.error("Failed to load live booked seats:", err);
+        setOccupiedSeats(new Set(currentOccupied));
+      }
+    };
+    
+    fetchLiveBookedSeats();
+  }, [selectedFlight, search.depDate]);
 
   const handleSeatClick = (seatId: string) => {
     if (selectedSeats.includes(seatId)) {
@@ -261,7 +301,7 @@ const FlightPage = () => {
                     {["A", "B", "C", null, "D", "E", "F"].map((col, colIdx) => {
                       if (!col) return <div key={colIdx} className="flex items-center justify-center text-[10px] text-white/30">{row}</div>;
                       const seatId = `${row}${col}`;
-                      const isOccupied = OCCUPIED.has(seatId);
+                      const isOccupied = occupiedSeats.has(seatId);
                       const isChosen = selectedSeats.includes(seatId);
                       return (
                         <button key={col} disabled={isOccupied} onClick={() => handleSeatClick(seatId)}
@@ -385,6 +425,14 @@ const FlightPage = () => {
             {/* Pay button */}
             <button
               onClick={() => {
+                const existing = localStorage.getItem(`booked_seats_${selectedFlight.id}_${search.depDate}`);
+                let bookedArray = [];
+                if (existing) {
+                  try { bookedArray = JSON.parse(existing); } catch(e){}
+                }
+                bookedArray = [...new Set([...bookedArray, ...selectedSeats])];
+                localStorage.setItem(`booked_seats_${selectedFlight.id}_${search.depDate}`, JSON.stringify(bookedArray));
+
                 navigate("/checkout", {
                   state: {
                     type: "flight",

@@ -14,7 +14,7 @@ const BASE_PROMPT = `أنت "KEMET AI" مساعد كيميت الذكي - مست
 1. TRIP PLANNER: لما حد يقول "عايز رحلة X يوم" → جدول يوم بيوم (مواعيد+أسعار+تنقلات+فنادق+مطاعم) من البيانات الحقيقية. احسب الميزانية.
 2. RECOMMENDATIONS: اسأل (ميزانية/اهتمامات/مدة/مع مين) ورشح من البيانات. Budget→أرخص, Luxury→5 نجوم, تاريخ→متاحف, مغامرة→سفاري.
 3. SMART SEARCH: "مطعم رومانسي"→Naguib Mahfouz. "حاجة رخيصة"→Felfela. "سمك"→Farhat. اشرح ليه.
-4. BOOKING: قارن خيارات, اعطي أسعار, وجه للصفحة: "روح /hotels → Book Now → ادفع". إلغاء مجاني 48 ساعة.
+4. BOOKING: قارن خيارات، اعطي أسعار، ووضح للعميل بالعامية المصرية خطوة بخطوة إزاي يحجز ويدفع بالطرق المتاحة والرسالة اللي هتجيله كالتالي: (1. اختاري الحاجة المراد حجزها من فنادق/رحلات/سفاري/متاحف/فعاليات/مواصلات -> 2. ادخلي واضغطي Book Now -> 3. ادفعي بالطريقة المناسبة ليكي: جنيه كاش، فيزا/ماستركارد، PayPal، أو كاش عند الوصول -> 4. أول ما تدفعي هيجيلك رسالة تأكيد SMS وإيميل فوراً بتفاصيل الحجز، وتقدري تتابعيه دايماً من صفحة حجوزاتي).
 5. LIVE HELP: رد فوراً بالأسعار/المواعيد/الأماكن من البيانات.
 6. PERSONALIZATION: افتكر تفضيلات المستخدم واقترح بناءً عليها.
 7. EVENTS: اذكر الفعاليات المناسبة. Sound & Light 500 ج.م, Dervishes مجاناً.
@@ -132,6 +132,72 @@ interface ChatMessage {
 let conversationHistory: ChatMessage[] = [];
 
 // ---------------------------------------------------------------------------
+//  Direct Groq API Fallback Helper (in case backend is offline)
+// ---------------------------------------------------------------------------
+async function callGroqDirectly(
+  userMessage: string,
+  history: { role: string; content: string }[]
+): Promise<string | null> {
+  if (!GROQ_API_KEY) {
+    console.warn("Direct Groq API call skipped: VITE_GROQ_API_KEY is not defined.");
+    return null;
+  }
+
+  try {
+    const systemPrompt = await getFullSystemPrompt();
+
+    // Format history for OpenAI/Groq format
+    const messages = [
+      { role: "system", content: systemPrompt },
+      ...history.slice(-6).map(h => ({
+        role: h.role === "user" ? "user" : "assistant",
+        content: h.content
+      })),
+      { role: "user", content: userMessage }
+    ];
+
+    const response = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: messages,
+        temperature: 0.5,
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content || null;
+    } else {
+      console.warn("Groq direct call primary model failed, trying fallback llama-3.3-70b-versatile...");
+      const altResponse = await fetch(GROQ_API_URL, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${GROQ_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: messages,
+          temperature: 0.5,
+        })
+      });
+      if (altResponse.ok) {
+        const altData = await altResponse.json();
+        return altData.choices?.[0]?.message?.content || null;
+      }
+    }
+  } catch (err) {
+    console.error("Error in callGroqDirectly:", err);
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
 //  Main chat function
 // ---------------------------------------------------------------------------
 
@@ -194,9 +260,36 @@ export const askChatbot = async (
       };
     }
 
+    // Try Groq fallback on non-ok backend response
+    const groqResponse = await callGroqDirectly(userMessage, history);
+    if (groqResponse) {
+      return { answer: groqResponse, is_human_mode: false };
+    }
+
     return { answer: "حصل خطأ في الاتصال بالسيرفر، جرب تاني 🔄", is_human_mode: false };
   } catch (error: any) {
-    console.error("Error asking Chatbot :", error);
+    console.error("Error asking Chatbot, attempting Groq fallback:", error);
+    try {
+      let userMessage: string;
+      let history: {role: string, content: string}[] = [];
+      if (typeof input === "string") {
+        userMessage = input;
+      } else {
+        const lastUserMsg = [...input].reverse().find((m) => m.sender === "user");
+        userMessage = lastUserMsg?.text || "";
+        const previousMessages = input.slice(0, input.length - 1);
+        history = previousMessages.map(m => ({
+          role: m.sender === "user" ? "user" : "assistant",
+          content: m.text
+        }));
+      }
+      const groqResponse = await callGroqDirectly(userMessage, history);
+      if (groqResponse) {
+        return { answer: groqResponse, is_human_mode: false };
+      }
+    } catch (fallbackError) {
+      console.error("Groq fallback failed:", fallbackError);
+    }
     return { answer: "حصل مشكلة في الاتصال، تأكد من الإنترنت وجرب تاني 🔄", is_human_mode: false };
   }
 };

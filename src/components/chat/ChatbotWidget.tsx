@@ -8,6 +8,50 @@ interface Message {
   text: string;
 }
 
+const getBookingGuideResponse = (text: string): string | null => {
+  const cleanText = text.toLowerCase().trim();
+
+  // 1. Intercept Generic Greetings
+  const greetings = [
+    "هاي", "هاى", "hi", "hello", "hey", "أهلاً", "اهلاً", "أهلا", "اهلا", 
+    "سلام", "السلام عليكم", "سلام عليكم", "صباح الخير", "مساء الخير", 
+    "good morning", "good evening", "صباح الورد", "مساء الورد"
+  ];
+  if (greetings.includes(cleanText)) {
+    const hasEnglish = /[a-zA-Z]/.test(cleanText);
+    if (hasEnglish) {
+      return `Hello! Welcome to Kemet Egypt Tourism. 🌸 I am absolutely delighted to assist you today in planning your perfect trip to Egypt. Would you like to explore our hotels 🏨, custom tour programs 🏛️, or safari adventures 🏜️?`;
+    } else {
+      return `أهلاً بحضرتك يا فندم في كيميت مصر للسياحة! 🌸 يسعدني جداً أن أكون كونسيرج السفر الخاص بك اليوم. هل تحب أن نبدأ باستكشاف الفنادق الفاخرة 🏨، برامج الرحلات الممتعة 🏛️، أم رحلات السفاري المشوقة 🏜️؟`;
+    }
+  }
+
+  // 2. Intercept How-to-book questions
+  const isBookingQuestion = 
+    (cleanText.includes("احجز") && (cleanText.includes("ازاي") || cleanText.includes("ازى") || cleanText.includes("طريقة") || cleanText.includes("طريقه") || cleanText.includes("كيف") || cleanText.includes("عايز") || cleanText.includes("عاوز") || cleanText.includes("بدء") || cleanText.includes("خطوات"))) ||
+    cleanText.includes("how to book") || 
+    cleanText.includes("how do i book") ||
+    cleanText.includes("how can i book");
+
+  if (isBookingQuestion) {
+    const hasEnglish = /[a-zA-Z]/.test(cleanText);
+    if (hasEnglish) {
+      return `To book on Kemet, just follow these simple steps:
+1. Choose the service you want to book (Hotels 🏨, Tours 🏛️, Safaris Desert 🏜️, Museums 🎭, Events 🎪, or Transportation 🚗).
+2. Go to its page and click on the booking button ("Book Now") to proceed to checkout.
+3. Pay using your preferred payment method (we accept EGP cash, Visa/Mastercard, PayPal, or cash on arrival).
+4. As soon as payment is successful, you will instantly receive a confirmation SMS and email with all booking details. You can always track your bookings under your [My Bookings](/bookings) page!`;
+    } else {
+      return `يا فندم، الحجز على كيميت سهل جداً وبسيط! كل اللي عليك تتبع الخطوات دي:
+1. **اختار الحاجة اللي عاوز تحجزها** من الموقع (سواء فنادق 🏨، رحلات سياحية 🏛️، سفاري 🏜️، متاحف 🎭، فعاليات 🎪، أو مواصلات 🚗).
+2. **ادخل على صفحة الخدمة** دي واضغط على زر الحجز (**Book Now**) أو إتمام الحجز عشان تنتقل لصفحة الدفع.
+3. **ادفع بالطريقة المناسبة ليك** من الطرق المتاحة على كيميت (عندنا دفع بالجنيه كاش، فيزا/ماستركارد، PayPal، أو كاش عند الوصول).
+4. **أول ما تدفع**، هيجيلك رسالة تأكيد (SMS وإيميل) فوراً بتفاصيل الحجز، وكمان تقدر تتابع حجزك وتشوف كل التفاصيل في أي وقت من صفحة [حجوزاتي](/bookings) 😊.`;
+    }
+  }
+  return null;
+};
+
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -48,7 +92,13 @@ const ChatbotWidget = () => {
         localStorage.setItem('kemet_chat_session', sessionToken);
       }
       
-      const replyObj = await askChatbot(userText, sessionToken);
+      const localResponse = getBookingGuideResponse(userText);
+      let replyObj;
+      if (localResponse) {
+        replyObj = { answer: localResponse };
+      } else {
+        replyObj = await askChatbot(userText, sessionToken);
+      }
       const newBotMsg: Message = { id: (Date.now() + 1).toString(), sender: "bot", text: replyObj.answer };
       setMessages((prev) => [...prev, newBotMsg]);
     } catch (error) {

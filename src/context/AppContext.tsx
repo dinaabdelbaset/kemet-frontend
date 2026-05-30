@@ -154,6 +154,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     localStorage.removeItem('app_user');
     localStorage.removeItem('app_wishlist');
     localStorage.removeItem('app_recently_viewed');
+    localStorage.removeItem('token'); // Clear the API authentication token!
+    sessionStorage.removeItem('kemet_chatbot_messages'); // Clear cached chatbot messages!
+    sessionStorage.removeItem('kemet_chatbot_session_token'); // Reset chatbot session token!
     showToast('You have been logged out.');
   };
 

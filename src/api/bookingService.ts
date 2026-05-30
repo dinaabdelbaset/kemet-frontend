@@ -21,3 +21,14 @@ export const cancelBooking = async (bookingId: string | number) => {
     return response.data;
 };
 
+export const getAdminStats = async () => {
+    const response = await axiosClient.get("/admin/stats");
+    return response.data;
+};
+
+export const getAdminBookings = async () => {
+    const response = await axiosClient.get("/admin/bookings");
+    return response.data;
+};
+
+

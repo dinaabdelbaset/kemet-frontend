@@ -216,10 +216,22 @@ const CheckoutPage = () => {
          if (currentStep === 2) {
              setIsSubmitting(true);
              try {
-                await axiosClient.post("/checkout/send-otp", { email: checkoutData.details.email });
+                const res = await axiosClient.post("/checkout/send-otp", { email: checkoutData.details.email });
+                if (res.data?.dev_otp) {
+                   showToast(`[رمز التجربة] رمز التحقق الخاص بك هو: ${res.data.dev_otp}`, false);
+                } else {
+                   showToast("تم إرسال رمز التحقق إلى بريدك الإلكتروني", false);
+                }
                 setShowOtpModal(true);
              } catch (e: any) {
-                setErrors([e.response?.data?.message || "Failed to send OTP to your email. Please try again."]);
+                const devMsg = e.response?.data?.message || "";
+                const match = devMsg.match(/Development code:\s*(\d+)/);
+                if (match && match[1]) {
+                   showToast(`[رمز التجربة] رمز التحقق الخاص بك هو: ${match[1]}`, false);
+                   setShowOtpModal(true);
+                } else {
+                   setErrors([devMsg || "Failed to send OTP to your email. Please try again."]);
+                }
              } finally {
                 setIsSubmitting(false);
              }

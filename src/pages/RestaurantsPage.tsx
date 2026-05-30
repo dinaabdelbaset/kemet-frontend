@@ -168,10 +168,10 @@ const RestaurantsPage = () => {
                 <Link
                   key={restaurant.id}
                   to={`/restaurants/${restaurant.id}`}
-                  className="block relative bg-white border border-gray-100 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#cd4f3c] hover:shadow-[0_20px_40px_rgba(205,79,60,0.15)] group h-[400px] w-full"
+                  className="block relative bg-white border border-gray-100 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#cd4f3c] hover:shadow-[0_20px_40px_rgba(205,79,60,0.15)] group h-[440px] w-full"
                 >
                   {/* Background Cover Image (Slides up on hover) */}
-                  <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[45%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
+                  <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[40%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
                     <img
                       src={restaurant.image || '/placeholder.png'}
                       alt={restaurant.name}
@@ -199,7 +199,7 @@ const RestaurantsPage = () => {
                   </div>
 
                   {/* Content (Revealed on hover) */}
-                  <div className="absolute inset-x-0 bottom-0 h-[55%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-right">
+                  <div className="absolute inset-x-0 bottom-0 h-[60%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-right">
                     <div>
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-[#cd4f3c] font-bold text-[11px] bg-[#cd4f3c]/10 px-2.5 py-1 rounded-md">{restaurant.cuisine}</span>

@@ -45,3 +45,24 @@ axiosClient.get = async (url: string, config?: any) => {
   
   return response;
 };
+
+// Clear GET cache automatically on any data mutations (POST, PUT, DELETE)
+const originalPost = axiosClient.post;
+const originalPut = axiosClient.put;
+const originalDelete = axiosClient.delete;
+
+axiosClient.post = async (url: string, data?: any, config?: any) => {
+  getCache.clear();
+  return originalPost(url, data, config);
+};
+
+axiosClient.put = async (url: string, data?: any, config?: any) => {
+  getCache.clear();
+  return originalPut(url, data, config);
+};
+
+axiosClient.delete = async (url: string, config?: any) => {
+  getCache.clear();
+  return originalDelete(url, config);
+};
+

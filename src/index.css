@@ -1,30 +1,100 @@
 @import "tailwindcss";
 
+/* === COFO SANS PRO ARABIC FONT FACES === */
+@font-face {
+  font-family: 'CofoSansProArabic';
+  src: url('/fonts/cofo-sans-pro-arabic-hairline.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CofoSansProArabic';
+  src: url('/fonts/cofo-sans-pro-arabic-thin.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CofoSansProArabic';
+  src: url('/fonts/cofo-sans-pro-arabic-light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CofoSansProArabic';
+  src: url('/fonts/cofo-sans-pro-arabic-book.ttf') format('truetype');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CofoSansProArabic';
+  src: url('/fonts/cofo-sans-pro-arabic-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CofoSansProArabic';
+  src: url('/fonts/cofo-sans-pro-arabic-medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CofoSansProArabic';
+  src: url('/fonts/cofo-sans-pro-arabic-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CofoSansProArabic';
+  src: url('/fonts/cofo-sans-pro-arabic-black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Google Translate Widget Overrides */
 .skiptranslate iframe,
 .goog-te-banner-frame {
   display: none !important;
 }
+
 body {
   top: 0px !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'CofoSansProArabic', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   cursor: auto !important; /* Always use the natural cursor */
 }
+
 #google_translate_element {
   display: none !important;
 }
+
 .goog-tooltip {
   display: none !important;
   box-shadow: none !important;
 }
+
 .goog-text-highlight {
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
 }
+
 @import "flowbite/src/themes/default";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -106,20 +176,24 @@ body {
   --color-sidebar-ring: var(--sidebar-ring);
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+
   @keyframes marquee {
-  from {
-    transform: translateX(0);
+    from {
+      transform: translateX(0);
     }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
+
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
     }
   }
+
   @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
+    from {
+      transform: translateY(0);
     }
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
+
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
     }
   }
 }
@@ -197,6 +271,7 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
@@ -217,7 +292,8 @@ body {
 .dark .text-gray-500,
 .dark .text-neutral-600,
 .dark .text-neutral-500 {
-  color: #e5e7eb !important; /* light gray for secondary text */
+  color: #e5e7eb !important;
+  /* light gray for secondary text */
 }
 
 /* Global Dark Mode Background Overrides for bright elements */
@@ -254,20 +330,37 @@ body {
 
 /* --- Pharaonic Elegant Animations --- */
 @keyframes fadeInUpPharaoh {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .animate-fade-in-up-pharaoh {
   animation: fadeInUpPharaoh 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
-  opacity: 0; /* Important so elements start hidden before animation */
+  opacity: 0;
+  /* Important so elements start hidden before animation */
 }
 
 /* --- Lenis Smooth Scroll --- */
@@ -275,12 +368,15 @@ html.lenis,
 html.lenis body {
   height: auto;
 }
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
+
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
+
 .lenis.lenis-stopped {
   overflow: hidden;
 }
@@ -289,14 +385,20 @@ html.lenis body {
 .pin-spacer {
   pointer-events: none;
 }
-.pin-spacer > * {
+
+.pin-spacer>* {
   pointer-events: auto;
 }
 
 /* --- Shimmer gradient text animation --- */
 @keyframes shimmer {
-  0% { background-position: 200% center; }
-  100% { background-position: -200% center; }
+  0% {
+    background-position: 200% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
 }
 
 /* --- Scroll Progress Bar --- */
@@ -314,40 +416,67 @@ img {
 }
 
 /* --- GSAP Text Split helpers --- */
-.gsap-word, .gsap-char, .gsap-scrub-word, .gsap-desc-word, .gsap-q-word {
+.gsap-word,
+.gsap-char,
+.gsap-scrub-word,
+.gsap-desc-word,
+.gsap-q-word {
   will-change: transform, opacity;
 }
 
 /* --- Card 3D perspective helpers --- */
-[style*="perspective"] > * {
+[style*="perspective"]>* {
   transform-style: preserve-3d;
   backface-visibility: hidden;
 }
 
-/* === PREMIUM FONTS === */
-h1, h2, h3, h4, h5, h6,
+/* === PREMIUM FONTS — CofoSansProArabic for ALL languages === */
+/* CofoSansProArabic is the primary font for ALL languages */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 .font-heading {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'CofoSansProArabic', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   letter-spacing: -0.02em;
 }
 
 .font-accent {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-family: 'CofoSansProArabic', 'Playfair Display', Georgia, 'Times New Roman', serif !important;
 }
 
 .font-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'CofoSansProArabic', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+/* Apply font globally to ALL elements regardless of language */
+*,
+*::before,
+*::after {
+  font-family: 'CofoSansProArabic', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
 /* === INFINITE TICKER / MARQUEE STRIP === */
 @keyframes ticker-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes ticker-scroll-reverse {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .ticker-strip {
@@ -381,6 +510,7 @@ h1, h2, h3, h4, h5, h6,
 .ticker-strip--dark::before {
   background: linear-gradient(90deg, #05073C 0%, transparent 100%);
 }
+
 .ticker-strip--dark::after {
   background: linear-gradient(270deg, #05073C 0%, transparent 100%);
 }
@@ -425,27 +555,68 @@ h1, h2, h3, h4, h5, h6,
 
 /* === Smooth letter spacing for large text === */
 .text-display {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'CofoSansProArabic', 'Outfit', sans-serif !important;
   letter-spacing: -0.04em;
   line-height: 0.95;
   font-weight: 800;
 }
 
-/* === ARABIC TRANSLATION OVERRIDES (RTL) === */
+/* === ARABIC / RTL OVERRIDES — Cofo Sans Pro Arabic === */
+html[dir="rtl"] *,
 html[dir="rtl"] body,
-html[dir="rtl"] h1, 
-html[dir="rtl"] h2, 
-html[dir="rtl"] h3, 
-html[dir="rtl"] h4, 
-html[dir="rtl"] h5, 
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3,
+html[dir="rtl"] h4,
+html[dir="rtl"] h5,
 html[dir="rtl"] h6,
+html[dir="rtl"] p,
+html[dir="rtl"] span,
+html[dir="rtl"] a,
+html[dir="rtl"] button,
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select,
+html[dir="rtl"] label,
 html[dir="rtl"] .font-heading,
 html[dir="rtl"] .font-body,
 html[dir="rtl"] .font-accent,
-html[dir="rtl"] .text-display,
-html[dir="rtl"] * {
-  font-family: 'Cairo', -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
+html[dir="rtl"] .text-display {
+  font-family: 'CofoSansProArabic', 'Cairo', Arial, sans-serif !important;
   letter-spacing: normal !important;
+  word-spacing: 0.05em;
+}
+
+/* Heading weight mapping for Arabic — use bolder weights for titles */
+html[dir="rtl"] h1 {
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+}
+
+html[dir="rtl"] h2 {
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+}
+
+html[dir="rtl"] h3,
+html[dir="rtl"] h4 {
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+}
+
+html[dir="rtl"] h5,
+html[dir="rtl"] h6 {
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+}
+
+/* Body text — comfortable reading weight */
+html[dir="rtl"] body,
+html[dir="rtl"] p,
+html[dir="rtl"] span,
+html[dir="rtl"] li {
+  font-weight: 400;
+  line-height: 1.8 !important;
 }
 
 html[dir="rtl"] {
@@ -454,11 +625,40 @@ html[dir="rtl"] {
 }
 
 /* Fix specific layout issues that break when flipped */
-html[dir="rtl"] .text-left { text-align: right !important; }
-html[dir="rtl"] .text-right { text-align: left !important; }
-html[dir="rtl"] .ml-auto { margin-right: auto !important; margin-left: 0 !important; }
-html[dir="rtl"] .mr-auto { margin-left: auto !important; margin-right: 0 !important; }
-html[dir="rtl"] .pl-4 { padding-right: 1rem !important; padding-left: 0 !important; }
-html[dir="rtl"] .pr-4 { padding-left: 1rem !important; padding-right: 0 !important; }
-html[dir="rtl"] .left-0 { left: auto !important; right: 0 !important; }
-html[dir="rtl"] .right-0 { right: auto !important; left: 0 !important; }
+html[dir="rtl"] .text-left {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .text-right {
+  text-align: left !important;
+}
+
+html[dir="rtl"] .ml-auto {
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+html[dir="rtl"] .mr-auto {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .pl-4 {
+  padding-right: 1rem !important;
+  padding-left: 0 !important;
+}
+
+html[dir="rtl"] .pr-4 {
+  padding-left: 1rem !important;
+  padding-right: 0 !important;
+}
+
+html[dir="rtl"] .left-0 {
+  left: auto !important;
+  right: 0 !important;
+}
+
+html[dir="rtl"] .right-0 {
+  right: auto !important;
+  left: 0 !important;
+}
