@@ -12,6 +12,7 @@ import InteractiveMap from "../components/common/InteractiveMap";
 import ReviewSection from "../components/common/ReviewSection";
 import SocialShare from "../components/common/SocialShare";
 import { useApp } from "../context/AppContext";
+import ARViewerModal from "../components/common/ARViewerModal";
 const ROOM_IMAGE_MAP: Record<string, string> = {
   'Classic Single Room': '/images/hotels/resort1.png',
   'Deluxe Double Room': '/images/hotels/resort2.png',
@@ -60,6 +61,7 @@ const HotelDetailsPage = () => {
 
     const [hotel, setHotel] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isArOpen, setIsArOpen] = useState(false);
 
 
     useDocumentTitle(hotel?.title ? `${hotel.title} | Kemet` : "Hotel Details");
@@ -109,6 +111,19 @@ const HotelDetailsPage = () => {
             fetchHotel();
         }
     }, [hotelId]);
+
+    useEffect(() => {
+        if (!hotel) return;
+        const timer = setTimeout(() => {
+            const isArabic = document.documentElement.lang === 'ar' || document.cookie.includes('googtrans=/en/ar');
+            const hotelName = hotel.title || hotel.name;
+            const msg = isArabic 
+                ? `أهلاً بك! أرى أنك تبحث عن إقامة مميزة في "${hotelName}". ما رأيك أن أقدم لك عرضاً خاصاً ونقاطاً إضافية إذا قمت بالحجز الآن؟ 😉`
+                : `Hi there! I see you are looking for a special stay at "${hotelName}". How about a customized special deal or bonus loyalty points if you book right now? 😉`;
+            window.dispatchEvent(new CustomEvent('open-chatbot', { detail: { message: msg } }));
+        }, 20000); // 20 seconds
+        return () => clearTimeout(timer);
+    }, [hotel?.id]);
 
     if (isLoading) {
         return (
@@ -168,10 +183,21 @@ const HotelDetailsPage = () => {
                             <h1 className="text-3xl sm:text-4xl font-extrabold text-[#05073C]">{hotel.title || hotel.name}</h1>
 
                         </div>
-                        <p className="flex items-center gap-2 text-gray-500 font-medium">
+                        <p className="flex items-center gap-2 text-gray-500 font-medium mb-3">
                             <FaMapMarkerAlt className="text-[#EB662B]" />
                             {hotel.address || hotel.location || hotel.city}
                         </p>
+                        <button 
+                            onClick={() => setIsArOpen(true)}
+                            className="bg-gradient-to-r from-[#D4AF37] to-[#EB662B] text-[#05073C] hover:text-white font-black text-xs px-5 py-3.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-[0_4px_15px_rgba(235,102,43,0.3)] hover:shadow-[0_8px_24px_rgba(235,102,43,0.45)] hover:-translate-y-0.5 cursor-pointer relative overflow-hidden border-none"
+                        >
+                            <span className="flex h-1.5 w-1.5 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                            </span>
+                            <span className="text-sm">🕶️</span>
+                            <span className="uppercase tracking-wider">Experience Real 360° VR Tour</span>
+                        </button>
                     </div>
 
                     <div className="text-right flex flex-col items-end w-full md:w-auto">
@@ -278,6 +304,11 @@ const HotelDetailsPage = () => {
 
 
             </div>
+            <ARViewerModal 
+                isOpen={isArOpen}
+                onClose={() => setIsArOpen(false)}
+                title={hotel.title || hotel.name}
+            />
         </SectionWrapper>
     );
 };

@@ -1175,7 +1175,15 @@ const FloatingChatbot = () => {
   }, [messages.length, isOpen, isLoading]);
 
   useEffect(() => {
-    const handleOpenChatbot = () => setIsOpen(true);
+    const handleOpenChatbot = (e: any) => {
+      setIsOpen(true);
+      if (e.detail && e.detail.message) {
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now() + Math.random(), text: e.detail.message, sender: "bot" }
+        ]);
+      }
+    };
     window.addEventListener('open-chatbot', handleOpenChatbot);
     return () => window.removeEventListener('open-chatbot', handleOpenChatbot);
   }, []);
@@ -1326,15 +1334,6 @@ const FloatingChatbot = () => {
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {!isCallActive && (
-                <button
-                  onClick={startAICall}
-                  title={lang === 'ar' ? 'اتصال صوتی' : 'Voice Call'}
-                  className="text-white/70 hover:text-[#D4AF37] hover:scale-110 transition p-2 text-lg mr-1"
-                >
-                  <FaPhone />
-                </button>
-              )}
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-white/70 hover:text-white transition p-2"
@@ -1531,30 +1530,7 @@ const FloatingChatbot = () => {
                   </div>
                 ))}
 
-                {messages.length <= 1 && (
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-[#FFFDF9] via-[#FFF9EE] to-[#FFF3DC] border border-[#F2D091] shadow-md flex flex-col items-center text-center gap-3 animate-in fade-in slide-in-from-bottom-3 duration-500 my-2">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#EB662B] to-[#D4AF37] flex items-center justify-center text-white text-xl shadow-lg shadow-[#EB662B]/20 animate-bounce">
-                      <FaHeadset />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <h4 className="font-extrabold text-sm text-[#05073C]">
-                        {lang === 'ar' ? 'الوضع الصوتي التفاعلي الجديد!' : 'New Interactive Voice Mode!'}
-                      </h4>
-                      <p className="text-xs text-gray-600 px-2 leading-relaxed">
-                        {lang === 'ar'
-                          ? 'تحدث معي مباشرة بصوتك بدون كتابة! ميزة المقاطعة الصوتية التلقائية تتيح لك التحدث فوق صوتي لأقاطع كلامي فوراً وأسمعك كالبشر تماماً.'
-                          : 'Talk to me hands-free! True Voice Interruption allows you to speak over me anytime and I will instantly stop to listen.'}
-                      </p>
-                    </div>
-                    <button
-                      onClick={startAICall}
-                      className="mt-1 px-5 py-2 bg-gradient-to-r from-[#05073C] to-[#1a1d5e] hover:from-[#EB662B] hover:to-[#d55822] text-white text-xs font-bold rounded-full shadow-md transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2"
-                    >
-                      <FaPhone className="animate-pulse" />
-                      {lang === 'ar' ? 'ابدأ محادثة صوتية الآن' : 'Start Voice Call Now'}
-                    </button>
-                  </div>
-                )}
+
 
                 {/* Loading Indicator */}
                 {isLoading && (

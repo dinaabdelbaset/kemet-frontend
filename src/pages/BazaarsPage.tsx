@@ -24,9 +24,28 @@ const BazaarsPage = () => {
 
   const citiesList = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum"];
 
-  const filteredBazaars = !bazaars ? [] : (activeCity === "All" 
-    ? bazaars 
-    : bazaars.filter((r: any) => r.location?.toLowerCase().includes(activeCity.toLowerCase())));
+  // Map English city names → Arabic as stored in DB
+  const cityToArabic: Record<string, string[]> = {
+    "Cairo":          ["القاهرة", "cairo"],
+    "Giza":           ["الجيزة", "giza"],
+    "Alexandria":     ["الإسكندرية", "alexandria"],
+    "Luxor":          ["الأقصر", "luxor"],
+    "Aswan":          ["أسوان", "aswan"],
+    "Sharm El-Sheikh":["شرم الشيخ", "sharm"],
+    "Hurghada":       ["الغردقة", "hurghada"],
+    "Marsa Alam":     ["مرسى علم", "marsa alam"],
+    "Marsa Matrouh":  ["مرسى مطروح", "matrouh"],
+    "Port Said":      ["بورسعيد", "port said"],
+    "Fayoum":         ["الفيوم", "fayoum"],
+  };
+
+  const filteredBazaars = !bazaars ? [] : (activeCity === "All"
+    ? bazaars
+    : bazaars.filter((r: any) => {
+        const loc = (r.location || "").toLowerCase();
+        const terms = cityToArabic[activeCity] || [activeCity.toLowerCase()];
+        return terms.some(term => loc.includes(term.toLowerCase()));
+      }));
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#fcfaf8]"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div></div>;

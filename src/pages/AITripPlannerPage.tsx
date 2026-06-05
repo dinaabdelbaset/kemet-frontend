@@ -55,10 +55,11 @@ const AITripPlannerPage = () => {
     "Preparing your comprehensive trip plan...",
   ];
 
-  const { showToast } = useApp();
+  const { showToast, setCurrency } = useApp();
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
+    setCurrency(formData.currency as any);
     setIsGenerating(true);
     setResult(null);
     setLoadingStep(0);
@@ -413,7 +414,7 @@ const AITripPlannerPage = () => {
                                </div>
                              </div>
                              <div className="text-right">
-                               <div className="font-bold text-[#05073C]">{act.price > 0 ? `$${act.price}` : "Free"}</div>
+                               <div className="font-bold text-[#05073C]">{act.price > 0 ? <PriceDisplay price={Number(act.price)} /> : "Free"}</div>
                              </div>
                            </div>
                          ))}

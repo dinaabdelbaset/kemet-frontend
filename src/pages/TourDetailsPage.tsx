@@ -10,11 +10,13 @@ import ReviewSection from "../components/common/ReviewSection";
 import SocialShare from "../components/common/SocialShare";
 import PriceDisplay from "../components/common/PriceDisplay";
 import { useApp } from "../context/AppContext";
+import ARViewerModal from "../components/common/ARViewerModal";
 
 const TourDetailsPage = () => {
   const { tourId } = useParams<{ tourId: string }>();
   const [tour, setTour] = useState<ITour | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isArOpen, setIsArOpen] = useState(false);
   
   const { user, toggleWishlist, wishlist, addRecentlyViewed } = useApp();
   
@@ -69,6 +71,18 @@ const TourDetailsPage = () => {
         link: `/tours/${tour.id}`
       });
     }
+  }, [tour?.id]);
+
+  useEffect(() => {
+    if (!tour) return;
+    const timer = setTimeout(() => {
+      const isArabic = document.documentElement.lang === 'ar' || document.cookie.includes('googtrans=/en/ar');
+      const msg = isArabic 
+        ? `أهلاً بك! أرى أنك مهتم بـ "${tour.title}". هل حابب أظبطلك كود خصم حصري لإتمام الحجز الآن؟ 😉`
+        : `Hi there! I see you're looking at "${tour.title}". Would you like a special custom discount code to book this right now? 😉`;
+      window.dispatchEvent(new CustomEvent('open-chatbot', { detail: { message: msg } }));
+    }, 20000); // 20 seconds
+    return () => clearTimeout(timer);
   }, [tour?.id]);
 
   if (loading) {
@@ -260,6 +274,22 @@ const TourDetailsPage = () => {
             >
               {isSaved ? "Saved to Wishlist" : "Save Tour"}
             </button>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                setIsArOpen(true);
+              }}
+              className="w-full bg-gradient-to-r from-[#D4AF37] to-[#EB662B] text-[#05073C] hover:text-white font-black py-4 rounded-xl transition-all duration-300 text-sm flex justify-center items-center gap-2 shadow-[0_4px_20px_rgba(235,102,43,0.35)] hover:shadow-[0_12px_32px_rgba(235,102,43,0.55)] hover:-translate-y-0.5 relative overflow-hidden group cursor-pointer border-none"
+            >
+              {/* Pulsing red live/active indicator dot */}
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+              </span>
+              
+              <span className="text-base">🕶️</span>
+              <span className="uppercase tracking-wider">Experience Real 360° VR Tour</span>
+            </button>
 
             <p className="text-xs text-gray-400 text-center">
               Free cancellation up to 24h before
@@ -267,6 +297,11 @@ const TourDetailsPage = () => {
           </div>
         </div>
       </div>
+      <ARViewerModal 
+        isOpen={isArOpen}
+        onClose={() => setIsArOpen(false)}
+        title={tour.title}
+      />
     </SectionWrapper>
   );
 };

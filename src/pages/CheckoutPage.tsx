@@ -107,6 +107,43 @@ const CheckoutPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   
+  // Exit intent & abandonment timer trigger
+  useEffect(() => {
+    let hasTriggered = false;
+
+    const triggerNegotiation = () => {
+      if (hasTriggered) return;
+      hasTriggered = true;
+
+      const isArabic = document.documentElement.lang === 'ar' || document.cookie.includes('googtrans=/en/ar');
+      const itemTitle = checkoutData.item.title;
+      const msg = isArabic 
+        ? `استنى يا بطل! 😉 شايفك بتفكر تلغي حجز "${itemTitle}". إيه رأيك أظبطلك 500 نقطة ولاء إضافية أو كود خصم خاص لو كملت الحجز دلوقتي؟ كلمني هنا ونظبطها سوا! 🤝`
+        : `Wait! 😉 I see you're about to leave your booking for "${itemTitle}". How about I hook you up with 500 bonus loyalty points or a special custom discount code if you complete it right now? Chat with me here and let's work it out! 🤝`;
+      
+      window.dispatchEvent(new CustomEvent('open-chatbot', { detail: { message: msg } }));
+    };
+
+    // 1. Mouse Leave Exit Intent
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY < 10) {
+        triggerNegotiation();
+      }
+    };
+
+    // 2. Prolonged Delay Abandonment Timer (30 seconds)
+    const timer = setTimeout(() => {
+      triggerNegotiation();
+    }, 30000);
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      clearTimeout(timer);
+    };
+  }, [checkoutData.item.title]);
+  
   // OTP Feature Hooks
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpValues, setOtpValues] = useState(['', '', '', '']);
