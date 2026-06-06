@@ -27,7 +27,7 @@ const SafariPage = () => {
     }
   }, [urlLocation]);
 
-  const citiesList = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum"];
+  const citiesList = ["All", "Cairo", "Giza", "Alexandria", "Luxor", "Aswan", "Sharm El-Sheikh", "Hurghada", "Marsa Alam", "Marsa Matrouh", "Port Said", "Fayoum", "Siwa", "Farafra", "Saint Catherine", "Taba"];
 
   useEffect(() => {
     getSafaris()
@@ -139,67 +139,69 @@ const SafariPage = () => {
                     <Link
                       key={item.id}
                       to={`/safari/${item.id}`}
-                      className="block relative bg-white border border-[#E7E6E6] dark:border-gray-700 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#D4AF37] hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] group h-[420px] w-full"
+                      className="block relative bg-white border border-[#E7E6E6] dark:border-gray-700 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#D4AF37] hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] group h-[420px] w-full card-tilt-effect"
                     >
-                      {/* Background Cover Image (Slides up on hover) */}
-                      <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[40%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
-                        <img
-                          src={item.image || '/placeholder.png'}
-                          alt={item.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
-                        
-                        {/* Price Badge */}
-                        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg border border-gray-100 z-20">
-                          <span className="font-bold text-[#cf4a36] text-xs flex items-center gap-1.5">
-                             <PriceDisplay price={item.price} baseCurrency="EGP" />
-                          </span>
-                        </div>
-
-                        {/* Pre-Hover Title Overlay */}
-                        <div className="absolute bottom-6 left-5 right-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col text-left">
-                          <div className="flex items-center gap-1.5 mb-2 bg-black/30 w-max px-2.5 py-1 rounded-full backdrop-blur-sm">
-                            <FaMapMarkerAlt className="text-[#D4AF37] text-xs" />
-                            <span className="text-white/90 text-xs font-semibold tracking-wide">{item.location}</span>
-                          </div>
-                          <h3 className="text-white font-extrabold text-2xl leading-tight text-shadow-md">{item.title}</h3>
-                        </div>
-                      </div>
-
-                      {/* Content (Revealed on hover) */}
-                      <div className="absolute inset-x-0 bottom-0 h-[60%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-left">
-                        <div>
-                          <h3 className="text-xl font-bold text-[#14213d] leading-snug hover:text-[#D4AF37] transition-colors line-clamp-2 mb-3">
-                            {item.title}
-                          </h3>
+                      <div className="card-tilt-inner h-full w-full relative">
+                        {/* Background Cover Image (Slides up on hover) */}
+                        <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[40%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
+                          <img
+                            src={item.image || '/placeholder.png'}
+                            alt={item.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
                           
-                          <div className="space-y-1.5">
-                            <div className="flex items-center text-xs text-gray-600 font-medium bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
-                              <FaMapMarkerAlt className="text-[#E76F51] text-sm mr-2.5 shrink-0" />
-                              <span className="truncate">{item.location}</span>
-                            </div>
-                            <div className="flex items-center text-xs text-gray-600 font-medium bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
-                              <FaClock className="text-[#E76F51] text-sm mr-2.5 shrink-0" />
-                              <span className="truncate">{item.duration}</span>
-                            </div>
+                          {/* Price Badge */}
+                          <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg border border-gray-100 z-20">
+                            <span className="font-bold text-[#cf4a36] text-xs flex items-center gap-1.5">
+                               <PriceDisplay price={item.price} baseCurrency="EGP" />
+                            </span>
                           </div>
-                          
-                          {/* Free Cancellation Badge */}
-                          <div className="mt-3">
-                             <p className="text-green-700 font-bold text-xs">✓ Free cancellation</p>
+
+                          {/* Pre-Hover Title Overlay */}
+                          <div className="absolute bottom-6 left-5 right-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col text-left">
+                            <div className="flex items-center gap-1.5 mb-2 bg-black/30 w-max px-2.5 py-1 rounded-full backdrop-blur-sm">
+                              <FaMapMarkerAlt className="text-[#D4AF37] text-xs" />
+                              <span className="text-white/90 text-xs font-semibold tracking-wide">{item.location}</span>
+                            </div>
+                            <h3 className="text-white font-extrabold text-2xl leading-tight text-shadow-md">{item.title}</h3>
                           </div>
                         </div>
 
-                        <div className="border-t border-gray-100 mt-2 pt-2 flex items-center justify-between">
-                          <div className="flex items-center gap-1.5 text-sm font-bold text-gray-800">
-                             <span className="bg-[#05073C] text-white px-1.5 py-0.5 rounded text-xs">{(parseFloat(item.rating) || 9.5).toFixed(1)}</span>
-                             <span className="text-[10px] text-gray-500 uppercase">{parseFloat(item.rating) >= 4.5 ? 'Exceptional' : 'Fabulous'}</span>
+                        {/* Content (Revealed on hover) */}
+                        <div className="absolute inset-x-0 bottom-0 h-[60%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-left">
+                          <div>
+                            <h3 className="text-xl font-bold text-[#14213d] leading-snug hover:text-[#D4AF37] transition-colors line-clamp-2 mb-3">
+                              {item.title}
+                            </h3>
+                            
+                            <div className="space-y-1.5">
+                              <div className="flex items-center text-xs text-gray-600 font-medium bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
+                                <FaMapMarkerAlt className="text-[#E76F51] text-sm mr-2.5 shrink-0" />
+                                <span className="truncate">{item.location}</span>
+                              </div>
+                              <div className="flex items-center text-xs text-gray-600 font-medium bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
+                                <FaClock className="text-[#E76F51] text-sm mr-2.5 shrink-0" />
+                                <span className="truncate">{item.duration}</span>
+                              </div>
+                            </div>
+                            
+                            {/* Free Cancellation Badge */}
+                            <div className="mt-3">
+                               <p className="text-green-700 font-bold text-xs">✓ Free cancellation</p>
+                            </div>
                           </div>
-                          <span className="text-[#D4AF37] font-bold text-sm flex items-center gap-1.5">
-                              View Details &rarr;
-                          </span>
+
+                          <div className="border-t border-gray-100 mt-2 pt-2 flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 text-sm font-bold text-gray-800">
+                               <span className="bg-[#05073C] text-white px-1.5 py-0.5 rounded text-xs">{(parseFloat(item.rating) || 9.5).toFixed(1)}</span>
+                               <span className="text-[10px] text-gray-500 uppercase">{parseFloat(item.rating) >= 4.5 ? 'Exceptional' : 'Fabulous'}</span>
+                            </div>
+                            <span className="text-[#D4AF37] font-bold text-sm flex items-center gap-1.5">
+                                View Details &rarr;
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </Link>

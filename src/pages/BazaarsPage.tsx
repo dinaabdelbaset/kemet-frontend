@@ -109,62 +109,64 @@ const BazaarsPage = () => {
               <Link
                 key={bazaar.id}
                 to={`/bazaars/${bazaar.id}`}
-                className="block relative bg-white border border-[#E7E6E6] dark:border-gray-700 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#cd4f3c] hover:shadow-[0_20px_40px_rgba(205,79,60,0.15)] group h-[420px] w-full"
+                className="block relative bg-white border border-[#E7E6E6] dark:border-gray-700 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#cd4f3c] hover:shadow-[0_20px_40px_rgba(205,79,60,0.15)] group h-[420px] w-full card-tilt-effect"
               >
-                {/* Background Cover Image (Slides up on hover) */}
-                <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[40%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
-                  <img
-                    src={bazaar.image || '/placeholder.png'}
-                    alt={bazaar.title}
-                    className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
-                  
-                  {/* Location Badge */}
-                  <div className="absolute top-4 left-4 z-20">
-                    <span className="bg-white/95 backdrop-blur-md text-[#cd4f3c] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
-                      <FaMapMarkerAlt /> {bazaar.location}
-                    </span>
-                  </div>
-
-                  {/* Pre-Hover Title Overlay */}
-                  <div className="absolute bottom-6 left-5 right-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col text-left">
-                    <h3 className="text-white font-extrabold text-2xl leading-tight text-shadow-md mb-2">{bazaar.title}</h3>
-                    <div className="flex items-center gap-1.5 drop-shadow-md text-white/90 text-sm font-bold">
-                       <span className="text-[#D4AF37] text-xs"><FaShoppingBag className="inline mr-1"/> Traditional Market</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content (Revealed on hover) */}
-                <div className="absolute inset-x-0 bottom-0 h-[60%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-left">
-                  <div>
-                    <h3 className="text-xl font-bold text-[#14213d] leading-snug hover:text-[#cd4f3c] transition-colors line-clamp-1 mb-3">
-                      {bazaar.title}
-                    </h3>
+                <div className="card-tilt-inner h-full w-full relative">
+                  {/* Background Cover Image (Slides up on hover) */}
+                  <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[40%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
+                    <img
+                      src={bazaar.image || '/placeholder.png'}
+                      alt={bazaar.title}
+                      className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
                     
-                    <div className="space-y-1.5">
-                      <div className="flex items-center text-xs text-gray-600 font-medium bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
-                        <FaMapMarkerAlt className="text-[#cd4f3c] text-sm mr-2.5 shrink-0" />
-                        <span className="truncate">{bazaar.location}</span>
-                      </div>
-                    </div>
-                    
-                    <p className="text-sm text-gray-500 mt-3 line-clamp-3 leading-relaxed">
-                      {bazaar.description}
-                    </p>
-                  </div>
-
-                  <div className="border-t border-gray-100 mt-2 pt-2 flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-gray-400 uppercase font-bold">Opening Hours</span>
-                      <span className="text-gray-700 font-bold text-xs">
-                        {bazaar.open || '9:00 AM - 10:00 PM'}
+                    {/* Location Badge */}
+                    <div className="absolute top-4 left-4 z-20">
+                      <span className="bg-white/95 backdrop-blur-md text-[#cd4f3c] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
+                        <FaMapMarkerAlt /> {bazaar.location}
                       </span>
                     </div>
-                    <span className="text-[#cd4f3c] font-bold text-sm">
-                        Discover Details &rarr;
-                    </span>
+
+                    {/* Pre-Hover Title Overlay */}
+                    <div className="absolute bottom-6 left-5 right-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col text-left">
+                      <h3 className="text-white font-extrabold text-2xl leading-tight text-shadow-md mb-2">{bazaar.title}</h3>
+                      <div className="flex items-center gap-1.5 drop-shadow-md text-white/90 text-sm font-bold">
+                         <span className="text-[#D4AF37] text-xs"><FaShoppingBag className="inline mr-1"/> Traditional Market</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content (Revealed on hover) */}
+                  <div className="absolute inset-x-0 bottom-0 h-[60%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-left">
+                    <div>
+                      <h3 className="text-xl font-bold text-[#14213d] leading-snug hover:text-[#cd4f3c] transition-colors line-clamp-1 mb-3">
+                        {bazaar.title}
+                      </h3>
+                      
+                      <div className="space-y-1.5">
+                        <div className="flex items-center text-xs text-gray-600 font-medium bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
+                          <FaMapMarkerAlt className="text-[#cd4f3c] text-sm mr-2.5 shrink-0" />
+                          <span className="truncate">{bazaar.location}</span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-sm text-gray-500 mt-3 line-clamp-3 leading-relaxed">
+                        {bazaar.description}
+                      </p>
+                    </div>
+
+                    <div className="border-t border-gray-100 mt-2 pt-2 flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-gray-400 uppercase font-bold">Opening Hours</span>
+                        <span className="text-gray-700 font-bold text-xs">
+                          {bazaar.open || '9:00 AM - 10:00 PM'}
+                        </span>
+                      </div>
+                      <span className="text-[#cd4f3c] font-bold text-sm">
+                          Discover Details &rarr;
+                      </span>
+                    </div>
                   </div>
                 </div>
               </Link>

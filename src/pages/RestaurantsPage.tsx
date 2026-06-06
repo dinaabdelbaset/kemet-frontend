@@ -31,31 +31,33 @@ const DealItem = ({ deal }: { deal: any }) => {
       state={{ title: deal.title, img: deal.img, discount: deal.discount }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="bg-[#f8f9fb] rounded-2xl overflow-hidden hover:shadow-[0_15px_30px_rgba(212,175,55,0.2)] transition-all duration-500 flex flex-col items-center p-6 text-center border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-2 block group"
+      className="bg-[#f8f9fb] rounded-2xl overflow-hidden hover:shadow-[0_15px_30px_rgba(212,175,55,0.2)] transition-all duration-500 flex flex-col items-center p-6 text-center border-2 border-transparent hover:border-[#D4AF37] hover:-translate-y-2 block group card-tilt-effect"
     >
-      <div className="relative w-full aspect-square bg-gray-200 rounded-full mb-6 overflow-hidden">
-        <img src={deal.img} className={`w-full h-full object-cover transition-all duration-700 ${isHovered && deal.video ? 'opacity-0 scale-110' : 'opacity-100 group-hover:scale-110'}`} alt={deal.title} />
-        {deal.video && (
-           <video
-             ref={videoRef}
-             src={deal.video}
-             muted
-             loop
-             playsInline
-             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-           />
-        )}
-        <span className="absolute top-4 left-4 bg-[#f8d02c] text-[#222] text-xs font-bold px-2 py-1 rounded z-10">
-          {deal.discount}
-        </span>
-      </div>
-      <h3 className="font-bold text-lg text-[#222] mb-2">{deal.title}</h3>
-      <p className="text-xs text-gray-500 mb-4 line-clamp-2">
-        يسري العرض على الطلبات بحد أقصى وجبة واحدة للفرد
-      </p>
-      <div className="flex items-center gap-2 border-t border-gray-200 w-full pt-4 justify-center">
-        <FaStar className="text-yellow-400 text-sm" />
-        <span className="text-sm font-medium">4.2/5 (2k+ Reviews)</span>
+      <div className="card-tilt-inner w-full flex flex-col items-center">
+        <div className="relative w-full aspect-square bg-gray-200 rounded-full mb-6 overflow-hidden">
+          <img src={deal.img} className={`w-full h-full object-cover transition-all duration-700 ${isHovered && deal.video ? 'opacity-0 scale-110' : 'opacity-100 group-hover:scale-110'}`} alt={deal.title} />
+          {deal.video && (
+             <video
+               ref={videoRef}
+               src={deal.video}
+               muted
+               loop
+               playsInline
+               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+             />
+          )}
+          <span className="absolute top-4 left-4 bg-[#f8d02c] text-[#222] text-xs font-bold px-2 py-1 rounded z-10">
+            {deal.discount}
+          </span>
+        </div>
+        <h3 className="font-bold text-lg text-[#222] mb-2">{deal.title}</h3>
+        <p className="text-xs text-gray-500 mb-4 line-clamp-2">
+          يسري العرض على الطلبات بحد أقصى وجبة واحدة للفرد
+        </p>
+        <div className="flex items-center gap-2 border-t border-gray-200 w-full pt-4 justify-center">
+          <FaStar className="text-yellow-400 text-sm" />
+          <span className="text-sm font-medium">4.2/5 (2k+ Reviews)</span>
+        </div>
       </div>
     </Link>
   );
@@ -168,61 +170,63 @@ const RestaurantsPage = () => {
                 <Link
                   key={restaurant.id}
                   to={`/restaurants/${restaurant.id}`}
-                  className="block relative bg-white border border-gray-100 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#cd4f3c] hover:shadow-[0_20px_40px_rgba(205,79,60,0.15)] group h-[440px] w-full"
+                  className="block relative bg-white border border-gray-100 rounded-3xl overflow-hidden transition-all duration-[600ms] hover:border-[#cd4f3c] hover:shadow-[0_20px_40px_rgba(205,79,60,0.15)] group h-[440px] w-full card-tilt-effect"
                 >
-                  {/* Background Cover Image (Slides up on hover) */}
-                  <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[40%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-3xl">
-                    <img
-                      src={restaurant.image || '/placeholder.png'}
-                      alt={restaurant.name}
-                      className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
-                    
-                    {/* Location Badge (Always visible) */}
-                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm text-[#cd4f3c] text-xs font-bold flex items-center gap-1.5 z-20">
-                      <FaMapMarkerAlt /> {restaurant.location}
-                    </div>
-
-                    {/* Pre-Hover Title Overlay */}
-                    <div className="absolute bottom-6 right-5 left-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col text-right">
-                      <span className="bg-[#cd4f3c] text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-md w-max mb-2 self-end">
-                        {restaurant.cuisine}
-                      </span>
-                      <h3 className="text-white font-extrabold text-2xl leading-tight text-shadow-md mb-2">{restaurant.name}</h3>
-                      <div className="flex items-center gap-1.5 drop-shadow-md text-white/90 text-sm font-bold justify-end">
-                        <FaStar className="text-yellow-400" />
-                        <span>{restaurant.rating}</span>
-                        <span className="text-white/60 text-xs font-normal">({restaurant.reviews_count} تقييم)</span>
+                  <div className="card-tilt-inner h-full w-full relative">
+                    {/* Background Cover Image (Slides up on hover) */}
+                    <div className="absolute inset-x-0 top-0 w-full h-full transition-all duration-[800ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:h-[40%] z-10 overflow-hidden rounded-t-3xl group-hover:rounded-b-none rounded-b-2xl">
+                      <img
+                        src={restaurant.image || '/placeholder.png'}
+                        alt={restaurant.name}
+                        className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
+                      
+                      {/* Location Badge (Always visible) */}
+                      <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm text-[#cd4f3c] text-xs font-bold flex items-center gap-1.5 z-20">
+                        <FaMapMarkerAlt /> {restaurant.location}
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Content (Revealed on hover) */}
-                  <div className="absolute inset-x-0 bottom-0 h-[60%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-right">
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-[#cd4f3c] font-bold text-[11px] bg-[#cd4f3c]/10 px-2.5 py-1 rounded-md">{restaurant.cuisine}</span>
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-[#14213d]">
+                      {/* Pre-Hover Title Overlay */}
+                      <div className="absolute bottom-6 right-5 left-5 z-20 transition-all duration-700 transform group-hover:translate-y-10 group-hover:opacity-0 flex flex-col text-right">
+                        <span className="bg-[#cd4f3c] text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-md w-max mb-2 self-end">
+                          {restaurant.cuisine}
+                        </span>
+                        <h3 className="text-white font-extrabold text-2xl leading-tight text-shadow-md mb-2">{restaurant.name}</h3>
+                        <div className="flex items-center gap-1.5 drop-shadow-md text-white/90 text-sm font-bold justify-end">
                           <FaStar className="text-yellow-400" />
                           <span>{restaurant.rating}</span>
+                          <span className="text-white/60 text-xs font-normal">({restaurant.reviews_count} تقييم)</span>
                         </div>
                       </div>
-                      
-                      <h3 className="text-xl font-bold text-[#14213d] leading-snug hover:text-[#cd4f3c] transition-colors line-clamp-1 mb-2">
-                        {restaurant.name}
-                      </h3>
-                      
-                      <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
-                        {restaurant.description}
-                      </p>
                     </div>
 
-                    <div className="border-t border-gray-100 mt-3 pt-3 flex items-center justify-between">
-                      <span className="text-[#cd4f3c] font-bold text-sm">
-                          {document.cookie.includes('/ar') || document.documentElement.dir === 'rtl' ? 'تصفح المنيو والحجز \u2190' : 'View Menu & Booking \u2192'}
-                      </span>
-                      <span className="text-gray-500 text-[10px] font-medium bg-gray-50 px-2 py-1 rounded">{restaurant.opening_hours}</span>
+                    {/* Content (Revealed on hover) */}
+                    <div className="absolute inset-x-0 bottom-0 h-[60%] bg-white px-6 pt-5 pb-4 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 delay-100 z-0 flex flex-col justify-between text-right">
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-[#cd4f3c] font-bold text-[11px] bg-[#cd4f3c]/10 px-2.5 py-1 rounded-md">{restaurant.cuisine}</span>
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-[#14213d]">
+                            <FaStar className="text-yellow-400" />
+                            <span>{restaurant.rating}</span>
+                          </div>
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-[#14213d] leading-snug hover:text-[#cd4f3c] transition-colors line-clamp-1 mb-2">
+                          {restaurant.name}
+                        </h3>
+                        
+                        <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                          {restaurant.description}
+                        </p>
+                      </div>
+
+                      <div className="border-t border-gray-100 mt-3 pt-3 flex items-center justify-between">
+                        <span className="text-[#cd4f3c] font-bold text-sm">
+                            {document.cookie.includes('/ar') || document.documentElement.dir === 'rtl' ? 'تصفح المنيو والحجز \u2190' : 'View Menu & Booking \u2192'}
+                        </span>
+                        <span className="text-gray-500 text-[10px] font-medium bg-gray-50 px-2 py-1 rounded">{restaurant.opening_hours}</span>
+                      </div>
                     </div>
                   </div>
                 </Link>

@@ -662,3 +662,19 @@ html[dir="rtl"] .right-0 {
   right: auto !important;
   left: 0 !important;
 }
+
+/* 3D Interactive Card Hover Effects */
+.card-tilt-effect {
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+.card-tilt-effect:hover {
+  transform: translateY(-8px) rotateX(4deg) rotateY(4deg);
+  box-shadow: 0 25px 50px -12px rgba(212, 175, 55, 0.25) !important;
+  border-color: rgba(212, 175, 55, 0.4) !important;
+}
+.card-tilt-inner {
+  transform: translateZ(30px);
+  transform-style: preserve-3d;
+}
