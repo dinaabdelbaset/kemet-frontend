@@ -21,7 +21,7 @@ const ForgotPasswordPage = () => {
     const handleEmailSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError("");
-        
+
         if (!email) {
             setError("Email is required");
             return;
@@ -89,7 +89,7 @@ const ForgotPasswordPage = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 animate-fade-in relative z-10 pt-24 bg-[url('https://images.unsplash.com/photo-1539768942893-daf53e448371?auto=format&fit=crop&q=80')] bg-cover bg-center before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-br before:from-[#05073C]/95 before:to-[#1A365D]/90 before:-z-10">
             <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-2xl border border-gray-100 hover:shadow-[0_20px_50px_rgba(5,7,60,0.15)] transition-all duration-300">
-                
+
                 {/* Headers per Step */}
                 <div className="flex flex-col items-center text-center">
                     <div className="w-16 h-16 bg-[#F8F9FA] rounded-full flex items-center justify-center mb-4 text-[#D4AF37] shadow-inner">
@@ -105,7 +105,7 @@ const ForgotPasswordPage = () => {
                         {step === 'PASSWORD' && 'New Password'}
                         {step === 'SUCCESS' && 'Password Reset'}
                     </h2>
-                    
+
                     <p className="mt-3 text-sm text-gray-500 font-medium">
                         {step === 'EMAIL' && "Enter your email address and we'll send you a recovery code."}
                         {step === 'OTP' && `We've sent a 6-digit code to ${email}.`}
@@ -124,7 +124,7 @@ const ForgotPasswordPage = () => {
                                 label="Email Address"
                                 name="email"
                                 type="email"
-                                placeholder="name@example.com"
+                                placeholder=""
                                 value={email}
                                 onChange={(e) => { setEmail(e.target.value); setError(""); }}
                                 disabled={isLoading}

@@ -191,8 +191,8 @@ const GlobeSection = () => {
   const [globeVisible, setGlobeVisible] = useState(false); // 🚀 Lazy load globe
 
   const [tripType, setTripType] = useState<"round" | "oneway">("round");
-  const [from, setFrom] = useState("Cairo (CAI)");
-  const [to, setTo] = useState("Luxor (LXR)");
+  const [from, setFrom] = useState("القاهرة (CAI)");
+  const [to, setTo] = useState("الأقصر (LXR)");
   const [depDay, setDepDay] = useState("01");
   const [depMonth, setDepMonth] = useState("01");
   const [depYear, setDepYear] = useState(String(currentYear));

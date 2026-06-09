@@ -68,14 +68,14 @@ const SearchPage = () => {
           data.hotels.forEach((h: any) => results.push({
             id: `hotel-${h.id}`, title: h.title || h.name, image: h.image,
             category: "Hotel", categoryAr: "فندق", rating: h.rating, reviews: h.reviews_count,
-            location: h.location, price: `$${h.price_starts_from || h.price}`, linkTo: `/hotels/${h.id}`
+            location: h.location, price: (h.price_starts_from || h.price) ? <PriceDisplay price={Number(h.price_starts_from || h.price)} baseCurrency="EGP" /> : "N/A", linkTo: `/hotels/${h.id}`
           }));
         }
         if (data.tours && Array.isArray(data.tours)) {
           data.tours.forEach((t: any) => results.push({
             id: `tour-${t.id}`, title: t.title, image: t.image,
             category: "Tour", categoryAr: "جولة", rating: t.rating, reviews: t.reviewCount,
-            location: t.location, price: `$${t.price}`, linkTo: `/tours/${t.id}`
+            location: t.location, price: t.price ? <PriceDisplay price={Number(t.price)} baseCurrency="EGP" /> : "N/A", linkTo: `/tours/${t.id}`
           }));
         }
         if (data.restaurants && Array.isArray(data.restaurants)) {
@@ -89,21 +89,21 @@ const SearchPage = () => {
           data.events.forEach((e: any) => results.push({
             id: `event-${e.id}`, title: e.title, image: e.image,
             category: "Event", categoryAr: "فعالية", rating: e.rating || 4.7, reviews: 0,
-            location: e.location, price: e.price || "Free", linkTo: `/events/${e.id}`
+            location: e.location, price: e.price ? (isNaN(Number(e.price)) ? e.price : <PriceDisplay price={Number(e.price)} baseCurrency="EGP" />) : "Free", linkTo: `/events/${e.id}`
           }));
         }
         if (data.museums && Array.isArray(data.museums)) {
           data.museums.forEach((m: any) => results.push({
             id: `museum-${m.id}`, title: m.title || m.name, image: m.image,
             category: "Museum", categoryAr: "متحف", rating: m.rating || 4.8, reviews: 0,
-            location: m.location, price: m.ticket_price ? <PriceDisplay price={m.ticket_price} baseCurrency="EGP" /> : "Free", linkTo: `/museums/${m.id}`
+            location: m.location, price: m.ticket_price ? <PriceDisplay price={Number(m.ticket_price)} baseCurrency="EGP" /> : "Free", linkTo: `/museums/${m.id}`
           }));
         }
         if (data.safaris && Array.isArray(data.safaris)) {
           data.safaris.forEach((s: any) => results.push({
             id: `safari-${s.id}`, title: s.title, image: s.image,
             category: "Safari", categoryAr: "سفاري", rating: s.rating || 4.9, reviews: 0,
-            location: s.location, price: `$${s.price}`, linkTo: `/safari/${s.id}`
+            location: s.location, price: s.price ? <PriceDisplay price={Number(s.price)} baseCurrency="EGP" /> : "N/A", linkTo: `/safari/${s.id}`
           }));
         }
         if (data.destinations && Array.isArray(data.destinations)) {

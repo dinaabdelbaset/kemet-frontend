@@ -99,10 +99,10 @@ const CheckoutPage = () => {
       expirationDate: "",
       cvc: "",
     },
-    totalPrice: (location.state?.type === 'food_cart' || location.state?.type === 'museum' || location.state?.type === 'bazaar' || location.state?.type === 'ai_trip') ? location.state?.price : 0,
+    totalPrice: (location.state?.type === 'food_cart' || location.state?.type === 'museum' || location.state?.type === 'bazaar' || location.state?.type === 'ai_trip' || location.state?.type === 'attraction') ? location.state?.price : 0,
   });
 
-  const [currentStep, setCurrentStep] = useState(() => ((location.state?.type === "flight" || location.state?.type === "museum" || location.state?.type === "bazaar" || location.state?.type === "ai_trip") ? 2 : 1));
+  const [currentStep, setCurrentStep] = useState(() => ((location.state?.type === "flight" || location.state?.type === "museum" || location.state?.type === "bazaar" || location.state?.type === "ai_trip" || location.state?.type === "attraction") ? 2 : 1));
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
@@ -158,8 +158,8 @@ const CheckoutPage = () => {
 
   // Recalculate total price when tickets change
   useEffect(() => {
-    if (checkoutData.item.type === 'museum' || checkoutData.item.type === 'bazaar' || checkoutData.item.type === 'ai_trip') {
-      // Museum/Bazaar/AI Trip ticket quantities and prices are fully pre-calculated on the Details page
+    if (checkoutData.item.type === 'museum' || checkoutData.item.type === 'bazaar' || checkoutData.item.type === 'ai_trip' || checkoutData.item.type === 'attraction') {
+      // Museum/Bazaar/AI Trip/Attraction ticket quantities and prices are fully pre-calculated on the Details page
       return;
     }
 

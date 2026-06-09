@@ -110,13 +110,25 @@ async function fetchLiveContext(): Promise<string> {
   return contextFetchPromise;
 }
 
-// Build the full system prompt with live data
-async function getFullSystemPrompt(): Promise<string> {
+// Build the full system prompt with live data and optional target language
+async function getFullSystemPrompt(language?: string): Promise<string> {
   const liveData = await fetchLiveContext();
-  if (liveData) {
-    return `${BASE_PROMPT}\n\n--- LIVE DATABASE PRICES (use these exact numbers when users ask) ---\n${liveData}`;
+  let prompt = BASE_PROMPT;
+  if (language && language !== 'auto') {
+    const langMapping: Record<string, string> = {
+      'ar': 'Arabic (العربية)',
+      'en': 'English',
+      'fr': 'French (Français)',
+      'de': 'German (Deutsch)',
+      'it': 'Italian (Italiano)'
+    };
+    const langName = langMapping[language.toLowerCase()] || language;
+    prompt += `\n\n⚠️ CRITICAL INSTRUCTION: The user has selected their language preference as '${langName}'. You MUST communicate and reply to them ONLY in '${langName}'. Translate all tour/hotel/attraction names, descriptions, pricing explanations, booking procedures, and friendly guidance into '${langName}' naturally and beautifully. Keep pricing in Egyptian Pounds (EGP) but explain it in '${langName}'.`;
   }
-  return BASE_PROMPT;
+  if (liveData) {
+    return `${prompt}\n\n--- LIVE DATABASE PRICES (use these exact numbers when users ask) ---\n${liveData}`;
+  }
+  return prompt;
 }
 
 // ---------------------------------------------------------------------------
@@ -136,7 +148,8 @@ let conversationHistory: ChatMessage[] = [];
 // ---------------------------------------------------------------------------
 async function callGroqDirectly(
   userMessage: string,
-  history: { role: string; content: string }[]
+  history: { role: string; content: string }[],
+  language?: string
 ): Promise<string | null> {
   if (!GROQ_API_KEY) {
     console.warn("Direct Groq API call skipped: VITE_GROQ_API_KEY is not defined.");
@@ -144,7 +157,7 @@ async function callGroqDirectly(
   }
 
   try {
-    const systemPrompt = await getFullSystemPrompt();
+    const systemPrompt = await getFullSystemPrompt(language);
 
     // Format history for OpenAI/Groq format
     const messages = [
@@ -208,7 +221,8 @@ async function callGroqDirectly(
 export const askChatbot = async (
   input: string | { sender: string; text: string }[],
   sessionToken: string,
-  isTimeout: boolean = false
+  isTimeout: boolean = false,
+  language?: string
 ): Promise<{ answer: string; is_human_mode: boolean }> => {
   try {
     let userMessage: string;
@@ -248,7 +262,8 @@ export const askChatbot = async (
         message: userMessage,
         history: history,
         session_token: sessionToken,
-        is_timeout: isTimeout
+        is_timeout: isTimeout,
+        language: language
       }),
     });
 
@@ -261,7 +276,7 @@ export const askChatbot = async (
     }
 
     // Try Groq fallback on non-ok backend response
-    const groqResponse = await callGroqDirectly(userMessage, history);
+    const groqResponse = await callGroqDirectly(userMessage, history, language);
     if (groqResponse) {
       return { answer: groqResponse, is_human_mode: false };
     }
@@ -283,7 +298,7 @@ export const askChatbot = async (
           content: m.text
         }));
       }
-      const groqResponse = await callGroqDirectly(userMessage, history);
+      const groqResponse = await callGroqDirectly(userMessage, history, language);
       if (groqResponse) {
         return { answer: groqResponse, is_human_mode: false };
       }

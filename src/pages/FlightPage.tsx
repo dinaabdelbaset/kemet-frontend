@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaPlane, FaClock, FaTag, FaChair, FaStar, FaShieldAlt, FaGift } from "react-icons/fa";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import axiosClient from "../api/axiosClient";
+import { WORLD_AIRPORTS } from "../components/Ui/AirportSelect";
 
 interface FlightState {
   from: string;
@@ -36,13 +37,184 @@ const CLASSES = [
   { key: "first", label: "درجة أولى", mult: 3.8, color: "#4caf82" },
 ];
 
-const generateFlights = (from: string, to: string): Flight[] => [
-  { id: 101, airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "07:30", arr: "09:15", duration: "1س 45د", stops: 0, class: "economy", price: 89, seats: 12, rating: 4.7 },
-  { id: 204, airline: "فلاي إيجيبت", logo: "✈️", from, to, dep: "10:00", arr: "12:05", duration: "2س 05د", stops: 0, class: "economy", price: 74, seats: 6, rating: 4.5 },
-  { id: 305, airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "13:45", arr: "15:30", duration: "1س 45د", stops: 0, class: "economy", price: 95, seats: 24, rating: 4.8 },
-  { id: 512, airline: "إيرعربية مصر", logo: "🌙", from, to, dep: "16:20", arr: "18:50", duration: "2س 30د", stops: 1, class: "economy", price: 61, seats: 18, rating: 4.3 },
-  { id: 701, airline: "مصر للطيران", logo: "🇪🇬", from, to, dep: "20:00", arr: "21:45", duration: "1س 45د", stops: 0, class: "economy", price: 112, seats: 4, rating: 4.9 },
+const CARRIERS: { [key: string]: { name: string; logo: string }[] } = {
+  "مصر": [
+    { name: "مصر للطيران", logo: "🇪🇬" },
+    { name: "إير كايرو", logo: "✈️" },
+    { name: "النيل للطيران", logo: "🦅" },
+    { name: "إيرعربية مصر", logo: "🌙" }
+  ],
+  "السعودية": [
+    { name: "الخطوط السعودية", logo: "🇸🇦" },
+    { name: "طيران ناس", logo: "🌴" },
+    { name: "أديل للطيران", logo: "✈️" }
+  ],
+  "الإمارات": [
+    { name: "طيران الإمارات", logo: "🇦🇪" },
+    { name: "فلاي دبي", logo: "✈️" },
+    { name: "الاتحاد للطيران", logo: "🦅" },
+    { name: "العربية للطيران", logo: "🌙" }
+  ],
+  "قطر": [
+    { name: "الخطوط القطرية", logo: "🇶🇦" }
+  ],
+  "الكويت": [
+    { name: "الخطوط الكويتية", logo: "🇰🇼" },
+    { name: "طيران الجزيرة", logo: "✈️" }
+  ],
+  "البحرين": [
+    { name: "طيران الخليج", logo: "🇧🇭" }
+  ],
+  "عُمان": [
+    { name: "الطيران العماني", logo: "🇴🇲" },
+    { name: "طيران السلام", logo: "✈️" }
+  ],
+  "الأردن": [
+    { name: "الملكية الأردنية", logo: "🇯🇴" }
+  ],
+  "لبنان": [
+    { name: "طيران الشرق الأوسط", logo: "🇱🇧" }
+  ],
+  "المغرب": [
+    { name: "الخطوط الملكية المغربية", logo: "🇲🇦" },
+    { name: "العربية للطيران المغرب", logo: "🌙" }
+  ],
+  "تونس": [
+    { name: "الخطوط التونسية", logo: "🇹🇳" }
+  ],
+  "الجزائر": [
+    { name: "الخطوط الجوية الجزائرية", logo: "🇩🇿" }
+  ],
+  "ليبيا": [
+    { name: "الخطوط الأفريقية", logo: "🇱🇾" }
+  ]
+};
+
+const DEFAULT_CARRIERS = [
+  { name: "مصر للطيران", logo: "🇪🇬" },
+  { name: "طيران الشرق الأوسط", logo: "✈️" }
 ];
+
+const getAirportCode = (str: string): string => {
+  const match = str.match(/\(([^)]+)\)/);
+  return match ? match[1].toUpperCase() : "";
+};
+
+const getCountryForAirport = (code: string): string => {
+  const airport = WORLD_AIRPORTS.find(a => a.code === code);
+  return airport ? airport.country : "";
+};
+
+const addTime = (timeStr: string, hours: number, mins: number): string => {
+  const [h, m] = timeStr.split(":").map(Number);
+  let totalMins = h * 60 + m + hours * 60 + mins;
+  let finalH = Math.floor(totalMins / 60) % 24;
+  let finalM = totalMins % 60;
+  return `${String(finalH).padStart(2, '0')}:${String(finalM).padStart(2, '0')}`;
+};
+
+const generateFlights = (from: string, to: string): Flight[] => {
+  const fromCode = getAirportCode(from);
+  const toCode = getAirportCode(to);
+  const fromCountry = getCountryForAirport(fromCode) || "مصر";
+  const toCountry = getCountryForAirport(toCode) || "مصر";
+
+  const isDomestic = fromCountry === toCountry;
+  const isGulf = (c: string) => ["السعودية", "الإمارات", "قطر", "الكويت", "البحرين", "عُمان", "اليمن"].includes(c);
+  const isNorthAfrica = (c: string) => ["مصر", "المغرب", "تونس", "الجزائر", "ليبيا"].includes(c);
+  const isLevant = (c: string) => ["الأردن", "لبنان", "سوريا", "العراق"].includes(c);
+
+  let durationHours = 2;
+  let durationMins = 15;
+  let basePrice = 6000;
+
+  if (isDomestic) {
+    durationHours = 1;
+    durationMins = 30;
+    basePrice = 4000;
+  } else {
+    if (
+      (fromCountry === "مصر" && isGulf(toCountry)) || 
+      (toCountry === "مصر" && isGulf(fromCountry)) ||
+      (isGulf(fromCountry) && isGulf(toCountry))
+    ) {
+      durationHours = 2;
+      durationMins = 45;
+      basePrice = 11000;
+    } else if (
+      (fromCountry === "مصر" && toCountry === "الأردن") || (fromCountry === "الأردن" && toCountry === "مصر") ||
+      (fromCountry === "مصر" && toCountry === "لبنان") || (fromCountry === "لبنان" && toCountry === "مصر")
+    ) {
+      durationHours = 1;
+      durationMins = 30;
+      basePrice = 7000;
+    } else if (
+      (isNorthAfrica(fromCountry) && isGulf(toCountry)) || 
+      (isGulf(fromCountry) && isNorthAfrica(toCountry))
+    ) {
+      durationHours = 6;
+      durationMins = 15;
+      basePrice = 19000;
+    } else if (
+      (fromCountry === "مصر" && toCountry === "المغرب") || (fromCountry === "المغرب" && toCountry === "مصر")
+    ) {
+      durationHours = 5;
+      durationMins = 10;
+      basePrice = 14500;
+    } else {
+      durationHours = 4;
+      durationMins = 0;
+      basePrice = 12500;
+    }
+  }
+
+  // Combine carriers
+  const fromCarriers = CARRIERS[fromCountry] || DEFAULT_CARRIERS;
+  const toCarriers = CARRIERS[toCountry] || DEFAULT_CARRIERS;
+  const combined = [...fromCarriers, ...toCarriers];
+  const uniqueCarriers = combined.filter(
+    (c, idx, self) => self.findIndex(t => t.name === c.name) === idx
+  );
+
+  // Generate 5 flight options
+  const flightTimes = [
+    { dep: "07:30", priceMult: 1.0, stops: 0, idOffset: 101 },
+    { dep: "10:15", priceMult: 0.95, stops: 0, idOffset: 204 },
+    { dep: "13:45", priceMult: 1.05, stops: 0, idOffset: 305 },
+    { dep: "16:20", priceMult: 0.85, stops: isDomestic ? 0 : 1, idOffset: 512 },
+    { dep: "20:00", priceMult: 1.15, stops: 0, idOffset: 701 }
+  ];
+
+  return flightTimes.map((ft, index) => {
+    // Select carrier sequentially from unique carriers
+    const carrier = uniqueCarriers[index % uniqueCarriers.length];
+    
+    // Modify duration slightly for variety
+    const varHours = durationHours + (ft.stops > 0 ? 2 : 0);
+    const varMins = (durationMins + (index * 5)) % 60;
+    const durStr = `${varHours}س ${varMins}د`;
+    const arrTime = addTime(ft.dep, varHours, varMins);
+
+    // Calculate price
+    const finalPrice = Math.round(basePrice * ft.priceMult);
+
+    return {
+      id: ft.idOffset + index,
+      airline: carrier.name,
+      logo: carrier.logo,
+      from,
+      to,
+      dep: ft.dep,
+      arr: arrTime,
+      duration: durStr,
+      stops: ft.stops,
+      class: "economy",
+      price: finalPrice,
+      seats: [12, 6, 24, 18, 4][index],
+      rating: Number((4.3 + (index * 0.15)).toFixed(1))
+    };
+  });
+};
 
 const SEAT_ROWS = Array.from({ length: 8 }, (_, i) => i + 1);
 const SEAT_COLS = ["A", "B", "C", "D", "E", "F"];
@@ -406,7 +578,7 @@ const FlightPage = () => {
                           <p className="text-white/30 text-[10px]">ستُضاف لمحفظتك بعد السفر</p>
                         </div>
                       </div>
-                      <p className="text-[#4caf82] font-black text-lg">+${cashbackAmt}</p>
+                      <p className="text-[#4caf82] font-black text-lg">+<PriceDisplay price={cashbackAmt} /></p>
                     </div>
                   )}
                 </div>
@@ -453,7 +625,7 @@ const FlightPage = () => {
               className="w-full py-4 rounded-2xl font-extrabold text-[#04062e] text-lg flex items-center justify-center gap-3 hover:-translate-y-0.5 transition-all"
               style={{ background: `linear-gradient(135deg, ${classInfo.color}, #EB662B)`, boxShadow: `0 15px 50px ${classInfo.color}50` }}
             >
-              <FaPlane /> أكمل الدفع — ${finalPrice}
+              <FaPlane /> أكمل الدفع — <PriceDisplay price={finalPrice} />
             </button>
           </div>
         )}

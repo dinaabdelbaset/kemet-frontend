@@ -106,7 +106,7 @@ const BazaarDetailsPage = () => {
         id: bazaar.id || id,
         type: 'bazaar', // Dedicated type prevents UI bugs in checkout
         title: `${bazaarTitle} - Guided Tour`,
-        price: totalPrice / 50, // Standardize to USD baseline for checkout conversion
+        price: totalPrice, // Passed in base EGP currency so CheckoutPage's PriceDisplay formats it correctly for all currencies
         image: bazaarImage,
         date: selectedDate,
         time: selectedTime,

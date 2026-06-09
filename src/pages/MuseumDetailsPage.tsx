@@ -84,7 +84,7 @@ const MuseumDetailsPage = () => {
         id: museum.id || id,
         type: 'museum',
         title: museum.title || museum.name,
-        price: totalPrice / 50, // Convert to USD logic standard so checkout converter displays correctly
+        price: totalPrice, // Passed in base EGP currency so CheckoutPage's PriceDisplay formats it correctly for all currencies
         image: museumImage,
         date: selectedDate,
         tickets: { adult: 1, child: 0, infant: 0 }, // Stub to bypass empty ticket checkout validation

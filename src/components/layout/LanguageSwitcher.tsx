@@ -70,7 +70,7 @@ const LanguageSwitcher = ({ scrolled = true }: { scrolled?: boolean }) => {
     <div className="relative">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1.5 text-[12px] font-semibold transition px-2.5 py-1.5 rounded-lg ${
+        className={`flex items-center gap-1.5 text-[12px] font-semibold transition px-2 py-1 xl:px-2.5 xl:py-1.5 rounded-lg ${
           scrolled
             ? "text-gray-700 dark:text-gray-300 hover:text-[#EB662B] bg-gray-100 dark:bg-white/8 border border-gray-200 dark:border-white/10 hover:border-[#EB662B]/40"
             : "text-white/90 hover:text-white bg-white/10 border border-white/20 hover:bg-white/20"

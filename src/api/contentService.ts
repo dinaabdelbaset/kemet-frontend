@@ -23,7 +23,7 @@ export const getHeroSlides = async () => {
 };
 
 export const getNavItems = async () => {
-    const response = await axiosClient.get("/content/nav-items");
+    const response = await axiosClient.get(`/content/nav-items?t=${new Date().getTime()}`);
     return response.data;
 };
 

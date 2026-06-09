@@ -70,14 +70,29 @@ const AttractionPage = () => {
   const handleBook = () => {
     if (!visitDate || totalCount === 0) return;
     
+    const totalTicketsInEGP = Object.entries(selectedTickets).reduce((sum, [idx, qty]) => {
+      const ticket = attraction.ticketPrices[Number(idx)];
+      if (!ticket) return sum;
+      const priceEGP = ticket.currency === 'USD' ? ticket.price * 50 : ticket.price;
+      return sum + (priceEGP * qty);
+    }, 0);
+
+    const breakdownText = Object.entries(selectedTickets)
+      .filter(([_, qty]) => qty > 0)
+      .map(([idx, qty]) => `${qty}x ${attraction.ticketPrices[Number(idx)]?.type}`)
+      .join(', ');
+
     // Redirect to the unified checkout system with attraction details
     navigate('/checkout', { 
       state: { 
         id: (attraction as any).id || Math.floor(Math.random() * 1000), 
         type: "attraction", 
         title: attraction.nameAr, 
-        price: attraction.ticketPrices[0]?.price || 0, 
-        image: attraction.image 
+        price: totalTicketsInEGP, 
+        image: attraction.image,
+        date: visitDate,
+        tickets: { adult: totalCount, child: 0, infant: 0 },
+        breakdown: breakdownText
       } 
     });
   };

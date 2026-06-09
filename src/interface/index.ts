@@ -92,6 +92,21 @@ export const IFooterLinks: Record<string, FooterLinks[]> = {
       title: "How it works",
       link: "/how-it-works"
     },
+    {
+      id: 5,
+      title: "Emergency Help",
+      link: "/emergency"
+    },
+    {
+      id: 6,
+      title: "Arab Wonders",
+      link: "/arab-tourism"
+    },
+    {
+      id: 7,
+      title: "Hajj & Umrah Guide",
+      link: "/hajj-umrah"
+    },
   ],
 
   Mobile: [

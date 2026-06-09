@@ -21,6 +21,8 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const defaultNavItems = [
     { name: 'Homepage', link: '/' },
+    { name: 'Arab Wonders 🗺️', link: '/arab-tourism' },
+    { name: 'Hajj & Umrah 🕋', link: '/hajj-umrah' },
     { name: 'Souvenir Shop 🛍️', link: '/shop' },
     { name: 'AI Planner ✨', link: '/ai-planner' },
     { name: 'Activities', link: '/activities' },
@@ -34,6 +36,7 @@ const Navbar = () => {
         { name: 'Safari', link: '/safari' },
         { name: 'Museums', link: '/museums' },
         { name: 'Bazaars', link: '/bazaars' },
+        { name: 'Emergency Help 🚨', link: '/emergency' },
       ],
     },
     { name: 'Support', link: '/support' },
@@ -101,6 +104,19 @@ const Navbar = () => {
     }
   };
 
+  const getCleanDesktopName = (name: string) => {
+    if (!name) return "";
+    // Remove emojis, dingbats (like sparkles), and variant selectors (\uFE0F)
+    let clean = name.replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]|\uFE0F/g, "").trim();
+    // Normalize spaces
+    clean = clean.replace(/\s+/g, " ");
+    
+    const lower = clean.toLowerCase();
+    if (lower === 'homepage') return 'Home';
+    if (lower === 'souvenir shop') return 'Shop';
+    return clean;
+  };
+
 
   // Navbar always has a consistent readable background
   const isTransparent = false;
@@ -120,7 +136,7 @@ const Navbar = () => {
 
   return (
     <nav ref={navRef} className={navClasses}>
-      <div className="max-w-[1400px] mx-auto px-4 lg:px-6 flex items-center h-[50px] xl:h-[56px] gap-4 xl:gap-6">
+      <div className="max-w-[1400px] mx-auto px-4 lg:px-6 flex items-center h-[50px] xl:h-[56px] gap-2 xl:gap-3 2xl:gap-4">
 
         {/* ── Logo ── */}
         <Link to="/" className="flex items-center shrink-0 group z-50 gap-2.5">
@@ -133,18 +149,18 @@ const Navbar = () => {
         </Link>
 
         {/* ── Desktop Nav Links ── */}
-        <ul className="hidden xl:flex items-center gap-0.5 flex-1">
+        <ul className="hidden xl:flex items-center justify-center gap-1 xl:gap-1.5 2xl:gap-2 flex-1">
           {mainNavItems.map((item, index) => (
             <li key={index} className="relative">
               {item.link && (
                 <Link
                   to={item.link}
-                  className={`relative px-3 py-2 text-[13px] font-semibold rounded-lg tracking-wide whitespace-nowrap
+                  className={`relative px-2 py-1.5 xl:px-2.5 2xl:px-3 text-[13px] font-semibold rounded-lg tracking-wide whitespace-nowrap
                     ${textClass} ${hoverClass}
                     hover:bg-white/10 dark:hover:bg-white/5
                     group flex items-center gap-1.5`}
                 >
-                  {item.name}
+                  {getCleanDesktopName(item.name)}
                   <span className="absolute bottom-1 left-3 right-3 h-[2px] bg-[#EB662B] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-full origin-left" />
                 </Link>
               )}
@@ -155,11 +171,11 @@ const Navbar = () => {
                     onClick={() =>
                       setOpenDropdown(openDropdown === item.name ? null : item.name)
                     }
-                    className={`px-3 py-2 text-[13px] font-semibold rounded-lg tracking-wide whitespace-nowrap flex items-center gap-1.5
+                    className={`px-2 py-1.5 xl:px-2.5 2xl:px-3 text-[13px] font-semibold rounded-lg tracking-wide whitespace-nowrap flex items-center gap-1.5
                       ${textClass} ${hoverClass}
                       hover:bg-white/10 dark:hover:bg-white/5`}
                   >
-                    {item.name}
+                    {getCleanDesktopName(item.name)}
                     <IoIosArrowDown
                       className={`text-[11px] transition-transform duration-300 ${
                         openDropdown === item.name ? "rotate-180 text-[#EB662B]" : ""
@@ -250,7 +266,7 @@ const Navbar = () => {
         </ul>
 
         {/* ── Right Side Tools ── */}
-        <div className="flex items-center gap-1 xl:gap-1.5 ml-auto shrink-0">
+        <div className="flex items-center gap-1.5 xl:gap-2 ml-auto shrink-0">
 
           {/* Search Icon / Overlay */}
           <div className="relative hidden lg:block">
